@@ -167,7 +167,7 @@ export async function PATCH(
           itens: {
             create: agendamento.servicos.map((s) => ({
               servicoId: s.servicoId,
-              preco: s.precoNoMomento,
+              preco: s.preco,
             })),
           },
         },
