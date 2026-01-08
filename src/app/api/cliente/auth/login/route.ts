@@ -14,16 +14,9 @@ export async function POST(request: NextRequest) {
       where: { email },
     });
 
-    if (!cliente) {
+    if (!cliente || !cliente.senha) {
       return NextResponse.json(
         { error: "Email ou senha incorretos" },
-        { status: 401 }
-      );
-    }
-
-    if (!cliente.ativo) {
-      return NextResponse.json(
-        { error: "Conta desativada" },
         { status: 401 }
       );
     }
@@ -58,4 +51,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
