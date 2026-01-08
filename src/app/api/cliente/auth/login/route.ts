@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const { email, senha } = body;
 
     // Busca cliente
-    const cliente = await prisma.usuarioCliente.findUnique({
+    const cliente = await prisma.cliente.findUnique({
       where: { email },
     });
 

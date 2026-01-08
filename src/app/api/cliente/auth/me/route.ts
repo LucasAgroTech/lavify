@@ -10,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
-    const cliente = await prisma.usuarioCliente.findUnique({
+    const cliente = await prisma.cliente.findUnique({
       where: { id: session.clienteId },
       select: {
         id: true,

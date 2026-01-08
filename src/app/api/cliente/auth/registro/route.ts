@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const { nome, email, senha, telefone, cpf } = body;
 
     // Verifica se email já existe
-    const clienteExistente = await prisma.usuarioCliente.findUnique({
+    const clienteExistente = await prisma.cliente.findUnique({
       where: { email },
     });
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const senhaHash = await hashPassword(senha);
 
     // Cria o cliente
-    const cliente = await prisma.usuarioCliente.create({
+    const cliente = await prisma.cliente.create({
       data: {
         email,
         senha: senhaHash,
