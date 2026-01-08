@@ -34,38 +34,21 @@ export async function GET() {
             },
           },
         },
+        ordemServico: {
+          select: {
+            id: true,
+            codigo: true,
+            status: true,
+            dataEntrada: true,
+            previsaoSaida: true,
+            dataFinalizacao: true,
+          },
+        },
       },
       orderBy: { dataHora: "desc" },
     });
 
-    // Para agendamentos com OS vinculada, busca o status atual da OS
-    const agendamentosComStatusOS = await Promise.all(
-      agendamentos.map(async (agendamento) => {
-        if (agendamento.ordemServicoId) {
-          const os = await prisma.ordemServico.findUnique({
-            where: { id: agendamento.ordemServicoId },
-            select: {
-              id: true,
-              codigo: true,
-              status: true,
-              dataEntrada: true,
-              previsaoSaida: true,
-              dataFinalizacao: true,
-            },
-          });
-          return {
-            ...agendamento,
-            ordemServico: os,
-          };
-        }
-        return {
-          ...agendamento,
-          ordemServico: null,
-        };
-      })
-    );
-
-    return NextResponse.json(agendamentosComStatusOS);
+    return NextResponse.json(agendamentos);
   } catch (error) {
     console.error("Erro ao buscar agendamentos:", error);
     return NextResponse.json(
@@ -87,7 +70,7 @@ export async function POST(request: NextRequest) {
     const { lavaJatoId, veiculoId, servicosIds, dataHora, observacoes } = body;
 
     // Verifica se o veículo pertence ao cliente
-    const veiculo = await prisma.veiculoCliente.findFirst({
+    const veiculo = await prisma.veiculo.findFirst({
       where: {
         id: veiculoId,
         clienteId: session.clienteId,
@@ -101,7 +84,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verifica se o lava jato aceita agendamentos
+    // Verifica se o lava jato existe e está ativo
     const lavaJato = await prisma.lavaJato.findUnique({
       where: { id: lavaJatoId },
     });
@@ -113,21 +96,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!lavaJato.aceitaAgendamento) {
-      return NextResponse.json(
-        { error: "Este lava jato não aceita agendamentos online" },
-        { status: 400 }
-      );
-    }
-
-    // Verifica se a data é válida (futuro + tempo mínimo)
+    // Verifica se a data é válida (futuro)
     const dataAgendamento = new Date(dataHora);
     const agora = new Date();
-    const tempoMinimo = lavaJato.tempoMinimoAgendamento * 60 * 1000;
 
-    if (dataAgendamento.getTime() < agora.getTime() + tempoMinimo) {
+    if (dataAgendamento.getTime() < agora.getTime()) {
       return NextResponse.json(
-        { error: `Agendamento deve ser feito com no mínimo ${lavaJato.tempoMinimoAgendamento} minutos de antecedência` },
+        { error: "A data do agendamento deve ser no futuro" },
         { status: 400 }
       );
     }
@@ -162,7 +137,7 @@ export async function POST(request: NextRequest) {
         servicos: {
           create: servicos.map((s) => ({
             servicoId: s.id,
-            precoNoMomento: s.preco,
+            preco: s.preco,
           })),
         },
       },
@@ -191,4 +166,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
