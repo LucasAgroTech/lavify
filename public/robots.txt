@@ -1,0 +1,16 @@
+# Robots.txt for Lavify
+# https://www.lavify.com.br
+
+User-agent: *
+Allow: /
+
+# Bloquear páginas de API
+Disallow: /api/
+
+# Bloquear páginas de autenticação
+Disallow: /login
+Disallow: /registro
+
+# Sitemap
+Sitemap: https://www.lavify.com.br/sitemap.xml
+
