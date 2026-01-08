@@ -26,18 +26,10 @@ function verifyClientToken(token: string): ClientSessionPayload | null {
   }
 }
 
-// Criar sessão do cliente
+// Criar sessão do cliente (apenas cookie JWT)
 export async function createClientSession(clienteId: string) {
   const token = generateClientToken(clienteId);
   const expiresAt = new Date(Date.now() + SESSION_DURATION);
-
-  await prisma.sessao.create({
-    data: {
-      token,
-      clienteId,
-      expiresAt,
-    },
-  });
 
   const cookieStore = await cookies();
   cookieStore.set("cliente_session", token, {
@@ -61,29 +53,19 @@ export async function getClientSession(): Promise<{ clienteId: string } | null> 
   const payload = verifyClientToken(token);
   if (!payload) return null;
 
-  const sessao = await prisma.sessao.findUnique({
-    where: { token },
-    include: { cliente: true },
+  // Verifica se o cliente existe
+  const cliente = await prisma.cliente.findUnique({
+    where: { id: payload.clienteId },
+    select: { id: true },
   });
 
-  if (!sessao || !sessao.cliente || sessao.expiresAt < new Date()) {
-    if (sessao) {
-      await prisma.sessao.delete({ where: { id: sessao.id } });
-    }
-    return null;
-  }
+  if (!cliente) return null;
 
-  return { clienteId: sessao.clienteId! };
+  return { clienteId: payload.clienteId };
 }
 
 // Destruir sessão do cliente
 export async function destroyClientSession() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("cliente_session")?.value;
-
-  if (token) {
-    await prisma.sessao.deleteMany({ where: { token } });
-    cookieStore.delete("cliente_session");
-  }
+  cookieStore.delete("cliente_session");
 }
-
