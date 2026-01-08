@@ -165,17 +165,19 @@ export async function PATCH(
     });
 
     // Sincroniza status do agendamento vinculado (se existir)
-    const agendamento = await prisma.agendamento.findUnique({
-      where: { ordemServicoId: id },
-    });
+    if (ordem.agendamentoId) {
+      const agendamento = await prisma.agendamento.findUnique({
+        where: { id: ordem.agendamentoId },
+      });
 
-    if (agendamento) {
-      const novoStatusAgendamento = mapOSStatusToAgendamento(status as StatusOS);
-      if (novoStatusAgendamento && agendamento.status !== novoStatusAgendamento) {
-        await prisma.agendamento.update({
-          where: { id: agendamento.id },
-          data: { status: novoStatusAgendamento as "EM_ANDAMENTO" | "CONCLUIDO" },
-        });
+      if (agendamento) {
+        const novoStatusAgendamento = mapOSStatusToAgendamento(status as StatusOS);
+        if (novoStatusAgendamento && agendamento.status !== novoStatusAgendamento) {
+          await prisma.agendamento.update({
+            where: { id: agendamento.id },
+            data: { status: novoStatusAgendamento as "EM_ANDAMENTO" | "CONCLUIDO" },
+          });
+        }
       }
     }
 
