@@ -252,33 +252,48 @@ function AgendarContent() {
 
       {/* Progress */}
       <div className="px-4 py-4">
-        <div className="flex items-center">
-          {[
-            { num: 1, label: "Serviços" },
-            { num: 2, label: "Data/Hora" },
-            { num: 3, label: "Veículo" },
-          ].map((s, index) => (
-            <div key={s.num} className="flex-1 flex flex-col items-center">
-              <div className="flex items-center w-full">
-                {index > 0 && (
-                  <div className={`flex-1 h-1 rounded ${step > index ? "bg-cyan-500" : "bg-slate-100"}`} />
-                )}
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${
-                    step >= s.num
-                      ? "bg-cyan-500 text-white"
-                      : "bg-slate-100 text-slate-400"
-                  }`}
-                >
-                  {step > s.num ? <Check className="w-4 h-4" /> : s.num}
-                </div>
-                {index < 2 && (
-                  <div className={`flex-1 h-1 rounded ${step > s.num ? "bg-cyan-500" : "bg-slate-100"}`} />
-                )}
-              </div>
-              <span className="text-xs text-slate-500 mt-2">{s.label}</span>
+        <div className="flex items-center justify-between">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step >= 1 ? "bg-cyan-500 text-white" : "bg-slate-100 text-slate-400"
+              }`}
+            >
+              {step > 1 ? <Check className="w-4 h-4" /> : 1}
             </div>
-          ))}
+            <span className="text-xs text-slate-500 mt-2">Serviços</span>
+          </div>
+
+          {/* Line 1-2 */}
+          <div className={`flex-1 h-1 rounded mx-2 ${step > 1 ? "bg-cyan-500" : "bg-slate-100"}`} />
+
+          {/* Step 2 */}
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step >= 2 ? "bg-cyan-500 text-white" : "bg-slate-100 text-slate-400"
+              }`}
+            >
+              {step > 2 ? <Check className="w-4 h-4" /> : 2}
+            </div>
+            <span className="text-xs text-slate-500 mt-2">Data/Hora</span>
+          </div>
+
+          {/* Line 2-3 */}
+          <div className={`flex-1 h-1 rounded mx-2 ${step > 2 ? "bg-cyan-500" : "bg-slate-100"}`} />
+
+          {/* Step 3 */}
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step >= 3 ? "bg-cyan-500 text-white" : "bg-slate-100 text-slate-400"
+              }`}
+            >
+              {step > 3 ? <Check className="w-4 h-4" /> : 3}
+            </div>
+            <span className="text-xs text-slate-500 mt-2">Veículo</span>
+          </div>
         </div>
       </div>
 
