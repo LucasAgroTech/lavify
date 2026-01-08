@@ -6,11 +6,8 @@ import Link from "next/link";
 import {
   Search,
   MapPin,
-  Star,
   Clock,
-  BadgeCheck,
   Loader2,
-  SlidersHorizontal,
   X,
 } from "lucide-react";
 
@@ -19,19 +16,13 @@ interface LavaJato {
   nome: string;
   slug: string;
   endereco: string | null;
-  cidade: string | null;
-  estado: string | null;
-  descricao: string | null;
   logoUrl: string | null;
   corPrimaria: string;
-  aceitaAgendamento: boolean;
-  verificado: boolean;
-  mediaAvaliacoes: number;
-  totalAvaliacoes: number;
   servicos: {
     id: string;
     nome: string;
     preco: number;
+    tempoEstimado: number;
   }[];
 }
 
@@ -42,7 +33,6 @@ function EncontrarContent() {
   const [lavajatos, setLavajatos] = useState<LavaJato[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState(buscaInicial);
-  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchLavaJatos();
@@ -101,29 +91,12 @@ function EncontrarContent() {
             )}
           </div>
           <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-white"
+            type="submit"
+            className="px-4 py-2.5 rounded-xl bg-cyan-500 text-white font-medium text-sm"
           >
-            <SlidersHorizontal className="w-4 h-4 text-slate-600" />
+            Buscar
           </button>
         </form>
-
-        {/* Filters */}
-        {showFilters && (
-          <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-4 px-4">
-            {["Próximos", "Melhores avaliados", "Menor preço", "Agendamento online"].map(
-              (filter) => (
-                <button
-                  key={filter}
-                  className="flex-shrink-0 px-3 py-1.5 rounded-full bg-slate-100 text-xs font-medium text-slate-600 active:bg-slate-200"
-                >
-                  {filter}
-                </button>
-              )
-            )}
-          </div>
-        )}
       </div>
 
       {/* Results */}
@@ -178,47 +151,31 @@ function EncontrarContent() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h3 className="font-semibold text-slate-800 truncate">
-                            {lj.nome}
-                          </h3>
-                          {lj.verificado && (
-                            <BadgeCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                          )}
-                        </div>
-                        {(lj.cidade || lj.endereco) && (
-                          <p className="text-xs text-slate-500 truncate mt-0.5">
-                            {lj.cidade || lj.endereco}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Rating */}
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                        <span className="text-sm font-medium text-slate-700">
-                          {lj.mediaAvaliacoes || "Novo"}
-                        </span>
-                      </div>
-                    </div>
+                    <h3 className="font-semibold text-slate-800 truncate">
+                      {lj.nome}
+                    </h3>
+                    {lj.endereco && (
+                      <p className="text-xs text-slate-500 truncate mt-0.5 flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {lj.endereco}
+                      </p>
+                    )}
 
                     {/* Tags */}
                     <div className="flex items-center gap-2 mt-2">
-                      {lj.aceitaAgendamento && (
-                        <span className="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                          <Clock className="w-3 h-3" />
-                          Agendamento
-                        </span>
-                      )}
-                      {lj.servicos.length > 0 && (
-                        <span className="text-xs text-slate-500">
-                          A partir de{" "}
-                          <span className="font-semibold text-cyan-600">
-                            {formatCurrency(Math.min(...lj.servicos.map((s) => s.preco)))}
+                      {lj.servicos && lj.servicos.length > 0 && (
+                        <>
+                          <span className="inline-flex items-center gap-1 text-xs text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">
+                            <Clock className="w-3 h-3" />
+                            {lj.servicos.length} serviço{lj.servicos.length !== 1 && "s"}
                           </span>
-                        </span>
+                          <span className="text-xs text-slate-500">
+                            A partir de{" "}
+                            <span className="font-semibold text-cyan-600">
+                              {formatCurrency(Math.min(...lj.servicos.map((s) => s.preco)))}
+                            </span>
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
