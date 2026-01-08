@@ -1,0 +1,267 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ============================================
+// MULTI-TENANCY - Cada LavaJato é um tenant
+// ============================================
+
+model LavaJato {
+  id            String    @id @default(uuid())
+  nome          String
+  cnpj          String?   @unique
+  telefone      String?
+  endereco      String?
+  logoUrl       String?
+  corPrimaria   String    @default("#06b6d4") // Personalização
+  ativo         Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  
+  // Relações - tudo pertence a um LavaJato
+  usuarios      Usuario[]
+  clientes      Cliente[]
+  veiculos      Veiculo[]
+  servicos      Servico[]
+  produtos      Produto[]
+  ordens        OrdemServico[]
+  financeiro    Financeiro[]
+}
+
+// ============================================
+// AUTENTICAÇÃO E AUTORIZAÇÃO
+// ============================================
+
+enum RoleUsuario {
+  ADMIN       // Dono do lava jato - acesso total
+  GERENTE     // Gerente - acesso quase total
+  ATENDENTE   // Atendente - criar OS, atender clientes
+  LAVADOR     // Lavador - apenas ver e atualizar status das OS
+}
+
+model Usuario {
+  id            String      @id @default(uuid())
+  email         String      @unique
+  senha         String      // Hash bcrypt
+  nome          String
+  telefone      String?
+  role          RoleUsuario @default(ATENDENTE)
+  ativo         Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  
+  // Pertence a um LavaJato
+  lavaJatoId    String
+  lavaJato      LavaJato    @relation(fields: [lavaJatoId], references: [id])
+  
+  // Sessões ativas
+  sessoes       Sessao[]
+}
+
+model Sessao {
+  id            String    @id @default(uuid())
+  token         String    @unique
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+  
+  usuarioId     String
+  usuario       Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum StatusOS {
+  AGUARDANDO
+  LAVANDO
+  FINALIZANDO
+  PRONTO
+  ENTREGUE
+}
+
+enum TipoPagamento {
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  DINHEIRO
+  MENSALIDADE
+}
+
+enum TipoMovimentacao {
+  RECEITA
+  DESPESA
+}
+
+// ============================================
+// VENDAS E RETENÇÃO
+// ============================================
+
+model Cliente {
+  id               String    @id @default(uuid())
+  nome             String
+  telefone         String
+  email            String?
+  pontosFidelidade Int       @default(0)
+  saldoCashback    Float     @default(0.0)
+  planoMensal      Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  
+  // Multi-tenancy
+  lavaJatoId       String
+  lavaJato         LavaJato  @relation(fields: [lavaJatoId], references: [id])
+  
+  veiculos         Veiculo[]
+  ordens           OrdemServico[]
+  
+  @@index([lavaJatoId])
+}
+
+model Veiculo {
+  id          String   @id @default(uuid())
+  placa       String
+  modelo      String
+  cor         String?
+  
+  clienteId   String
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  
+  // Multi-tenancy
+  lavaJatoId  String
+  lavaJato    LavaJato @relation(fields: [lavaJatoId], references: [id])
+  
+  ordens      OrdemServico[]
+  
+  @@unique([placa, lavaJatoId]) // Placa única por lava jato
+  @@index([lavaJatoId])
+}
+
+// ============================================
+// OPERAÇÃO
+// ============================================
+
+model Servico {
+  id            String   @id @default(uuid())
+  nome          String
+  descricao     String?
+  preco         Float
+  tempoEstimado Int      // Em minutos
+  ativo         Boolean  @default(true)
+  
+  // Multi-tenancy
+  lavaJatoId    String
+  lavaJato      LavaJato @relation(fields: [lavaJatoId], references: [id])
+  
+  produtos      ConsumoProduto[]
+  ordens        ItemOrdem[]
+  
+  @@index([lavaJatoId])
+}
+
+model OrdemServico {
+  id               String      @id @default(uuid())
+  codigo           Int         // Sequencial por lava jato
+  status           StatusOS    @default(AGUARDANDO)
+  dataEntrada      DateTime    @default(now())
+  previsaoSaida    DateTime?
+  dataFinalizacao  DateTime?
+  
+  clienteId        String
+  cliente          Cliente     @relation(fields: [clienteId], references: [id])
+  veiculoId        String
+  veiculo          Veiculo     @relation(fields: [veiculoId], references: [id])
+  
+  // Multi-tenancy
+  lavaJatoId       String
+  lavaJato         LavaJato    @relation(fields: [lavaJatoId], references: [id])
+  
+  itens            ItemOrdem[]
+  
+  // Checklist e Fotos (JSON)
+  checklistEntrada String?
+  fotosAntes       String?
+  fotosDepois      String?
+  observacoes      String?
+  
+  // Financeiro da OS
+  total            Float
+  desconto         Float       @default(0.0)
+  pago             Boolean     @default(false)
+  
+  transacoes       Financeiro[]
+  
+  @@unique([codigo, lavaJatoId]) // Código único por lava jato
+  @@index([lavaJatoId])
+  @@index([status])
+}
+
+model ItemOrdem {
+  id          String       @id @default(uuid())
+  preco       Float
+  
+  osId        String
+  os          OrdemServico @relation(fields: [osId], references: [id], onDelete: Cascade)
+  servicoId   String
+  servico     Servico      @relation(fields: [servicoId], references: [id])
+}
+
+// ============================================
+// ESTOQUE E CUSTOS
+// ============================================
+
+model Produto {
+  id              String   @id @default(uuid())
+  nome            String
+  descricao       String?
+  quantidade      Float
+  unidade         String   // ml, un, g
+  custoPorUnidade Float
+  pontoReposicao  Float
+  ativo           Boolean  @default(true)
+  
+  // Multi-tenancy
+  lavaJatoId      String
+  lavaJato        LavaJato @relation(fields: [lavaJatoId], references: [id])
+  
+  consumoEmServicos ConsumoProduto[]
+  
+  @@index([lavaJatoId])
+}
+
+model ConsumoProduto {
+  id          String  @id @default(uuid())
+  quantidade  Float
+  
+  servicoId   String
+  servico     Servico @relation(fields: [servicoId], references: [id])
+  produtoId   String
+  produto     Produto @relation(fields: [produtoId], references: [id])
+}
+
+// ============================================
+// FINANCEIRO
+// ============================================
+
+model Financeiro {
+  id              String           @id @default(uuid())
+  descricao       String
+  valor           Float
+  tipo            TipoMovimentacao
+  formaPagamento  TipoPagamento?
+  data            DateTime         @default(now())
+  
+  // Multi-tenancy
+  lavaJatoId      String
+  lavaJato        LavaJato         @relation(fields: [lavaJatoId], references: [id])
+  
+  osId            String?
+  os              OrdemServico?    @relation(fields: [osId], references: [id])
+  
+  @@index([lavaJatoId])
+  @@index([data])
+}
