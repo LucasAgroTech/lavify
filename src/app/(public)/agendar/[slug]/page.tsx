@@ -252,7 +252,7 @@ function AgendarContent() {
 
       {/* Progress */}
       <div className="px-4 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           {/* Step 1 */}
           <div className="flex flex-col items-center">
             <div
@@ -266,7 +266,7 @@ function AgendarContent() {
           </div>
 
           {/* Line 1-2 */}
-          <div className={`flex-1 h-1 rounded mx-2 ${step > 1 ? "bg-cyan-500" : "bg-slate-100"}`} />
+          <div className={`flex-1 h-1 rounded mx-2 mt-[14px] ${step > 1 ? "bg-cyan-500" : "bg-slate-100"}`} />
 
           {/* Step 2 */}
           <div className="flex flex-col items-center">
@@ -281,7 +281,7 @@ function AgendarContent() {
           </div>
 
           {/* Line 2-3 */}
-          <div className={`flex-1 h-1 rounded mx-2 ${step > 2 ? "bg-cyan-500" : "bg-slate-100"}`} />
+          <div className={`flex-1 h-1 rounded mx-2 mt-[14px] ${step > 2 ? "bg-cyan-500" : "bg-slate-100"}`} />
 
           {/* Step 3 */}
           <div className="flex flex-col items-center">
