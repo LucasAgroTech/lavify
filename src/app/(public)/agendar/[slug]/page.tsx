@@ -252,28 +252,33 @@ function AgendarContent() {
 
       {/* Progress */}
       <div className="px-4 py-4">
-        <div className="flex items-center gap-2">
-          {[1, 2, 3].map((s) => (
-            <div key={s} className="flex-1 flex items-center gap-2">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step >= s
-                    ? "bg-cyan-500 text-white"
-                    : "bg-slate-100 text-slate-400"
-                }`}
-              >
-                {step > s ? <Check className="w-4 h-4" /> : s}
+        <div className="flex items-center">
+          {[
+            { num: 1, label: "Serviços" },
+            { num: 2, label: "Data/Hora" },
+            { num: 3, label: "Veículo" },
+          ].map((s, index) => (
+            <div key={s.num} className="flex-1 flex flex-col items-center">
+              <div className="flex items-center w-full">
+                {index > 0 && (
+                  <div className={`flex-1 h-1 rounded ${step > index ? "bg-cyan-500" : "bg-slate-100"}`} />
+                )}
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${
+                    step >= s.num
+                      ? "bg-cyan-500 text-white"
+                      : "bg-slate-100 text-slate-400"
+                  }`}
+                >
+                  {step > s.num ? <Check className="w-4 h-4" /> : s.num}
+                </div>
+                {index < 2 && (
+                  <div className={`flex-1 h-1 rounded ${step > s.num ? "bg-cyan-500" : "bg-slate-100"}`} />
+                )}
               </div>
-              {s < 3 && (
-                <div className={`flex-1 h-1 rounded ${step > s ? "bg-cyan-500" : "bg-slate-100"}`} />
-              )}
+              <span className="text-xs text-slate-500 mt-2">{s.label}</span>
             </div>
           ))}
-        </div>
-        <div className="flex justify-between mt-2 text-xs text-slate-500">
-          <span>Serviços</span>
-          <span>Data/Hora</span>
-          <span>Veículo</span>
         </div>
       </div>
 
