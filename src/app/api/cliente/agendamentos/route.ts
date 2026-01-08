@@ -19,7 +19,6 @@ export async function GET() {
             nome: true,
             slug: true,
             endereco: true,
-            cidade: true,
             telefone: true,
             logoUrl: true,
           },
