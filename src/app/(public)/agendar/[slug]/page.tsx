@@ -516,7 +516,7 @@ function AgendarContent() {
               onChange={(e) => setObservacoes(e.target.value)}
               placeholder="Alguma informação adicional..."
               rows={3}
-              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm resize-none"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
             />
           </div>
         </div>
