@@ -7,7 +7,7 @@ import { createClientSession } from "@/lib/auth-cliente";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nome, email, senha, telefone, cpf } = body;
+    const { nome, email, senha, telefone } = body;
 
     // Verifica se email já existe
     const clienteExistente = await prisma.cliente.findUnique({
@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
         senha: senhaHash,
         nome,
         telefone,
-        cpf,
       },
     });
 
@@ -55,4 +54,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

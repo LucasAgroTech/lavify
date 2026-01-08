@@ -10,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const veiculos = await prisma.veiculoCliente.findMany({
+    const veiculos = await prisma.veiculo.findMany({
       where: { clienteId: session.clienteId },
       orderBy: { modelo: "asc" },
     });
@@ -34,14 +34,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { placa, modelo, marca, ano, cor } = body;
+    const { placa, modelo, cor } = body;
 
-    const veiculo = await prisma.veiculoCliente.create({
+    const veiculo = await prisma.veiculo.create({
       data: {
         placa: placa.toUpperCase(),
         modelo,
-        marca,
-        ano,
         cor,
         clienteId: session.clienteId,
       },
@@ -56,4 +54,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

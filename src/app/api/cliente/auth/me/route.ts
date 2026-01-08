@@ -17,7 +17,6 @@ export async function GET() {
         nome: true,
         email: true,
         telefone: true,
-        fotoUrl: true,
       },
     });
 
@@ -31,4 +30,3 @@ export async function GET() {
     return NextResponse.json({ error: "Erro ao buscar dados" }, { status: 500 });
   }
 }
-
