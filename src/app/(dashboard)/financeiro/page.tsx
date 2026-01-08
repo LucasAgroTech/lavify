@@ -154,7 +154,7 @@ export default function FinanceiroPage() {
                 borderRadius: "12px",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
               }}
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value) => formatCurrency(value as number)}
             />
             <Area
               type="monotone"
