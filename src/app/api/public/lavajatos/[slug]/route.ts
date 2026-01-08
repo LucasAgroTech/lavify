@@ -16,22 +16,9 @@ export async function GET(
         nome: true,
         slug: true,
         telefone: true,
-        whatsapp: true,
-        email: true,
         endereco: true,
-        cidade: true,
-        estado: true,
-        cep: true,
-        latitude: true,
-        longitude: true,
-        descricao: true,
         logoUrl: true,
-        bannerUrl: true,
         corPrimaria: true,
-        horarioFuncionamento: true,
-        aceitaAgendamento: true,
-        tempoMinimoAgendamento: true,
-        verificado: true,
         // Todos os serviços ativos
         servicos: {
           where: { ativo: true },
@@ -41,34 +28,8 @@ export async function GET(
             descricao: true,
             preco: true,
             tempoEstimado: true,
-            destaque: true,
           },
-          orderBy: [
-            { destaque: "desc" },
-            { nome: "asc" },
-          ],
-        },
-        // Avaliações recentes
-        avaliacoes: {
-          select: {
-            id: true,
-            nota: true,
-            comentario: true,
-            createdAt: true,
-            cliente: {
-              select: {
-                nome: true,
-                fotoUrl: true,
-              },
-            },
-          },
-          orderBy: { createdAt: "desc" },
-          take: 10,
-        },
-        _count: {
-          select: {
-            avaliacoes: true,
-          },
+          orderBy: { nome: "asc" },
         },
       },
     });
@@ -80,20 +41,7 @@ export async function GET(
       );
     }
 
-    // Calcula média das avaliações
-    const todasAvaliacoes = await prisma.avaliacao.findMany({
-      where: { lavaJatoId: lavaJato.id },
-      select: { nota: true },
-    });
-
-    const somaNotas = todasAvaliacoes.reduce((acc, a) => acc + a.nota, 0);
-    const mediaNotas = todasAvaliacoes.length > 0 ? somaNotas / todasAvaliacoes.length : 0;
-
-    return NextResponse.json({
-      ...lavaJato,
-      mediaAvaliacoes: Math.round(mediaNotas * 10) / 10,
-      totalAvaliacoes: lavaJato._count.avaliacoes,
-    });
+    return NextResponse.json(lavaJato);
   } catch (error) {
     console.error("Erro ao buscar lava jato:", error);
     return NextResponse.json(
@@ -102,4 +50,3 @@ export async function GET(
     );
   }
 }
-

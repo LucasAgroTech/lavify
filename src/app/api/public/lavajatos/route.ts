@@ -5,18 +5,15 @@ import { prisma } from "@/lib/prisma";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const cidade = searchParams.get("cidade");
     const busca = searchParams.get("busca");
 
     const lavajatos = await prisma.lavaJato.findMany({
       where: {
         ativo: true,
-        ...(cidade && { cidade: { contains: cidade } }),
         ...(busca && {
           OR: [
-            { nome: { contains: busca } },
-            { endereco: { contains: busca } },
-            { cidade: { contains: busca } },
+            { nome: { contains: busca, mode: "insensitive" } },
+            { endereco: { contains: busca, mode: "insensitive" } },
           ],
         }),
       },
@@ -25,26 +22,12 @@ export async function GET(request: NextRequest) {
         nome: true,
         slug: true,
         telefone: true,
-        whatsapp: true,
         endereco: true,
-        cidade: true,
-        estado: true,
-        descricao: true,
         logoUrl: true,
-        bannerUrl: true,
         corPrimaria: true,
-        horarioFuncionamento: true,
-        aceitaAgendamento: true,
-        verificado: true,
-        // Média de avaliações
-        avaliacoes: {
-          select: {
-            nota: true,
-          },
-        },
-        // Serviços em destaque
+        // Alguns serviços
         servicos: {
-          where: { ativo: true, destaque: true },
+          where: { ativo: true },
           select: {
             id: true,
             nome: true,
@@ -53,32 +36,11 @@ export async function GET(request: NextRequest) {
           },
           take: 4,
         },
-        _count: {
-          select: {
-            avaliacoes: true,
-          },
-        },
       },
-      orderBy: [
-        { verificado: "desc" },
-        { nome: "asc" },
-      ],
+      orderBy: { nome: "asc" },
     });
 
-    // Calcula média das avaliações
-    const lavaJatosComMedia = lavajatos.map((lj) => {
-      const somaNotas = lj.avaliacoes.reduce((acc, a) => acc + a.nota, 0);
-      const mediaNotas = lj.avaliacoes.length > 0 ? somaNotas / lj.avaliacoes.length : 0;
-
-      return {
-        ...lj,
-        avaliacoes: undefined,
-        mediaAvaliacoes: Math.round(mediaNotas * 10) / 10,
-        totalAvaliacoes: lj._count.avaliacoes,
-      };
-    });
-
-    return NextResponse.json(lavaJatosComMedia);
+    return NextResponse.json(lavajatos);
   } catch (error) {
     console.error("Erro ao buscar lava jatos:", error);
     return NextResponse.json(
@@ -87,4 +49,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
