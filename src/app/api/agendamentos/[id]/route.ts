@@ -96,7 +96,7 @@ export async function PATCH(
     // Se o cliente chegou (mudou para EM_ANDAMENTO), criar OS automaticamente
     if (status === "EM_ANDAMENTO" && agendamento.status !== "EM_ANDAMENTO") {
       // 1. Busca ou cria Cliente do lava jato
-      // Monta query de busca evitando problemas com email null
+      // Primeiro tenta encontrar cliente já existente neste lava-jato
       const clienteOrConditions = [];
       if (agendamento.cliente.email) {
         clienteOrConditions.push({ email: agendamento.cliente.email });
@@ -115,14 +115,36 @@ export async function PATCH(
         : null;
 
       if (!cliente) {
-        cliente = await prisma.cliente.create({
-          data: {
-            nome: agendamento.cliente.nome,
-            email: agendamento.cliente.email,
-            telefone: agendamento.cliente.telefone,
-            lavaJatoId: session.lavaJatoId,
-          },
-        });
+        // Tenta criar novo cliente para este lava-jato
+        // Se email já existe (constraint unique), usa o cliente original do agendamento
+        try {
+          cliente = await prisma.cliente.create({
+            data: {
+              nome: agendamento.cliente.nome,
+              email: agendamento.cliente.email,
+              telefone: agendamento.cliente.telefone,
+              lavaJatoId: session.lavaJatoId,
+            },
+          });
+        } catch (error: unknown) {
+          // Se falhou por constraint de email, usar o cliente original do agendamento
+          const prismaError = error as { code?: string };
+          if (prismaError.code === "P2002") {
+            // Tenta buscar sem filtro de lavaJatoId ou usa cliente original
+            cliente = await prisma.cliente.findFirst({
+              where: {
+                OR: clienteOrConditions,
+              },
+            });
+            
+            // Se ainda não encontrou, usa o cliente do agendamento diretamente
+            if (!cliente) {
+              cliente = agendamento.cliente;
+            }
+          } else {
+            throw error;
+          }
+        }
       }
 
       // 2. Busca ou cria Veículo do lava jato
