@@ -42,11 +42,11 @@ interface OrdemServico {
   }[];
 }
 
-const colunas: { status: StatusOS; titulo: string; cor: string }[] = [
-  { status: "AGUARDANDO", titulo: "🚗 Aguardando", cor: "border-amber-400" },
-  { status: "LAVANDO", titulo: "🧽 Lavando", cor: "border-cyan-400" },
-  { status: "FINALIZANDO", titulo: "✨ Finalizando", cor: "border-blue-400" },
-  { status: "PRONTO", titulo: "✅ Pronto", cor: "border-emerald-400" },
+const colunas: { status: StatusOS; titulo: string; borderColor: string; bgColor: string; headerBg: string }[] = [
+  { status: "AGUARDANDO", titulo: "🚗 Aguardando", borderColor: "border-amber-300", bgColor: "bg-amber-50", headerBg: "bg-amber-100" },
+  { status: "LAVANDO", titulo: "🧽 Lavando", borderColor: "border-cyan-300", bgColor: "bg-cyan-50", headerBg: "bg-cyan-100" },
+  { status: "FINALIZANDO", titulo: "✨ Finalizando", borderColor: "border-blue-300", bgColor: "bg-blue-50", headerBg: "bg-blue-100" },
+  { status: "PRONTO", titulo: "✅ Pronto", borderColor: "border-emerald-300", bgColor: "bg-emerald-50", headerBg: "bg-emerald-100" },
 ];
 
 export default function KanbanPage() {
@@ -174,9 +174,9 @@ export default function KanbanPage() {
             <div
               key={coluna.status}
               className={`
-                bg-slate-100/50 rounded-2xl p-4 transition-all duration-200
-                border-2 border-dashed
-                ${isDropTarget ? "kanban-column-drop-active border-cyan-400" : "border-transparent"}
+                ${coluna.bgColor} rounded-2xl p-4 transition-all duration-200
+                border-2 ${coluna.borderColor}
+                ${isDropTarget ? "ring-2 ring-cyan-400 ring-offset-2 scale-[1.02]" : ""}
               `}
               onDragOver={(e) => handleDragOver(e, coluna.status)}
               onDragLeave={handleDragLeave}
@@ -184,16 +184,18 @@ export default function KanbanPage() {
             >
               {/* Column Header */}
               <div
-                className={`flex items-center justify-between mb-4 pb-3 border-b-2 ${coluna.cor}`}
+                className={`flex items-center justify-between mb-4 pb-3 border-b-2 ${coluna.borderColor}`}
               >
-                <h2 className="font-semibold text-slate-700">{coluna.titulo}</h2>
-                <span className="text-sm text-slate-500 bg-white px-2 py-1 rounded-lg">
+                <h2 className={`font-semibold text-slate-700 ${coluna.headerBg} px-3 py-1 rounded-lg`}>
+                  {coluna.titulo}
+                </h2>
+                <span className="text-sm font-medium text-slate-600 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">
                   {ordensColuna.length}
                 </span>
               </div>
 
               {/* Cards */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {ordensColuna.map((ordem) => (
                   <div
                     key={ordem.id}
@@ -201,10 +203,11 @@ export default function KanbanPage() {
                     onDragStart={(e) => handleDragStart(e, ordem)}
                     onDragEnd={handleDragEnd}
                     className={`
-                      bg-white rounded-xl p-4 shadow-sm border border-slate-100
+                      bg-white rounded-xl p-4 shadow-md border-2 border-slate-200
                       cursor-grab active:cursor-grabbing
-                      hover:shadow-md transition-all duration-200
-                      ${dragging === ordem.id ? "kanban-card-dragging" : ""}
+                      hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5
+                      transition-all duration-200
+                      ${dragging === ordem.id ? "opacity-50 scale-95 rotate-2" : ""}
                     `}
                   >
                     {/* Card Header */}
