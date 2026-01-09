@@ -295,8 +295,8 @@ export default function MeusAgendamentosPage() {
               <div className="space-y-4">
                 {proximos.map((ag) => {
                   // Verifica se está em processo de lavagem
-                  const estaLavando = ag.ordemServico && 
-                    (ag.ordemServico.status === "LAVANDO" || ag.ordemServico.status === "FINALIZANDO");
+                  const estaLavando = Boolean(ag.ordemServico && 
+                    (ag.ordemServico.status === "LAVANDO" || ag.ordemServico.status === "FINALIZANDO"));
                   
                   return (
                     <div 
