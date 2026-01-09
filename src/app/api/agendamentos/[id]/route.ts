@@ -96,15 +96,23 @@ export async function PATCH(
     // Se o cliente chegou (mudou para EM_ANDAMENTO), criar OS automaticamente
     if (status === "EM_ANDAMENTO" && agendamento.status !== "EM_ANDAMENTO") {
       // 1. Busca ou cria Cliente do lava jato
-      let cliente = await prisma.cliente.findFirst({
-        where: {
-          lavaJatoId: session.lavaJatoId,
-          OR: [
-            { email: agendamento.cliente.email },
-            { telefone: agendamento.cliente.telefone },
-          ],
-        },
-      });
+      // Monta query de busca evitando problemas com email null
+      const clienteOrConditions = [];
+      if (agendamento.cliente.email) {
+        clienteOrConditions.push({ email: agendamento.cliente.email });
+      }
+      if (agendamento.cliente.telefone) {
+        clienteOrConditions.push({ telefone: agendamento.cliente.telefone });
+      }
+
+      let cliente = clienteOrConditions.length > 0
+        ? await prisma.cliente.findFirst({
+            where: {
+              lavaJatoId: session.lavaJatoId,
+              OR: clienteOrConditions,
+            },
+          })
+        : null;
 
       if (!cliente) {
         cliente = await prisma.cliente.create({
@@ -152,8 +160,8 @@ export async function PATCH(
       const previsaoSaida = new Date();
       previsaoSaida.setMinutes(previsaoSaida.getMinutes() + tempoTotal);
 
-      // 5. Cria a Ordem de Serviço
-      const ordemServico = await prisma.ordemServico.create({
+      // 5. Cria a Ordem de Serviço já vinculada ao agendamento
+      await prisma.ordemServico.create({
         data: {
           codigo: novoCodigo,
           status: "LAVANDO", // Já está em andamento
@@ -162,6 +170,7 @@ export async function PATCH(
           clienteId: cliente.id,
           veiculoId: veiculo.id,
           lavaJatoId: session.lavaJatoId,
+          agendamentoId: id, // Vincula diretamente ao agendamento
           total: agendamento.totalEstimado,
           observacoes: agendamento.observacoes,
           itens: {
@@ -172,9 +181,6 @@ export async function PATCH(
           },
         },
       });
-
-      // 6. Vincula o agendamento à OS
-      updateData.ordemServicoId = ordemServico.id;
     }
 
     const agendamentoAtualizado = await prisma.agendamento.update({

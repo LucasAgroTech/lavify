@@ -14,3 +14,6 @@ Disallow: /registro
 # Sitemap
 Sitemap: https://www.lavify.com.br/sitemap.xml
 
+
+
+
