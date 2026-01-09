@@ -74,60 +74,83 @@ const osStatusConfig: Record<string, { label: string; emoji: string; step: numbe
   ENTREGUE: { label: "Entregue", emoji: "🎉", step: 5 },
 };
 
-// Componente de progresso da lavagem
+// Componente de progresso da lavagem - Timeline melhorada
 function ProgressoLavagem({ status }: { status: string }) {
   const config = osStatusConfig[status];
   if (!config) return null;
   
   const steps = [
-    { key: "AGUARDANDO", emoji: "🚗", label: "Fila" },
-    { key: "LAVANDO", emoji: "🧽", label: "Lavando" },
-    { key: "FINALIZANDO", emoji: "✨", label: "Finalizando" },
-    { key: "PRONTO", emoji: "✅", label: "Pronto" },
+    { key: "AGUARDANDO", emoji: "🚗", label: "Fila", bgClass: "bg-amber-500", ringClass: "ring-amber-200", textClass: "text-amber-700", bgLightClass: "bg-amber-100" },
+    { key: "LAVANDO", emoji: "🧽", label: "Lavando", bgClass: "bg-cyan-500", ringClass: "ring-cyan-200", textClass: "text-cyan-700", bgLightClass: "bg-cyan-100" },
+    { key: "FINALIZANDO", emoji: "✨", label: "Finalizando", bgClass: "bg-blue-500", ringClass: "ring-blue-200", textClass: "text-blue-700", bgLightClass: "bg-blue-100" },
+    { key: "PRONTO", emoji: "✅", label: "Pronto", bgClass: "bg-emerald-500", ringClass: "ring-emerald-200", textClass: "text-emerald-700", bgLightClass: "bg-emerald-100" },
   ];
 
+  // Calcula a porcentagem de progresso baseado no step
+  const getProgressWidth = () => {
+    if (config.step === 1) return '0%';
+    if (config.step === 2) return '33.33%';
+    if (config.step === 3) return '66.66%';
+    if (config.step >= 4) return '100%';
+    return '0%';
+  };
+
   return (
-    <div className="mt-3 p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
-      {/* Timeline compacto */}
-      <div className="relative">
+    <div className="mt-4 p-4 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-300 rounded-xl shadow-sm">
+      <div className="mb-2">
+        <span className="text-xs font-bold text-cyan-800 uppercase tracking-wide">
+          Progresso da Lavagem
+        </span>
+      </div>
+      
+      {/* Timeline melhorada */}
+      <div className="relative pt-2">
         {/* Linha de fundo */}
-        <div className="absolute top-4 left-4 right-4 h-1 bg-slate-200 rounded-full" />
+        <div className="absolute top-6 left-0 right-0 h-1.5 bg-slate-200 rounded-full" />
         
-        {/* Linha de progresso */}
+        {/* Linha de progresso animada */}
         <div 
-          className="absolute top-4 left-4 h-1 bg-cyan-500 rounded-full transition-all duration-500"
-          style={{ 
-            width: config.step === 1 ? '0%' : 
-                   config.step === 2 ? 'calc(33.33% - 8px)' : 
-                   config.step === 3 ? 'calc(66.66% - 8px)' : 
-                   config.step >= 4 ? 'calc(100% - 32px)' : '0%'
-          }}
+          className="absolute top-6 left-0 h-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-700 ease-out shadow-sm"
+          style={{ width: getProgressWidth() }}
         />
         
         {/* Círculos e labels */}
         <div className="relative flex justify-between">
           {steps.map((step, index) => {
             const stepNum = index + 1;
-            const isCompleted = config.step >= stepNum;
+            const isCompleted = config.step > stepNum;
             const isCurrent = config.step === stepNum;
             
             return (
-              <div key={step.key} className="flex flex-col items-center">
+              <div key={step.key} className="flex flex-col items-center flex-1">
                 <div
                   className={`
-                    w-8 h-8 rounded-full flex items-center justify-center text-sm z-10
+                    w-10 h-10 rounded-full flex items-center justify-center text-base z-10
+                    transition-all duration-500
                     ${isCompleted 
-                      ? "bg-cyan-500 text-white" 
-                      : "bg-white text-slate-400 border border-slate-200"
+                      ? "bg-cyan-500 text-white shadow-md scale-110" 
+                      : isCurrent
+                      ? `${step.bgClass} text-white shadow-lg scale-125 ring-4 ${step.ringClass} animate-pulse`
+                      : "bg-white text-slate-400 border-2 border-slate-300"
                     }
-                    ${isCurrent ? "ring-2 ring-cyan-300 ring-offset-1" : ""}
                   `}
                 >
                   {step.emoji}
                 </div>
-                <span className={`text-[10px] mt-1 font-semibold ${isCompleted ? "text-cyan-700" : "text-slate-400"}`}>
+                <span className={`text-[11px] mt-2 font-bold text-center max-w-[60px] ${
+                  isCompleted 
+                    ? "text-cyan-700" 
+                    : isCurrent
+                    ? step.textClass
+                    : "text-slate-400"
+                }`}>
                   {step.label}
                 </span>
+                {isCurrent && (
+                  <div className={`mt-1 px-2 py-0.5 rounded-full ${step.bgLightClass} ${step.textClass} text-[10px] font-semibold`}>
+                    Agora
+                  </div>
+                )}
               </div>
             );
           })}
@@ -165,15 +188,18 @@ export default function MeusAgendamentosPage() {
   useEffect(() => {
     fetchAgendamentos();
 
-    // Polling: Atualiza a cada 15 segundos se houver agendamentos em andamento
+    // Polling: Atualiza a cada 10 segundos se houver agendamentos em andamento
+    // Intervalo menor para atualização mais frequente da timeline
     const interval = setInterval(() => {
       const temEmAndamento = agendamentos.some(
-        (a) => a.ordemServico && a.ordemServico.status !== "ENTREGUE"
+        (a) => a.ordemServico && 
+          a.ordemServico.status !== "ENTREGUE" && 
+          a.ordemServico.status !== "PRONTO"
       );
       if (temEmAndamento) {
         fetchAgendamentos(false); // Atualiza sem mostrar loading
       }
-    }, 15000);
+    }, 10000); // Reduzido para 10 segundos para atualização mais rápida
 
     return () => clearInterval(interval);
   }, [agendamentos.length]); // Re-configura quando muda o número de agendamentos
@@ -181,10 +207,43 @@ export default function MeusAgendamentosPage() {
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
-  // Separar agendamentos
-  const proximos = agendamentos.filter(
-    (a) => new Date(a.dataHora) >= new Date() && !["CANCELADO", "CONCLUIDO"].includes(a.status)
-  );
+  // Função para determinar prioridade de ordenação
+  // Carros em processo de lavagem (LAVANDO, FINALIZANDO) têm prioridade máxima
+  const getPrioridade = (ag: Agendamento): number => {
+    if (!ag.ordemServico) return 0;
+    
+    const osStatus = ag.ordemServico.status;
+    
+    // Prioridade máxima: em processo de lavagem
+    if (osStatus === "LAVANDO") return 100;
+    if (osStatus === "FINALIZANDO") return 90;
+    
+    // Alta prioridade: aguardando ou pronto
+    if (osStatus === "AGUARDANDO") return 50;
+    if (osStatus === "PRONTO") return 40;
+    
+    // Prioridade normal: outros status
+    return 0;
+  };
+
+  // Separar e ordenar agendamentos
+  const proximos = agendamentos
+    .filter(
+      (a) => new Date(a.dataHora) >= new Date() && !["CANCELADO", "CONCLUIDO"].includes(a.status)
+    )
+    .sort((a, b) => {
+      // Primeiro ordena por prioridade (em lavagem primeiro)
+      const prioridadeA = getPrioridade(a);
+      const prioridadeB = getPrioridade(b);
+      
+      if (prioridadeA !== prioridadeB) {
+        return prioridadeB - prioridadeA; // Maior prioridade primeiro
+      }
+      
+      // Se mesma prioridade, ordena por data/hora
+      return new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime();
+    });
+    
   const anteriores = agendamentos.filter(
     (a) => new Date(a.dataHora) < new Date() || ["CANCELADO", "CONCLUIDO"].includes(a.status)
   );
@@ -229,14 +288,32 @@ export default function MeusAgendamentosPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Próximos */}
+          {/* Próximos - Com destaque para os em lavagem */}
           {proximos.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wide">Próximos</h2>
               <div className="space-y-4">
-                {proximos.map((ag) => (
-                  <AgendamentoCard key={ag.id} agendamento={ag} formatCurrency={formatCurrency} />
-                ))}
+                {proximos.map((ag) => {
+                  // Verifica se está em processo de lavagem
+                  const estaLavando = ag.ordemServico && 
+                    (ag.ordemServico.status === "LAVANDO" || ag.ordemServico.status === "FINALIZANDO");
+                  
+                  return (
+                    <div 
+                      key={ag.id}
+                      className={estaLavando ? "relative" : ""}
+                    >
+                      {estaLavando && (
+                        <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full" />
+                      )}
+                      <AgendamentoCard 
+                        agendamento={ag} 
+                        formatCurrency={formatCurrency}
+                        isEmLavagem={estaLavando}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -262,10 +339,12 @@ function AgendamentoCard({
   agendamento,
   formatCurrency,
   isHistory,
+  isEmLavagem,
 }: {
   agendamento: Agendamento;
   formatCurrency: (v: number) => string;
   isHistory?: boolean;
+  isEmLavagem?: boolean;
 }) {
   const status = statusConfig[agendamento.status] || statusConfig.PENDENTE;
   const dataHora = new Date(agendamento.dataHora);
@@ -362,7 +441,14 @@ function AgendamentoCard({
   const statusDisplay = getStatusDisplay();
 
   return (
-    <div className={`bg-white rounded-2xl shadow-xl border-2 border-slate-200 overflow-hidden ${isHistory ? "opacity-70" : ""}`}>
+    <div className={`
+      bg-white rounded-2xl shadow-xl border-2 overflow-hidden transition-all duration-300
+      ${isEmLavagem 
+        ? "border-cyan-400 shadow-cyan-200/50 shadow-2xl ring-2 ring-cyan-100" 
+        : "border-slate-200"
+      }
+      ${isHistory ? "opacity-70" : ""}
+    `}>
       {/* Header com data */}
       <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2 text-white">
