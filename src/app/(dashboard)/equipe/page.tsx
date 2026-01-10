@@ -717,7 +717,7 @@ export default function EquipePage() {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="p-4 pb-32 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 70px)' }}>
+            <form id="mobile-form" onSubmit={handleSubmit} className="p-4 pb-40 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 70px)' }}>
               {erro && (
                 <div className="flex items-center gap-2 p-3 bg-red-50 text-red-600 rounded-xl text-sm">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -734,7 +734,7 @@ export default function EquipePage() {
                   value={formNome}
                   onChange={(e) => setFormNome(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   placeholder="João da Silva"
                 />
               </div>
@@ -749,7 +749,7 @@ export default function EquipePage() {
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   placeholder="joao@exemplo.com"
                 />
               </div>
@@ -763,7 +763,7 @@ export default function EquipePage() {
                   inputMode="tel"
                   value={formTelefone}
                   onChange={(e) => setFormTelefone(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-100 border-0 rounded-xl text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   placeholder="(11) 99999-9999"
                 />
               </div>
@@ -778,7 +778,7 @@ export default function EquipePage() {
                     value={formSenha}
                     onChange={(e) => setFormSenha(e.target.value)}
                     required={modalTipo === "criar"}
-                    className="w-full px-4 py-3 pr-12 bg-slate-100 border-0 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-4 py-3 pr-12 bg-slate-100 border-0 rounded-xl text-base text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     placeholder={modalTipo === "criar" ? "Senha de acesso" : "Nova senha (opcional)"}
                   />
                   <button
@@ -829,12 +829,12 @@ export default function EquipePage() {
               </div>
             </form>
 
-            {/* Botões fixos */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 safe-area-pb flex gap-3">
+            {/* Botões fixos - z-index alto para ficar acima de tudo */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 pb-6 flex gap-3 z-[60] shadow-lg">
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="flex-1 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl active:scale-95 transition-transform"
+                className="flex-1 py-4 bg-slate-100 text-slate-700 font-semibold rounded-xl active:scale-95 transition-transform"
               >
                 Cancelar
               </button>
@@ -842,17 +842,16 @@ export default function EquipePage() {
                 type="submit"
                 form="mobile-form"
                 disabled={salvando}
-                onClick={handleSubmit}
-                className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                className="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/30 disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                 {salvando ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                     Salvando...
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
+                    <Check className="w-5 h-5" />
                     {modalTipo === "criar" ? "Adicionar" : "Salvar"}
                   </>
                 )}
