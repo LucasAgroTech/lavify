@@ -28,6 +28,7 @@ export async function GET() {
             nome: true,
             logoUrl: true,
             corPrimaria: true,
+            plano: true,
           },
         },
       },

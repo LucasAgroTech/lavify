@@ -25,6 +25,16 @@ model LavaJato {
   ativo         Boolean   @default(true)
   createdAt     DateTime  @default(now())
   
+  // ========== ASSINATURA E PLANO ==========
+  plano                 String    @default("STARTER")  // STARTER, PRO, PREMIUM
+  stripeCustomerId      String?   @unique
+  stripeSubscriptionId  String?   @unique
+  stripePriceId         String?
+  stripeStatus          String?   // active, canceled, past_due, trialing
+  trialEndsAt           DateTime?
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean   @default(false)
+  
   // Relações
   usuarios      Usuario[]
   clientes      Cliente[]
@@ -34,6 +44,9 @@ model LavaJato {
   ordens        OrdemServico[]
   financeiro    Financeiro[]
   agendamentos  Agendamento[]
+  
+  @@index([stripeCustomerId])
+  @@index([plano])
 }
 
 // ============================================

@@ -17,6 +17,9 @@ import {
   ChevronDown,
   Calendar,
   UsersRound,
+  Crown,
+  Sparkles,
+  Lock,
 } from "lucide-react";
 
 interface Usuario {
@@ -29,6 +32,18 @@ interface Usuario {
     nome: string;
     logoUrl?: string;
     corPrimaria: string;
+    plano: string;
+  };
+}
+
+interface SubscriptionInfo {
+  plan: {
+    id: string;
+    name: string;
+  };
+  subscription: {
+    isInTrial: boolean;
+    trialDaysRemaining: number;
   };
 }
 
@@ -36,19 +51,20 @@ interface MenuItem {
   href: string;
   label: string;
   icon: React.ElementType;
-  roles?: string[]; // Se não definido, todos podem ver
+  roles?: string[];
+  requiredPlan?: string[]; // Planos que têm acesso
 }
 
 const menuItems: MenuItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/agendamentos", label: "Agendamentos", icon: Calendar },
+  { href: "/agendamentos", label: "Agendamentos", icon: Calendar, requiredPlan: ["PRO", "PREMIUM"] },
   { href: "/kanban", label: "Fila do Pátio", icon: Columns3 },
   { href: "/nova-os", label: "Nova OS", icon: Wrench, roles: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR"] },
   { href: "/clientes", label: "Clientes", icon: Users, roles: ["ADMIN", "GERENTE", "ATENDENTE"] },
   { href: "/veiculos", label: "Veículos", icon: Car, roles: ["ADMIN", "GERENTE", "ATENDENTE"] },
   { href: "/servicos", label: "Serviços", icon: Droplets, roles: ["ADMIN", "GERENTE"] },
-  { href: "/estoque", label: "Estoque", icon: Package, roles: ["ADMIN", "GERENTE"] },
-  { href: "/financeiro", label: "Financeiro", icon: DollarSign, roles: ["ADMIN"] },
+  { href: "/estoque", label: "Estoque", icon: Package, roles: ["ADMIN", "GERENTE"], requiredPlan: ["PRO", "PREMIUM"] },
+  { href: "/financeiro", label: "Financeiro", icon: DollarSign, roles: ["ADMIN"], requiredPlan: ["PREMIUM"] },
   { href: "/equipe", label: "Equipe", icon: UsersRound, roles: ["ADMIN", "GERENTE"] },
 ];
 
@@ -60,14 +76,22 @@ const roleLabels: Record<string, string> = {
   LAVADOR_JUNIOR: "Lavador Júnior",
 };
 
+const planBadges: Record<string, { label: string; color: string }> = {
+  STARTER: { label: "Starter", color: "bg-slate-500" },
+  PRO: { label: "Pro", color: "bg-cyan-500" },
+  PREMIUM: { label: "Premium", color: "bg-amber-500" },
+};
+
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     fetchUsuario();
+    fetchSubscription();
   }, []);
 
   async function fetchUsuario() {
@@ -81,6 +105,20 @@ export function Sidebar() {
       console.error("Erro ao buscar usuário:", error);
     }
   }
+
+  async function fetchSubscription() {
+    try {
+      const res = await fetch("/api/assinatura");
+      if (res.ok) {
+        const data = await res.json();
+        setSubscription(data);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar assinatura:", error);
+    }
+  }
+
+  const currentPlan = subscription?.plan.id || "STARTER";
 
   async function handleLogout() {
     try {
@@ -123,6 +161,23 @@ export function Sidebar() {
           })
           .map((item) => {
             const isActive = pathname === item.href;
+            const isLocked = item.requiredPlan && !item.requiredPlan.includes(currentPlan);
+            
+            // Se está bloqueado, mostra com ícone de cadeado
+            if (isLocked) {
+              return (
+                <Link
+                  key={item.href}
+                  href="/planos"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-700/30 transition-all duration-200 group"
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                  <Lock className="w-4 h-4 ml-auto text-slate-600" />
+                </Link>
+              );
+            }
+            
             return (
               <Link
                 key={item.href}
@@ -145,7 +200,45 @@ export function Sidebar() {
               </Link>
             );
           })}
+        
+        {/* Link de Planos - sempre visível para Admin */}
+        {usuario?.role === "ADMIN" && (
+          <Link
+            href="/planos"
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+              pathname === "/planos"
+                ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 shadow-lg shadow-amber-500/10"
+                : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
+            }`}
+          >
+            <Crown className={`w-5 h-5 transition-transform group-hover:scale-110 ${
+              pathname === "/planos" ? "text-amber-400" : ""
+            }`} />
+            <span className="font-medium">Planos</span>
+            {pathname === "/planos" && (
+              <div className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50" />
+            )}
+          </Link>
+        )}
       </nav>
+      
+      {/* Banner de Upgrade (para plano Starter) */}
+      {usuario?.role === "ADMIN" && currentPlan === "STARTER" && (
+        <div className="px-4 pb-2">
+          <Link
+            href="/planos"
+            className="block p-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl hover:border-cyan-500/50 transition-colors"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span className="text-cyan-300 text-sm font-semibold">Faça Upgrade</span>
+            </div>
+            <p className="text-slate-400 text-xs">
+              Desbloqueie todas as funcionalidades
+            </p>
+          </Link>
+        </div>
+      )}
 
       {/* Usuário */}
       <div className="p-4 border-t border-slate-700/50">
