@@ -1,8 +1,6 @@
 -- AlterEnum: Adiciona novos níveis de lavadores
--- Primeiro, renomeia LAVADOR para LAVADOR_SENIOR (mantendo os existentes)
-ALTER TYPE "RoleUsuario" ADD VALUE 'LAVADOR_SENIOR';
-ALTER TYPE "RoleUsuario" ADD VALUE 'LAVADOR_JUNIOR';
-
--- Atualiza usuários existentes com role LAVADOR para LAVADOR_SENIOR
-UPDATE "Usuario" SET "role" = 'LAVADOR_SENIOR' WHERE "role" = 'LAVADOR';
+-- Nota: Em PostgreSQL, novos valores de enum precisam ser commitados antes de usar
+-- Então separamos a adição dos valores (que é auto-commit no deploy)
+ALTER TYPE "RoleUsuario" ADD VALUE IF NOT EXISTS 'LAVADOR_SENIOR';
+ALTER TYPE "RoleUsuario" ADD VALUE IF NOT EXISTS 'LAVADOR_JUNIOR';
 
