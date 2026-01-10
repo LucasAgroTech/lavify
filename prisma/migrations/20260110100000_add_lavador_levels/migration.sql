@@ -1,6 +1,5 @@
 -- AlterEnum: Adiciona novos níveis de lavadores
--- Nota: Em PostgreSQL, novos valores de enum precisam ser commitados antes de usar
--- Então separamos a adição dos valores (que é auto-commit no deploy)
+-- Nota: IF NOT EXISTS evita erro se já existir (deploy parcial anterior)
 ALTER TYPE "RoleUsuario" ADD VALUE IF NOT EXISTS 'LAVADOR_SENIOR';
 ALTER TYPE "RoleUsuario" ADD VALUE IF NOT EXISTS 'LAVADOR_JUNIOR';
 
