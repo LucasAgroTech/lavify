@@ -361,13 +361,10 @@ export default function EquipePage() {
                   className={`
                     flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all
                     ${filtroRole === key
-                      ? `${config.bgCor} ${config.cor} ring-2 ring-offset-1`
+                      ? `${config.bgCor} ${config.cor} ring-2 ring-offset-1 ring-current`
                       : "bg-slate-100 text-slate-600"
                     }
                   `}
-                  style={{ 
-                    ringColor: filtroRole === key ? config.cor.replace('text-', '').replace('-700', '-400') : undefined 
-                  }}
                 >
                   <span>{config.label.split(' ')[0]}</span>
                   <span className="bg-white/50 px-1.5 py-0.5 rounded-full text-xs">
