@@ -209,10 +209,10 @@ export default function ConfiguracoesPage() {
   return (
     <div className="pb-24 lg:pb-0">
       {/* ==================== MOBILE VERSION ==================== */}
-      <div className="lg:hidden pt-14">
+      <div className="lg:hidden">
         {/* Header */}
-        <div className="bg-white border-b border-slate-100 p-4">
-          <div className="flex items-center gap-3 mb-2">
+        <div className="bg-white border-b border-slate-100 p-4 pt-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => router.back()}
               className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"
