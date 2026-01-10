@@ -436,7 +436,7 @@ export default function PlanosPage() {
                     <li
                       key={i}
                       className={`flex items-start gap-3 ${
-                        feature.highlight ? "font-medium" : ""
+                        "highlight" in feature && feature.highlight ? "font-medium" : ""
                       }`}
                     >
                       {feature.included ? (
