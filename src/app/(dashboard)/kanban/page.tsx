@@ -77,10 +77,6 @@ export default function KanbanPage() {
   const [activeTab, setActiveTab] = useState<StatusOS>("AGUARDANDO");
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [updatingCard, setUpdatingCard] = useState<string | null>(null);
-  
-  // Touch swipe
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
 
   useEffect(() => {
     fetchOrdens();
@@ -162,29 +158,51 @@ export default function KanbanPage() {
     setDragging(null);
   }
 
-  // Mobile touch handlers
+  // Mobile touch handlers - DESABILITADO para evitar conflito com cliques nos cards
+  // A navegação agora é feita apenas pelos botões e tabs
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isSwiping = useRef<boolean>(false);
+
   function handleTouchStart(e: TouchEvent) {
+    // Verifica se o touch começou em um card (não deve ativar swipe)
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-card]')) {
+      isSwiping.current = false;
+      return;
+    }
     touchStartX.current = e.targetTouches[0].clientX;
+    touchStartY.current = e.targetTouches[0].clientY;
+    isSwiping.current = true;
   }
 
   function handleTouchMove(e: TouchEvent) {
-    touchEndX.current = e.targetTouches[0].clientX;
+    if (!isSwiping.current) return;
+    // Não faz nada durante o move, só registra
   }
 
-  function handleTouchEnd() {
-    const diff = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
+  function handleTouchEnd(e: TouchEvent) {
+    if (!isSwiping.current) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = Math.abs(touchStartY.current - touchEndY);
+    const minSwipeDistance = 80; // Aumentado para evitar swipes acidentais
 
-    if (Math.abs(diff) > minSwipeDistance) {
+    // Só processa swipe se for majoritariamente horizontal (não vertical)
+    if (Math.abs(diffX) > minSwipeDistance && diffY < 50) {
       const currentIndex = colunas.findIndex((c) => c.status === activeTab);
-      if (diff > 0 && currentIndex < colunas.length - 1) {
+      if (diffX > 0 && currentIndex < colunas.length - 1) {
         // Swipe left -> próxima coluna
         setActiveTab(colunas[currentIndex + 1].status);
-      } else if (diff < 0 && currentIndex > 0) {
+      } else if (diffX < 0 && currentIndex > 0) {
         // Swipe right -> coluna anterior
         setActiveTab(colunas[currentIndex - 1].status);
       }
     }
+    
+    isSwiping.current = false;
   }
 
   function handleMoveToNext(ordem: OrdemServico) {
@@ -372,6 +390,7 @@ export default function KanbanPage() {
               return (
                 <div
                   key={ordem.id}
+                  data-card="true"
                   className={`
                     bg-white rounded-2xl shadow-sm border-2 border-white overflow-hidden
                     transition-all duration-200
@@ -380,8 +399,11 @@ export default function KanbanPage() {
                 >
                   {/* Card Header - Sempre visível */}
                   <button
-                    onClick={() => setExpandedCard(isExpanded ? null : ordem.id)}
-                    className="w-full p-4 text-left"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedCard(isExpanded ? null : ordem.id);
+                    }}
+                    className="w-full p-4 text-left active:bg-slate-50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       {/* Placa destacada */}
@@ -433,11 +455,14 @@ export default function KanbanPage() {
                         {/* Botão WhatsApp - Apenas quando pronto */}
                         {ordem.status === "PRONTO" && (
                           <button
-                            onClick={() => handleWhatsApp(
-                              ordem.cliente.telefone, 
-                              ordem.cliente.nome.split(" ")[0],
-                              ordem.veiculo.placa
-                            )}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleWhatsApp(
+                                ordem.cliente.telefone, 
+                                ordem.cliente.nome.split(" ")[0],
+                                ordem.veiculo.placa
+                              );
+                            }}
                             className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-xl font-medium active:scale-95 transition-transform"
                           >
                             <MessageCircle className="w-5 h-5" />
@@ -448,7 +473,10 @@ export default function KanbanPage() {
                         {/* Botão Avançar */}
                         {proximo && (
                           <button
-                            onClick={() => handleMoveToNext(ordem)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMoveToNext(ordem);
+                            }}
                             disabled={isUpdating}
                             className={`
                               flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium
