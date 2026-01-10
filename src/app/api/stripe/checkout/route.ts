@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { stripe, getStripeUrls } from "@/lib/stripe";
-import { PLANS, PlanType, TRIAL_DAYS, PRICING_OPTIONS, BillingInterval } from "@/lib/plans";
+import { PLANS, PlanType, TRIAL_DAYS, getPricingOptions, BillingInterval } from "@/lib/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,8 +32,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar o price ID correto baseado no intervalo
-    const pricingOption = PRICING_OPTIONS[planId as Exclude<PlanType, "STARTER">][interval];
+    const pricingOptions = getPricingOptions();
+    const pricingOption = pricingOptions[planId as Exclude<PlanType, "STARTER">]?.[interval];
+    
+    console.log(`Checkout: planId=${planId}, interval=${interval}, priceId=${pricingOption?.stripePriceId}`);
+    
     if (!pricingOption?.stripePriceId) {
+      console.error(`Price ID não encontrado para ${planId} ${interval}`);
       return NextResponse.json(
         { error: "Opção de preço não configurada" },
         { status: 400 }

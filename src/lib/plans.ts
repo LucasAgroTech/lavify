@@ -28,12 +28,22 @@ export interface Plan {
   popular?: boolean;
 }
 
-// IDs dos preços no Stripe (configurar após criar no dashboard)
+// Funções getter para buscar price IDs em runtime
+export function getStripePriceIds() {
+  return {
+    PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || "",
+    PRO_YEARLY: process.env.STRIPE_PRICE_PRO_YEARLY || "",
+    PREMIUM_MONTHLY: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
+    PREMIUM_YEARLY: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
+  };
+}
+
+// Para compatibilidade (será preenchido em runtime)
 export const STRIPE_PRICE_IDS = {
-  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || "",
-  PRO_YEARLY: process.env.STRIPE_PRICE_PRO_YEARLY || "",
-  PREMIUM_MONTHLY: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
-  PREMIUM_YEARLY: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
+  get PRO_MONTHLY() { return process.env.STRIPE_PRICE_PRO_MONTHLY || ""; },
+  get PRO_YEARLY() { return process.env.STRIPE_PRICE_PRO_YEARLY || ""; },
+  get PREMIUM_MONTHLY() { return process.env.STRIPE_PRICE_PREMIUM_MONTHLY || ""; },
+  get PREMIUM_YEARLY() { return process.env.STRIPE_PRICE_PREMIUM_YEARLY || ""; },
 };
 
 export type BillingInterval = "monthly" | "yearly";
@@ -141,43 +151,56 @@ export const PLANS: Record<PlanType, Plan> = {
   },
 };
 
-// Opções de preço para cada plano (mensal e anual)
+// Função para obter opções de preço em runtime
+export function getPricingOptions(): Record<Exclude<PlanType, "STARTER">, { monthly: PricingOption; yearly: PricingOption }> {
+  const priceIds = getStripePriceIds();
+  return {
+    PRO: {
+      monthly: {
+        interval: "monthly",
+        price: 4790,
+        priceDisplay: "R$ 47,90",
+        pricePerMonth: "R$ 47,90",
+        stripePriceId: priceIds.PRO_MONTHLY,
+      },
+      yearly: {
+        interval: "yearly",
+        price: 47900,
+        priceDisplay: "R$ 479,00",
+        pricePerMonth: "R$ 39,92",
+        stripePriceId: priceIds.PRO_YEARLY,
+        savings: "Economize 2 meses",
+      },
+    },
+    PREMIUM: {
+      monthly: {
+        interval: "monthly",
+        price: 9790,
+        priceDisplay: "R$ 97,90",
+        pricePerMonth: "R$ 97,90",
+        stripePriceId: priceIds.PREMIUM_MONTHLY,
+      },
+      yearly: {
+        interval: "yearly",
+        price: 67900,
+        priceDisplay: "R$ 679,00",
+        pricePerMonth: "R$ 56,58",
+        stripePriceId: priceIds.PREMIUM_YEARLY,
+        savings: "Economize 5 meses!",
+      },
+    },
+  };
+}
+
+// Para compatibilidade (usando getters)
 export const PRICING_OPTIONS: Record<Exclude<PlanType, "STARTER">, { monthly: PricingOption; yearly: PricingOption }> = {
-  PRO: {
-    monthly: {
-      interval: "monthly",
-      price: 4790,
-      priceDisplay: "R$ 47,90",
-      pricePerMonth: "R$ 47,90",
-      stripePriceId: STRIPE_PRICE_IDS.PRO_MONTHLY,
-    },
-    yearly: {
-      interval: "yearly",
-      price: 47900, // R$ 479,00/ano
-      priceDisplay: "R$ 479,00",
-      pricePerMonth: "R$ 39,92",
-      stripePriceId: STRIPE_PRICE_IDS.PRO_YEARLY,
-      savings: "Economize 2 meses",
-    },
+  get PRO() {
+    return getPricingOptions().PRO;
   },
-  PREMIUM: {
-    monthly: {
-      interval: "monthly",
-      price: 9790,
-      priceDisplay: "R$ 97,90",
-      pricePerMonth: "R$ 97,90",
-      stripePriceId: STRIPE_PRICE_IDS.PREMIUM_MONTHLY,
-    },
-    yearly: {
-      interval: "yearly",
-      price: 67900, // R$ 679,00/ano (desconto maior - ~7 meses grátis)
-      priceDisplay: "R$ 679,00",
-      pricePerMonth: "R$ 56,58",
-      stripePriceId: STRIPE_PRICE_IDS.PREMIUM_YEARLY,
-      savings: "Economize 5 meses!",
-    },
+  get PREMIUM() {
+    return getPricingOptions().PREMIUM;
   },
-};
+} as Record<Exclude<PlanType, "STARTER">, { monthly: PricingOption; yearly: PricingOption }>;
 
 // Duração do trial em dias
 export const TRIAL_DAYS = 7;

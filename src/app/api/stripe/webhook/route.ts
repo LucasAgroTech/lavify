@@ -7,22 +7,23 @@ import Stripe from "stripe";
 // Desabilitar body parser para webhooks
 export const runtime = "nodejs";
 
-// Função para determinar o plano pelo priceId
+// Função para determinar o plano pelo priceId (busca em runtime)
 function getPlanByPriceId(priceId: string): PlanType {
-  // Verificar em PRICING_OPTIONS (mensal e anual)
-  for (const [planKey, options] of Object.entries(PRICING_OPTIONS)) {
-    if (options.monthly.stripePriceId === priceId || options.yearly.stripePriceId === priceId) {
-      return planKey as PlanType;
-    }
+  // Buscar price IDs diretamente das variáveis de ambiente em runtime
+  const priceMapping: Record<string, PlanType> = {
+    [process.env.STRIPE_PRICE_PRO_MONTHLY || ""]: "PRO",
+    [process.env.STRIPE_PRICE_PRO_YEARLY || ""]: "PRO",
+    [process.env.STRIPE_PRICE_PREMIUM_MONTHLY || ""]: "PREMIUM",
+    [process.env.STRIPE_PRICE_PREMIUM_YEARLY || ""]: "PREMIUM",
+  };
+  
+  const plan = priceMapping[priceId];
+  if (plan) {
+    console.log(`getPlanByPriceId: ${priceId} -> ${plan}`);
+    return plan;
   }
   
-  // Verificar em PLANS (fallback para stripePriceId direto)
-  for (const [key, plan] of Object.entries(PLANS)) {
-    if (plan.stripePriceId === priceId) {
-      return key as PlanType;
-    }
-  }
-  
+  console.log(`getPlanByPriceId: ${priceId} -> STARTER (not found)`);
   return "STARTER";
 }
 
