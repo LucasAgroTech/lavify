@@ -111,6 +111,44 @@ export function hasPermission(userRole: string, requiredRoles: string[]): boolea
   return requiredRoles.includes(userRole);
 }
 
+// Permissões por funcionalidade
+export const PERMISSIONS = {
+  // Gerenciamento de equipe
+  EQUIPE_VIEW: ["ADMIN", "GERENTE"],
+  EQUIPE_MANAGE: ["ADMIN"],
+  
+  // Kanban - todos podem mover
+  KANBAN_MOVE: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR", "LAVADOR_JUNIOR"],
+  
+  // Agendamentos
+  AGENDAMENTOS_VIEW: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR", "LAVADOR_JUNIOR"],
+  AGENDAMENTOS_MANAGE: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR"],
+  
+  // Ordens de Serviço
+  OS_CREATE: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR"],
+  OS_VIEW: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR", "LAVADOR_JUNIOR"],
+  
+  // Clientes e Veículos
+  CLIENTES_MANAGE: ["ADMIN", "GERENTE", "ATENDENTE"],
+  VEICULOS_MANAGE: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR"],
+  
+  // Serviços e Estoque
+  SERVICOS_MANAGE: ["ADMIN", "GERENTE"],
+  ESTOQUE_MANAGE: ["ADMIN", "GERENTE"],
+  
+  // Financeiro
+  FINANCEIRO_VIEW: ["ADMIN"],
+  FINANCEIRO_MANAGE: ["ADMIN"],
+  
+  // Dashboard completo vs simplificado
+  DASHBOARD_FULL: ["ADMIN", "GERENTE"],
+  DASHBOARD_BASIC: ["ATENDENTE", "LAVADOR_SENIOR", "LAVADOR_JUNIOR"],
+} as const;
+
+export function canAccess(userRole: string, permission: keyof typeof PERMISSIONS): boolean {
+  return PERMISSIONS[permission].includes(userRole as never);
+}
+
 // Middleware helper para APIs - retorna sessão ou erro
 export async function requireAuth(): Promise<SessionPayload> {
   const session = await getSession();

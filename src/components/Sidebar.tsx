@@ -16,6 +16,7 @@ import {
   Settings,
   ChevronDown,
   Calendar,
+  UsersRound,
 } from "lucide-react";
 
 interface Usuario {
@@ -31,23 +32,32 @@ interface Usuario {
   };
 }
 
-const menuItems = [
+interface MenuItem {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  roles?: string[]; // Se não definido, todos podem ver
+}
+
+const menuItems: MenuItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/agendamentos", label: "Agendamentos", icon: Calendar },
   { href: "/kanban", label: "Fila do Pátio", icon: Columns3 },
-  { href: "/nova-os", label: "Nova OS", icon: Wrench },
-  { href: "/clientes", label: "Clientes", icon: Users },
-  { href: "/veiculos", label: "Veículos", icon: Car },
-  { href: "/servicos", label: "Serviços", icon: Droplets },
-  { href: "/estoque", label: "Estoque", icon: Package },
-  { href: "/financeiro", label: "Financeiro", icon: DollarSign },
+  { href: "/nova-os", label: "Nova OS", icon: Wrench, roles: ["ADMIN", "GERENTE", "ATENDENTE", "LAVADOR_SENIOR"] },
+  { href: "/clientes", label: "Clientes", icon: Users, roles: ["ADMIN", "GERENTE", "ATENDENTE"] },
+  { href: "/veiculos", label: "Veículos", icon: Car, roles: ["ADMIN", "GERENTE", "ATENDENTE"] },
+  { href: "/servicos", label: "Serviços", icon: Droplets, roles: ["ADMIN", "GERENTE"] },
+  { href: "/estoque", label: "Estoque", icon: Package, roles: ["ADMIN", "GERENTE"] },
+  { href: "/financeiro", label: "Financeiro", icon: DollarSign, roles: ["ADMIN"] },
+  { href: "/equipe", label: "Equipe", icon: UsersRound, roles: ["ADMIN", "GERENTE"] },
 ];
 
 const roleLabels: Record<string, string> = {
   ADMIN: "Administrador",
   GERENTE: "Gerente",
   ATENDENTE: "Atendente",
-  LAVADOR: "Lavador",
+  LAVADOR_SENIOR: "Lavador Sênior",
+  LAVADOR_JUNIOR: "Lavador Júnior",
 };
 
 export function Sidebar() {
@@ -104,30 +114,37 @@ export function Sidebar() {
 
       {/* Menu */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {menuItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                isActive
-                  ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 shadow-lg shadow-cyan-500/10"
-                  : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
-              }`}
-            >
-              <item.icon
-                className={`w-5 h-5 transition-transform group-hover:scale-110 ${
-                  isActive ? "text-cyan-400" : ""
+        {menuItems
+          .filter((item) => {
+            // Se não tem restrição de roles, todos podem ver
+            if (!item.roles) return true;
+            // Verifica se o usuário tem permissão
+            return usuario?.role && item.roles.includes(usuario.role);
+          })
+          .map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                  isActive
+                    ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 shadow-lg shadow-cyan-500/10"
+                    : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
                 }`}
-              />
-              <span className="font-medium">{item.label}</span>
-              {isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50" />
-              )}
-            </Link>
-          );
-        })}
+              >
+                <item.icon
+                  className={`w-5 h-5 transition-transform group-hover:scale-110 ${
+                    isActive ? "text-cyan-400" : ""
+                  }`}
+                />
+                <span className="font-medium">{item.label}</span>
+                {isActive && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50" />
+                )}
+              </Link>
+            );
+          })}
       </nav>
 
       {/* Usuário */}

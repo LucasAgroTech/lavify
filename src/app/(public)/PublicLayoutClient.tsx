@@ -14,6 +14,14 @@ export default function PublicLayoutClient({
   // Função para verificar se o link está ativo
   const isActive = (path: string) => pathname === path;
 
+  // Páginas que usam layout próprio (landing pages B2B)
+  const isLandingPage = pathname === "/para-empresas";
+
+  // Se for landing page, renderiza só o conteúdo sem headers/footers
+  if (isLandingPage) {
+    return <div className="min-h-screen">{children}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 pb-14 lg:pb-0">
       {/* Header Desktop */}
@@ -31,8 +39,8 @@ export default function PublicLayoutClient({
               <Link href="/encontrar" className="text-slate-600 hover:text-slate-900 font-medium">
                 Encontrar Lava Jato
               </Link>
-              <Link href="/como-funciona" className="text-slate-600 hover:text-slate-900 font-medium">
-                Como Funciona
+              <Link href="/para-empresas" className="text-slate-600 hover:text-slate-900 font-medium">
+                Para Empresas
               </Link>
             </nav>
 

@@ -123,8 +123,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <head>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head suppressHydrationWarning>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
@@ -135,6 +135,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-50`}
+        suppressHydrationWarning
       >
         {children}
       </body>

@@ -41,10 +41,11 @@ model LavaJato {
 // ============================================
 
 enum RoleUsuario {
-  ADMIN
-  GERENTE
-  ATENDENTE
-  LAVADOR
+  ADMIN           // Acesso total: financeiro, relatórios, configurações, equipe
+  GERENTE         // Ordens, clientes, estoque, agendamentos (sem financeiro completo)
+  ATENDENTE       // Atendimento: criar OS, clientes, veículos
+  LAVADOR_SENIOR  // Move Kanban + Aceita agendamentos + Inclui novos carros
+  LAVADOR_JUNIOR  // Só move carros no Kanban (mais restrito)
 }
 
 model Usuario {
