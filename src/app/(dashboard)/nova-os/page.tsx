@@ -442,8 +442,8 @@ export default function NovaOSPage() {
           <input type="hidden" {...register("veiculoId")} />
         </form>
 
-        {/* Floating Summary - acima da navegação inferior */}
-        <div className="fixed bottom-20 left-0 right-0 bg-white border-t border-slate-200 shadow-lg p-4 z-30 lg:hidden">
+        {/* Floating Summary - 64px = altura da nav inferior */}
+        <div className="fixed left-0 right-0 bg-white border-t border-slate-200 shadow-lg p-4 z-30 lg:hidden" style={{ bottom: '64px' }}>
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <p className="text-xs text-slate-500">Total</p>
