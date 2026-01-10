@@ -25,10 +25,16 @@ export const stripe = {
   get webhooks() { return getStripe().webhooks; },
 };
 
+// URL base para produção
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+
 // URLs de retorno
-export const getStripeUrls = (origin: string) => ({
-  success: `${origin}/dashboard?upgrade=success`,
-  cancel: `${origin}/planos?upgrade=canceled`,
-  portal: `${origin}/dashboard`,
-});
+export const getStripeUrls = (origin?: string) => {
+  const baseUrl = origin || SITE_URL;
+  return {
+    success: `${baseUrl}/dashboard?upgrade=success`,
+    cancel: `${baseUrl}/planos?upgrade=canceled`,
+    portal: `${baseUrl}/dashboard`,
+  };
+};
 

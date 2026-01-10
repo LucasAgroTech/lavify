@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { enviarMensagemWhatsApp, templates } from "@/lib/whatsapp";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { checkOsLimit } from "@/lib/subscription";
 
 // GET - Lista ordens do lava jato logado
 export async function GET() {
@@ -45,6 +46,15 @@ export async function POST(request: NextRequest) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+    }
+
+    // Verificar limite de OSs do plano
+    const osCheck = await checkOsLimit(session.lavaJatoId);
+    if (!osCheck.isValid) {
+      return NextResponse.json(
+        { error: osCheck.message, upgradeRequired: true },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();

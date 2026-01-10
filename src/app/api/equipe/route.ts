@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession, hashPassword, hasPermission } from "@/lib/auth";
+import { checkUserLimit } from "@/lib/subscription";
 
 // GET - Listar membros da equipe
 export async function GET() {
@@ -53,6 +54,15 @@ export async function POST(request: NextRequest) {
     // Apenas ADMIN pode adicionar membros
     if (!hasPermission(session.role, ["ADMIN"])) {
       return NextResponse.json({ error: "Sem permissão" }, { status: 403 });
+    }
+
+    // Verificar limite de usuários do plano
+    const userCheck = await checkUserLimit(session.lavaJatoId);
+    if (!userCheck.isValid) {
+      return NextResponse.json(
+        { error: userCheck.message, upgradeRequired: true },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();

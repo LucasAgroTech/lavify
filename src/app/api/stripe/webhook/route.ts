@@ -1,20 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
-import { PLANS, PlanType } from "@/lib/plans";
+import { PLANS, PlanType, PRICING_OPTIONS } from "@/lib/plans";
 import Stripe from "stripe";
 
 // Desabilitar body parser para webhooks
 export const runtime = "nodejs";
+
+// Função para determinar o plano pelo priceId
+function getPlanByPriceId(priceId: string): PlanType {
+  // Verificar em PRICING_OPTIONS (mensal e anual)
+  for (const [planKey, options] of Object.entries(PRICING_OPTIONS)) {
+    if (options.monthly.stripePriceId === priceId || options.yearly.stripePriceId === priceId) {
+      return planKey as PlanType;
+    }
+  }
+  
+  // Verificar em PLANS (fallback para stripePriceId direto)
+  for (const [key, plan] of Object.entries(PLANS)) {
+    if (plan.stripePriceId === priceId) {
+      return key as PlanType;
+    }
+  }
+  
+  return "STARTER";
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
 
   if (!signature) {
+    console.error("Webhook: Missing stripe-signature header");
     return NextResponse.json(
       { error: "Missing stripe-signature header" },
       { status: 400 }
+    );
+  }
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("Webhook: STRIPE_WEBHOOK_SECRET not configured");
+    return NextResponse.json(
+      { error: "Webhook secret not configured" },
+      { status: 500 }
     );
   }
 
@@ -24,7 +53,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      webhookSecret
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
@@ -33,6 +62,8 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
+  
+  console.log(`Webhook received: ${event.type}`);
 
   try {
     switch (event.type) {
@@ -131,16 +162,9 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     return;
   }
 
-  // Determinar o plano pelo price ID
+  // Determinar o plano pelo price ID (suporta mensal e anual)
   const priceId = subscription.items.data[0]?.price.id;
-  let planId: PlanType = "STARTER";
-
-  for (const [key, plan] of Object.entries(PLANS)) {
-    if (plan.stripePriceId === priceId) {
-      planId = key as PlanType;
-      break;
-    }
-  }
+  const planId = priceId ? getPlanByPriceId(priceId) : "STARTER";
 
   // Calcular trial end
   const trialEndsAt = subscription.trial_end
@@ -161,7 +185,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     },
   });
 
-  console.log(`Subscription updated for lavaJato ${lavaJato.id}, status: ${subscription.status}`);
+  console.log(`Subscription updated for lavaJato ${lavaJato.id}, plan: ${planId}, status: ${subscription.status}`);
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
