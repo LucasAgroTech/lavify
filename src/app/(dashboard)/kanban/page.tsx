@@ -114,9 +114,9 @@ export default function KanbanPage() {
         if (novoStatus === "ENTREGUE") {
           setOrdens((prev) => prev.filter((o) => o.id !== id));
         } else {
-          setOrdens((prev) =>
-            prev.map((o) => (o.id === id ? ordemAtualizada : o))
-          );
+        setOrdens((prev) =>
+          prev.map((o) => (o.id === id ? ordemAtualizada : o))
+        );
         }
       }
     } catch (error) {
@@ -215,15 +215,15 @@ export default function KanbanPage() {
       <>
         {/* Desktop Loading */}
         <div className="hidden lg:block p-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-slate-200 rounded w-64" />
-            <div className="grid grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-[600px] bg-slate-200 rounded-2xl" />
-              ))}
-            </div>
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-slate-200 rounded w-64" />
+          <div className="grid grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-[600px] bg-slate-200 rounded-2xl" />
+            ))}
           </div>
         </div>
+      </div>
         
         {/* Mobile Loading */}
         <div className="lg:hidden p-4">
@@ -492,146 +492,146 @@ export default function KanbanPage() {
 
       {/* ==================== DESKTOP VERSION ==================== */}
       <div className="hidden lg:block p-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Fila do Pátio</h1>
-            <p className="text-slate-500 mt-1">
-              Arraste os cards para atualizar o status
-            </p>
-          </div>
-          <Button onClick={fetchOrdens} icon={<RefreshCw className="w-4 h-4" />}>
-            Atualizar
-          </Button>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">Fila do Pátio</h1>
+          <p className="text-slate-500 mt-1">
+            Arraste os cards para atualizar o status
+          </p>
         </div>
-
-        {/* Kanban Board */}
-        <div className="grid grid-cols-4 gap-6 min-h-[calc(100vh-200px)]">
-          {colunas.map((coluna) => {
-            const ordensColuna = getOrdensPorStatus(coluna.status);
-            const isDropTarget = dropTarget === coluna.status;
-
-            return (
-              <div
-                key={coluna.status}
-                className={`
-                  ${coluna.bgColor} rounded-2xl p-4 transition-all duration-200
-                  border-2 ${coluna.borderColor}
-                  ${isDropTarget ? "ring-2 ring-cyan-400 ring-offset-2 scale-[1.02]" : ""}
-                `}
-                onDragOver={(e) => handleDragOver(e, coluna.status)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, coluna.status)}
-              >
-                {/* Column Header */}
-                <div
-                  className={`flex items-center justify-between mb-4 pb-3 border-b-2 ${coluna.borderColor}`}
-                >
-                  <h2 className={`font-semibold text-slate-700 ${coluna.headerBg} px-3 py-1 rounded-lg`}>
-                    {coluna.titulo}
-                  </h2>
-                  <span className="text-sm font-medium text-slate-600 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">
-                    {ordensColuna.length}
-                  </span>
-                </div>
-
-                {/* Cards */}
-                <div className="space-y-3">
-                  {ordensColuna.map((ordem) => (
-                    <div
-                      key={ordem.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, ordem)}
-                      onDragEnd={handleDragEnd}
-                      className={`
-                        bg-white rounded-xl p-4 shadow-md border-2 border-slate-200
-                        cursor-grab active:cursor-grabbing
-                        hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5
-                        transition-all duration-200
-                        ${dragging === ordem.id ? "opacity-50 scale-95 rotate-2" : ""}
-                      `}
-                    >
-                      {/* Card Header */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono text-slate-400">
-                            #{ordem.codigo}
-                          </span>
-                          <StatusBadge status={ordem.status} />
-                        </div>
-                      </div>
-
-                      {/* Vehicle Info */}
-                      <div className="flex items-center gap-2 mb-2">
-                        <Car className="w-4 h-4 text-slate-400" />
-                        <span className="font-semibold text-slate-800">
-                          {ordem.veiculo.modelo}
-                        </span>
-                        {ordem.veiculo.cor && (
-                          <span className="text-sm text-slate-500">
-                            ({ordem.veiculo.cor})
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Plate */}
-                      <div className="inline-block bg-slate-100 px-3 py-1 rounded-lg mb-3">
-                        <span className="font-mono font-bold text-slate-700">
-                          {ordem.veiculo.placa}
-                        </span>
-                      </div>
-
-                      {/* Services */}
-                      <div className="text-sm text-slate-600 mb-3">
-                        {ordem.itens.map((item, i) => (
-                          <span key={item.id}>
-                            {item.servico.nome}
-                            {i < ordem.itens.length - 1 ? ", " : ""}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Client Info */}
-                      <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-                        <User className="w-3.5 h-3.5" />
-                        <span>{ordem.cliente.nome}</span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>{ordem.cliente.telefone}</span>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                        <div className="flex items-center gap-1 text-xs text-slate-400">
-                          <Clock className="w-3.5 h-3.5" />
-                          {format(new Date(ordem.dataEntrada), "HH:mm", {
-                            locale: ptBR,
-                          })}
-                        </div>
-                        <span className="font-semibold text-emerald-600">
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(ordem.total)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-
-                  {ordensColuna.length === 0 && (
-                    <div className="text-center py-8 text-slate-400">
-                      <Car className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">Nenhum veículo</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Button onClick={fetchOrdens} icon={<RefreshCw className="w-4 h-4" />}>
+          Atualizar
+        </Button>
       </div>
+
+      {/* Kanban Board */}
+      <div className="grid grid-cols-4 gap-6 min-h-[calc(100vh-200px)]">
+        {colunas.map((coluna) => {
+          const ordensColuna = getOrdensPorStatus(coluna.status);
+          const isDropTarget = dropTarget === coluna.status;
+
+          return (
+            <div
+              key={coluna.status}
+              className={`
+                ${coluna.bgColor} rounded-2xl p-4 transition-all duration-200
+                border-2 ${coluna.borderColor}
+                ${isDropTarget ? "ring-2 ring-cyan-400 ring-offset-2 scale-[1.02]" : ""}
+              `}
+              onDragOver={(e) => handleDragOver(e, coluna.status)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, coluna.status)}
+            >
+              {/* Column Header */}
+              <div
+                className={`flex items-center justify-between mb-4 pb-3 border-b-2 ${coluna.borderColor}`}
+              >
+                <h2 className={`font-semibold text-slate-700 ${coluna.headerBg} px-3 py-1 rounded-lg`}>
+                  {coluna.titulo}
+                </h2>
+                <span className="text-sm font-medium text-slate-600 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">
+                  {ordensColuna.length}
+                </span>
+              </div>
+
+              {/* Cards */}
+              <div className="space-y-3">
+                {ordensColuna.map((ordem) => (
+                  <div
+                    key={ordem.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, ordem)}
+                    onDragEnd={handleDragEnd}
+                    className={`
+                      bg-white rounded-xl p-4 shadow-md border-2 border-slate-200
+                      cursor-grab active:cursor-grabbing
+                      hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5
+                      transition-all duration-200
+                      ${dragging === ordem.id ? "opacity-50 scale-95 rotate-2" : ""}
+                    `}
+                  >
+                    {/* Card Header */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono text-slate-400">
+                          #{ordem.codigo}
+                        </span>
+                        <StatusBadge status={ordem.status} />
+                      </div>
+                    </div>
+
+                    {/* Vehicle Info */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <Car className="w-4 h-4 text-slate-400" />
+                      <span className="font-semibold text-slate-800">
+                        {ordem.veiculo.modelo}
+                      </span>
+                      {ordem.veiculo.cor && (
+                        <span className="text-sm text-slate-500">
+                          ({ordem.veiculo.cor})
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Plate */}
+                    <div className="inline-block bg-slate-100 px-3 py-1 rounded-lg mb-3">
+                      <span className="font-mono font-bold text-slate-700">
+                        {ordem.veiculo.placa}
+                      </span>
+                    </div>
+
+                    {/* Services */}
+                    <div className="text-sm text-slate-600 mb-3">
+                      {ordem.itens.map((item, i) => (
+                        <span key={item.id}>
+                          {item.servico.nome}
+                          {i < ordem.itens.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Client Info */}
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
+                      <User className="w-3.5 h-3.5" />
+                      <span>{ordem.cliente.nome}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{ordem.cliente.telefone}</span>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                      <div className="flex items-center gap-1 text-xs text-slate-400">
+                        <Clock className="w-3.5 h-3.5" />
+                        {format(new Date(ordem.dataEntrada), "HH:mm", {
+                          locale: ptBR,
+                        })}
+                      </div>
+                      <span className="font-semibold text-emerald-600">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(ordem.total)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {ordensColuna.length === 0 && (
+                  <div className="text-center py-8 text-slate-400">
+                    <Car className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Nenhum veículo</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
     </>
   );
 }

@@ -120,9 +120,9 @@ export function MobileDrawer({ isOpen, onClose, usuario, currentPlan }: MobileDr
       />
 
       {/* Drawer */}
-      <div className="fixed right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white z-50 lg:hidden shadow-2xl animate-slide-in-right">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
+      <div className="fixed right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white z-50 lg:hidden shadow-2xl animate-slide-in-right flex flex-col">
+        {/* Header - Fixo */}
+        <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -149,8 +149,8 @@ export function MobileDrawer({ isOpen, onClose, usuario, currentPlan }: MobileDr
           </button>
         </div>
 
-        {/* User Info */}
-        <div className="p-4 bg-slate-50 border-b border-slate-100">
+        {/* User Info - Fixo */}
+        <div className="flex-shrink-0 p-4 bg-slate-50 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg">
               {usuario?.nome?.charAt(0).toUpperCase() || "U"}
@@ -166,69 +166,75 @@ export function MobileDrawer({ isOpen, onClose, usuario, currentPlan }: MobileDr
           </div>
         </div>
 
-        {/* Menu Items */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-280px)]">
-          {menuItems
-            .filter((item) => {
-              if (!item.roles) return true;
-              return usuario?.role && item.roles.includes(usuario.role);
-            })
-            .map((item) => {
-              const isActive = pathname === item.href;
-              const isLocked = item.requiredPlan && !item.requiredPlan.includes(currentPlan);
+        {/* Menu Items - Scrollável */}
+        <nav className="flex-1 overflow-y-auto overscroll-contain">
+          <div className="p-4 space-y-1">
+            {menuItems
+              .filter((item) => {
+                if (!item.roles) return true;
+                return usuario?.role && item.roles.includes(usuario.role);
+              })
+              .map((item) => {
+                const isActive = pathname === item.href;
+                const isLocked = item.requiredPlan && !item.requiredPlan.includes(currentPlan);
 
-              if (isLocked) {
+                if (isLocked) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href="/planos"
+                      onClick={onClose}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 bg-slate-50"
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span className="flex-1 font-medium">{item.label}</span>
+                      <Lock className="w-4 h-4" />
+                    </Link>
+                  );
+                }
+
                 return (
                   <Link
                     key={item.href}
-                    href="/planos"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 bg-slate-50"
+                    href={item.href}
+                    onClick={onClose}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                      isActive
+                        ? "bg-cyan-50 text-cyan-600"
+                        : "text-slate-700 hover:bg-slate-50"
+                    }`}
                   >
-                    <item.icon className="w-5 h-5" />
+                    <item.icon className={`w-5 h-5 ${isActive ? "text-cyan-500" : ""}`} />
                     <span className="flex-1 font-medium">{item.label}</span>
-                    <Lock className="w-4 h-4" />
+                    <ChevronRight className={`w-4 h-4 ${isActive ? "text-cyan-500" : "text-slate-300"}`} />
                   </Link>
                 );
-              }
+              })}
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                    isActive
-                      ? "bg-cyan-50 text-cyan-600"
-                      : "text-slate-700 hover:bg-slate-50"
-                  }`}
-                >
-                  <item.icon className={`w-5 h-5 ${isActive ? "text-cyan-500" : ""}`} />
-                  <span className="flex-1 font-medium">{item.label}</span>
-                  <ChevronRight className={`w-4 h-4 ${isActive ? "text-cyan-500" : "text-slate-300"}`} />
-                </Link>
-              );
-            })}
-
-          {/* Planos */}
-          {usuario?.role === "ADMIN" && (
-            <Link
-              href="/planos"
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                pathname === "/planos"
-                  ? "bg-amber-50 text-amber-600"
-                  : "text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              <Crown className={`w-5 h-5 ${pathname === "/planos" ? "text-amber-500" : ""}`} />
-              <span className="flex-1 font-medium">Planos e Assinatura</span>
-              <ChevronRight className={`w-4 h-4 ${pathname === "/planos" ? "text-amber-500" : "text-slate-300"}`} />
-            </Link>
-          )}
+            {/* Planos */}
+            {usuario?.role === "ADMIN" && (
+              <Link
+                href="/planos"
+                onClick={onClose}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                  pathname === "/planos"
+                    ? "bg-amber-50 text-amber-600"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                <Crown className={`w-5 h-5 ${pathname === "/planos" ? "text-amber-500" : ""}`} />
+                <span className="flex-1 font-medium">Planos e Assinatura</span>
+                <ChevronRight className={`w-4 h-4 ${pathname === "/planos" ? "text-amber-500" : "text-slate-300"}`} />
+              </Link>
+            )}
+          </div>
         </nav>
 
-        {/* Footer Actions */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 space-y-2">
+        {/* Footer Actions - Fixo */}
+        <div className="flex-shrink-0 p-4 bg-white border-t border-slate-100 space-y-2 safe-area-pb">
           <Link
             href="/configuracoes"
+            onClick={onClose}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <Settings className="w-5 h-5" />

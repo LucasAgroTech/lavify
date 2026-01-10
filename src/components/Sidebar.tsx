@@ -160,7 +160,7 @@ export function Sidebar() {
             return usuario?.role && item.roles.includes(usuario.role);
           })
           .map((item) => {
-            const isActive = pathname === item.href;
+          const isActive = pathname === item.href;
             const isLocked = item.requiredPlan && !item.requiredPlan.includes(currentPlan);
             
             // Se está bloqueado, mostra com ícone de cadeado
@@ -178,28 +178,28 @@ export function Sidebar() {
               );
             }
             
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive
-                    ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 shadow-lg shadow-cyan-500/10"
-                    : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                isActive
+                  ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 shadow-lg shadow-cyan-500/10"
+                  : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
+              }`}
+            >
+              <item.icon
+                className={`w-5 h-5 transition-transform group-hover:scale-110 ${
+                  isActive ? "text-cyan-400" : ""
                 }`}
-              >
-                <item.icon
-                  className={`w-5 h-5 transition-transform group-hover:scale-110 ${
-                    isActive ? "text-cyan-400" : ""
-                  }`}
-                />
-                <span className="font-medium">{item.label}</span>
-                {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50" />
-                )}
-              </Link>
-            );
-          })}
+              />
+              <span className="font-medium">{item.label}</span>
+              {isActive && (
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50" />
+              )}
+            </Link>
+          );
+        })}
         
         {/* Link de Planos - sempre visível para Admin */}
         {usuario?.role === "ADMIN" && (

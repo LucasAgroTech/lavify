@@ -101,7 +101,7 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-slate-100">
       {/* Desktop Sidebar - hidden on mobile */}
       <div className="hidden lg:block">
-        <Sidebar />
+      <Sidebar />
       </div>
 
       {/* Mobile Header - visible only on mobile */}

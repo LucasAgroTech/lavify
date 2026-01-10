@@ -74,43 +74,43 @@ export default function HomePage() {
               <Sparkles className="w-4 h-4" />
               <span>Seu carro brilhando em minutos</span>
             </div>
-          </div>
+            </div>
 
           {/* Headline impactante */}
           <h1 className="text-[28px] sm:text-[32px] font-bold text-white text-center leading-[1.2] mb-4">
             Chega de Procurar{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-              Lava Jato
-            </span>{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                Lava Jato
+              </span>{" "}
             na Rua
-          </h1>
-
+            </h1>
+            
           {/* Subheadline */}
           <p className="text-slate-300 text-center text-[15px] leading-relaxed mb-8 max-w-sm mx-auto">
             Encontre os melhores lava jatos da sua região, compare preços e
             agende online em segundos.
-          </p>
+            </p>
 
           {/* Search box otimizado para mobile */}
           <form onSubmit={handleSearch} className="space-y-3">
-            <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
                 placeholder="Digite sua cidade ou bairro..."
                 className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-cyan-500/30 text-[16px]"
-              />
-            </div>
-            <button
-              type="submit"
+                />
+              </div>
+              <button
+                type="submit"
               className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-[16px] rounded-2xl shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
-            >
-              <Search className="w-5 h-5" />
-              Buscar Lava Jatos
-            </button>
-          </form>
+              >
+                <Search className="w-5 h-5" />
+                Buscar Lava Jatos
+              </button>
+            </form>
 
           {/* Trust indicators */}
           <div className="flex items-center justify-center gap-4 mt-6 text-[12px] text-slate-400">
@@ -190,11 +190,11 @@ export default function HomePage() {
         </h3>
 
         <div className="space-y-3">
-          {[
-            {
-              step: "1",
-              icon: Search,
-              title: "Busque",
+            {[
+              {
+                step: "1",
+                icon: Search,
+                title: "Busque",
               desc: "Digite sua cidade e veja os lava jatos disponíveis",
               cor: "from-cyan-500 to-blue-600",
             },
@@ -204,24 +204,24 @@ export default function HomePage() {
               title: "Compare",
               desc: "Veja preços, avaliações e fotos de cada lugar",
               cor: "from-blue-500 to-indigo-600",
-            },
-            {
+              },
+              {
               step: "3",
               icon: Calendar,
-              title: "Agende",
+                title: "Agende",
               desc: "Escolha data, horário e serviço online",
               cor: "from-indigo-500 to-purple-600",
-            },
-            {
+              },
+              {
               step: "4",
-              icon: Sparkles,
+                icon: Sparkles,
               title: "Brilhe!",
               desc: "Retire seu carro impecável no horário marcado",
               cor: "from-purple-500 to-pink-600",
-            },
+              },
           ].map((item, index) => (
-            <div
-              key={item.step}
+              <div
+                key={item.step}
               className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 active:scale-[0.99] transition-transform"
             >
               {/* Número e ícone */}
@@ -366,7 +366,7 @@ export default function HomePage() {
                       {depo.nome}
                     </p>
                     <p className="text-slate-400 text-[12px]">{depo.cidade}</p>
-                  </div>
+                </div>
                 </div>
               </div>
             ))}
@@ -389,7 +389,7 @@ export default function HomePage() {
         </h3>
 
         <div className="space-y-3">
-          {[
+            {[
             {
               titulo: "Lavagem Simples",
               preco: "A partir de R$ 30",
@@ -415,7 +415,7 @@ export default function HomePage() {
               desc: "Higienização total + proteção",
             },
           ].map((servico) => (
-            <div
+              <div
               key={servico.titulo}
               className="flex items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100"
             >
@@ -434,9 +434,9 @@ export default function HomePage() {
                   <span>{servico.tempo}</span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
 
         <Link
           href="/encontrar"
@@ -485,17 +485,17 @@ export default function HomePage() {
           <BadgeCheck className="w-10 h-10 mx-auto mb-4 text-white/90" />
           <h2 className="text-[20px] font-bold mb-2">
             Pronto Para Brilhar?
-          </h2>
+            </h2>
           <p className="text-cyan-100 text-[14px] mb-6">
             Encontre o lava jato perfeito agora mesmo. É grátis!
-          </p>
-          <Link
-            href="/encontrar"
+            </p>
+            <Link
+              href="/encontrar"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-cyan-600 font-bold text-[15px] rounded-xl active:scale-[0.98] transition-transform shadow-lg"
-          >
-            Buscar Agora
+            >
+              Buscar Agora
             <ArrowRight className="w-5 h-5" />
-          </Link>
+            </Link>
         </div>
       </section>
 
@@ -511,7 +511,7 @@ export default function HomePage() {
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <div>
+          <div>
               <p className="text-slate-400 text-[12px]">Tem um lava jato?</p>
               <p className="font-bold text-[15px]">Cresça com o Lavify</p>
             </div>
