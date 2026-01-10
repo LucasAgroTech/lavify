@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -76,11 +76,15 @@ interface MobileDrawerProps {
 export function MobileDrawer({ isOpen, onClose, usuario, currentPlan }: MobileDrawerProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const previousPathname = useRef(pathname);
 
-  // Fechar ao mudar de rota
+  // Fechar ao mudar de rota (apenas quando realmente muda)
   useEffect(() => {
-    onClose();
-  }, [pathname, onClose]);
+    if (previousPathname.current !== pathname && isOpen) {
+      onClose();
+    }
+    previousPathname.current = pathname;
+  }, [pathname, isOpen, onClose]);
 
   // Bloquear scroll do body quando aberto
   useEffect(() => {
