@@ -700,8 +700,8 @@ export default function EquipePage() {
       {/* Modal de criar/editar */}
       {modalAberto && (
         <>
-          {/* Mobile Modal - Fullscreen */}
-          <div className="fixed inset-0 z-50 lg:hidden bg-white">
+          {/* Mobile Modal - Fullscreen - z-[100] para ficar acima de TUDO */}
+          <div className="fixed inset-0 z-[100] lg:hidden bg-white">
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center gap-4">
               <button
@@ -829,8 +829,8 @@ export default function EquipePage() {
               </div>
             </form>
 
-            {/* Botões fixos - z-index alto para ficar acima de tudo */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 pb-6 flex gap-3 z-[60] shadow-lg">
+            {/* Botões fixos */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 flex gap-3 shadow-lg safe-area-pb" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}>
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
