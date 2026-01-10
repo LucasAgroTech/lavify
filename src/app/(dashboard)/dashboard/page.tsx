@@ -200,34 +200,36 @@ export default function Dashboard() {
   return (
     <>
       {/* ==================== MOBILE VERSION ==================== */}
-      <div className="lg:hidden">
+      <div className="lg:hidden min-h-screen bg-slate-50">
         {/* Header com saudação */}
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-4 pt-4 pb-6 -mt-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white border-b border-slate-100 px-4 py-4">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm">{getGreeting()},</p>
-              <h1 className="text-xl font-bold">
+              <p className="text-slate-500 text-sm">{getGreeting()},</p>
+              <h1 className="text-xl font-bold text-slate-800">
                 {usuario?.nome?.split(" ")[0] || "Usuário"}! 👋
               </h1>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-400">
-                {new Date().toLocaleDateString("pt-BR", { weekday: "short" }).toUpperCase()}
+              <p className="text-[10px] text-slate-400 uppercase">
+                {new Date().toLocaleDateString("pt-BR", { weekday: "short" })}
               </p>
-              <p className="text-2xl font-bold">
+              <p className="text-xl font-bold text-slate-800">
                 {new Date().getDate()}
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Stats Resumo */}
+        {/* Stats Resumo */}
+        <div className="px-4 py-3 bg-gradient-to-r from-slate-800 to-slate-900">
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
                   <Car className="w-4 h-4 text-cyan-400" />
                 </div>
-                <span className="text-2xl font-bold">{data?.osHoje || 0}</span>
+                <span className="text-2xl font-bold text-white">{data?.osHoje || 0}</span>
               </div>
               <p className="text-xs text-slate-400">OS hoje</p>
             </div>
@@ -236,7 +238,7 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
                   <DollarSign className="w-4 h-4 text-emerald-400" />
                 </div>
-                <span className="text-2xl font-bold">
+                <span className="text-2xl font-bold text-white">
                   {formatCurrencyCompact(data?.faturamentoHoje || 0)}
                 </span>
               </div>
@@ -245,7 +247,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="px-4 -mt-3 space-y-4 pb-6">
+        <div className="px-4 py-4 space-y-4 pb-24">
           {/* Alertas Compactos */}
           {data?.agendamentosPendentes && data.agendamentosPendentes > 0 && (
             <Link

@@ -18,9 +18,8 @@
   }
 }
 
-/* Smooth scrolling */
+/* Touch scrolling */
 html {
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -136,9 +135,11 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Prevent pull-to-refresh on mobile */
-body {
-  overscroll-behavior-y: contain;
+/* Mobile optimizations */
+@media (max-width: 1024px) {
+  body {
+    overscroll-behavior-y: auto;
+  }
 }
 
 /* Mobile card shadows */
