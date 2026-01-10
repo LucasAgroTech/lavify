@@ -17,6 +17,7 @@ import {
   Columns3,
   Sparkles,
   ArrowUpRight,
+  UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard, Card } from "@/components/Card";
@@ -87,9 +88,9 @@ const quickActions = [
     description: "Cadastros"
   },
   { 
-    href: "/servicos", 
-    label: "Serviços", 
-    icon: Droplets, 
+    href: "/equipe", 
+    label: "Equipe", 
+    icon: UsersRound, 
     color: "from-purple-500 to-indigo-600",
     description: "Gerenciar"
   },
@@ -222,27 +223,31 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Resumo */}
-        <div className="px-4 py-3 bg-gradient-to-r from-slate-800 to-slate-900">
+        <div className="px-4 py-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                  <Car className="w-4 h-4 text-cyan-400" />
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
+                  <Car className="w-5 h-5 text-cyan-600" />
                 </div>
-                <span className="text-2xl font-bold text-white">{data?.osHoje || 0}</span>
+                <div>
+                  <span className="text-2xl font-bold text-slate-800">{data?.osHoje || 0}</span>
+                  <p className="text-xs text-slate-500">OS hoje</p>
+                </div>
               </div>
-              <p className="text-xs text-slate-400">OS hoje</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-emerald-400" />
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
                 </div>
-                <span className="text-2xl font-bold text-white">
-                  {formatCurrencyCompact(data?.faturamentoHoje || 0)}
-                </span>
+                <div>
+                  <span className="text-2xl font-bold text-slate-800">
+                    {formatCurrencyCompact(data?.faturamentoHoje || 0)}
+                  </span>
+                  <p className="text-xs text-slate-500">Faturado hoje</p>
+                </div>
               </div>
-              <p className="text-xs text-slate-400">Faturado hoje</p>
             </div>
           </div>
         </div>
