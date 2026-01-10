@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Crown,
   Check,
@@ -20,6 +20,8 @@ import {
   Zap,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Rocket,
   Calendar,
   Package,
@@ -103,7 +105,8 @@ export default function PlanosPage() {
   const [portalLoading, setPortalLoading] = useState(false);
   const [billingInterval, setBillingInterval] = useState<BillingInterval>("monthly");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-  const [showAllPlans, setShowAllPlans] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState(1); // Começa no PRO (índice 1)
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const fetchSubscription = useCallback(async () => {
     try {
@@ -122,6 +125,17 @@ export default function PlanosPage() {
   useEffect(() => {
     fetchSubscription();
   }, [fetchSubscription]);
+
+  // Centraliza no plano PRO ao carregar (mobile)
+  useEffect(() => {
+    if (!loading && carouselRef.current) {
+      const cardWidth = carouselRef.current.offsetWidth * 0.85;
+      carouselRef.current.scrollTo({
+        left: cardWidth, // Índice 1 (PRO)
+        behavior: "auto",
+      });
+    }
+  }, [loading]);
 
   async function handleCheckout(planId: string) {
     setCheckoutLoading(planId);
@@ -272,29 +286,107 @@ export default function PlanosPage() {
           </div>
         )}
 
-        {/* Main CTA - Plano PRO */}
-        <div className="px-4 mt-6">
-          {/* PRO Card - Destaque Principal */}
-          <div className="bg-white rounded-2xl border-2 border-cyan-500 shadow-xl shadow-cyan-500/10 overflow-hidden relative">
-            {/* Badge */}
-            <div className="absolute top-0 right-0 bg-cyan-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
-              ⭐ MAIS POPULAR
-            </div>
+        {/* Swipe Hint */}
+        <div className="flex items-center justify-center gap-2 mt-6 mb-2 text-slate-500">
+          <ChevronLeft className="w-4 h-4 animate-pulse" />
+          <span className="text-xs font-medium">Arraste para ver todos os planos</span>
+          <ChevronRight className="w-4 h-4 animate-pulse" />
+        </div>
 
-            {currentPlanId === "PRO" && (
-              <div className="absolute top-0 left-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-br-xl">
-                ✓ Atual
+        {/* Indicadores */}
+        <div className="flex items-center justify-center gap-2 mb-4">
+          {["STARTER", "PRO", "PREMIUM"].map((planId, i) => (
+            <button
+              key={planId}
+              onClick={() => {
+                setActiveCardIndex(i);
+                carouselRef.current?.scrollTo({
+                  left: i * (carouselRef.current.offsetWidth * 0.85),
+                  behavior: "smooth",
+                });
+              }}
+              className={`h-2 rounded-full transition-all ${
+                activeCardIndex === i
+                  ? i === 1
+                    ? "w-8 bg-cyan-500"
+                    : i === 2
+                    ? "w-8 bg-amber-500"
+                    : "w-8 bg-slate-400"
+                  : "w-2 bg-slate-300"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Carrossel de Planos */}
+        <div
+          ref={carouselRef}
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-4 pb-4"
+          onScroll={(e) => {
+            const target = e.target as HTMLDivElement;
+            const scrollLeft = target.scrollLeft;
+            const cardWidth = target.offsetWidth * 0.85;
+            const newIndex = Math.round(scrollLeft / cardWidth);
+            if (newIndex !== activeCardIndex && newIndex >= 0 && newIndex <= 2) {
+              setActiveCardIndex(newIndex);
+            }
+          }}
+        >
+          {/* Card STARTER */}
+          <div className={`flex-shrink-0 w-[85%] snap-center bg-white rounded-2xl border-2 overflow-hidden ${
+            currentPlanId === "STARTER" ? "border-emerald-500" : "border-slate-200"
+          }`}>
+            {currentPlanId === "STARTER" && (
+              <div className="bg-emerald-500 text-white text-xs font-bold text-center py-1.5">
+                ✓ Plano Atual
               </div>
             )}
-
             <div className="p-5">
-              {/* Header */}
               <div className="mb-4">
-                <h2 className="text-xl font-bold text-slate-800">Plano Profissional</h2>
+                <h2 className="text-xl font-bold text-slate-800">Starter</h2>
+                <p className="text-slate-500 text-sm">Para quem está começando</p>
+              </div>
+
+              <div className="mb-5">
+                <span className="text-4xl font-bold text-slate-900">Grátis</span>
+              </div>
+
+              <div className="space-y-2 mb-5">
+                {["Dashboard básico", "Kanban do pátio", "Cadastro de clientes", "Até 30 OSs/mês", "1 usuário"].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-500" />
+                    <span className="text-sm text-slate-700">{feature}</span>
+                  </div>
+                ))}
+                {["Agendamento online", "Controle de estoque", "WhatsApp API"].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <X className="w-4 h-4 text-slate-300" />
+                    <span className="text-sm text-slate-400">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button disabled className="w-full py-4 bg-slate-100 text-slate-500 font-semibold rounded-xl cursor-not-allowed">
+                Plano Gratuito
+              </button>
+            </div>
+          </div>
+
+          {/* Card PRO - Destaque */}
+          <div className={`flex-shrink-0 w-[85%] snap-center bg-white rounded-2xl border-2 shadow-xl overflow-hidden ${
+            currentPlanId === "PRO" ? "border-emerald-500" : "border-cyan-500"
+          } shadow-cyan-500/10`}>
+            <div className={`text-white text-xs font-bold text-center py-1.5 ${
+              currentPlanId === "PRO" ? "bg-emerald-500" : "bg-cyan-500"
+            }`}>
+              {currentPlanId === "PRO" ? "✓ Plano Atual" : "⭐ MAIS POPULAR"}
+            </div>
+            <div className="p-5">
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-slate-800">Profissional</h2>
                 <p className="text-slate-500 text-sm">Tudo que seu lava jato precisa</p>
               </div>
 
-              {/* Preço */}
               <div className="mb-5">
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-bold text-slate-900">R$ 47,90</span>
@@ -306,25 +398,17 @@ export default function PlanosPage() {
               </div>
 
               {/* Benefícios visuais */}
-              <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="grid grid-cols-2 gap-2 mb-4">
                 {proBenefits.map((benefit, i) => (
-                  <div key={i} className="bg-cyan-50 rounded-xl p-3">
-                    <benefit.icon className="w-5 h-5 text-cyan-600 mb-1" />
-                    <p className="text-sm font-semibold text-slate-800">{benefit.title}</p>
-                    <p className="text-xs text-slate-500">{benefit.desc}</p>
+                  <div key={i} className="bg-cyan-50 rounded-lg p-2">
+                    <benefit.icon className="w-4 h-4 text-cyan-600 mb-0.5" />
+                    <p className="text-xs font-semibold text-slate-800">{benefit.title}</p>
                   </div>
                 ))}
               </div>
 
-              {/* Features List */}
               <div className="space-y-2 mb-5">
-                {[
-                  "Até 150 OSs por mês",
-                  "Dashboard completo",
-                  "Kanban do pátio",
-                  "Alertas de estoque baixo",
-                  "Cadastro de clientes ilimitado",
-                ].map((feature, i) => (
+                {["Até 150 OSs por mês", "Dashboard completo", "Alertas de estoque baixo", "3 usuários"].map((feature, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-emerald-500" />
                     <span className="text-sm text-slate-700">{feature}</span>
@@ -332,7 +416,6 @@ export default function PlanosPage() {
                 ))}
               </div>
 
-              {/* CTA Button */}
               {currentPlanId === "PRO" ? (
                 subscription?.subscription.hasSubscription ? (
                   <button
@@ -340,19 +423,11 @@ export default function PlanosPage() {
                     disabled={portalLoading}
                     className="w-full py-4 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl flex items-center justify-center gap-2"
                   >
-                    {portalLoading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        <CreditCard className="w-5 h-5" />
-                        Gerenciar Assinatura
-                      </>
-                    )}
+                    {portalLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CreditCard className="w-5 h-5" /> Gerenciar</>}
                   </button>
                 ) : (
                   <div className="w-full py-4 bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-center flex items-center justify-center gap-2">
-                    <Check className="w-5 h-5" />
-                    Plano Ativo
+                    <Check className="w-5 h-5" /> Plano Ativo
                   </div>
                 )
               ) : (
@@ -361,148 +436,95 @@ export default function PlanosPage() {
                   disabled={checkoutLoading !== null}
                   className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
-                  {checkoutLoading === "PRO" ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <Rocket className="w-5 h-5" />
-                      Começar Agora - 7 Dias Grátis
-                    </>
-                  )}
+                  {checkoutLoading === "PRO" ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Rocket className="w-5 h-5" /> Começar Agora</>}
                 </button>
               )}
             </div>
-
-            {/* Garantia */}
-            <div className="bg-slate-50 px-5 py-3 flex items-center justify-center gap-2 border-t border-slate-100">
-              <Shield className="w-4 h-4 text-slate-500" />
-              <span className="text-xs text-slate-500">Cancele quando quiser, sem multa</span>
+            <div className="bg-slate-50 px-5 py-2 flex items-center justify-center gap-2 border-t border-slate-100">
+              <Shield className="w-3 h-3 text-slate-500" />
+              <span className="text-[10px] text-slate-500">Cancele quando quiser</span>
             </div>
           </div>
 
-          {/* Toggle para ver outros planos */}
-          <button
-            onClick={() => setShowAllPlans(!showAllPlans)}
-            className="w-full mt-4 py-3 text-slate-600 font-medium flex items-center justify-center gap-2"
-          >
-            {showAllPlans ? (
-              <>
-                <ChevronUp className="w-4 h-4" />
-                Ocultar outros planos
-              </>
-            ) : (
-              <>
-                <ChevronDown className="w-4 h-4" />
-                Ver todos os planos
-              </>
-            )}
-          </button>
-
-          {/* Outros planos (colapsável) */}
-          {showAllPlans && (
-            <div className="space-y-4 mt-4 animate-slide-in">
-              {/* Starter */}
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="font-bold text-slate-800">Starter</h3>
-                    <p className="text-xs text-slate-500">Para começar</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold text-slate-800">Grátis</span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {["30 OSs/mês", "1 usuário", "Kanban básico"].map((f, i) => (
-                    <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
-                      {f}
-                    </span>
-                  ))}
-                </div>
-                {currentPlanId === "STARTER" ? (
-                  <div className="py-2 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-lg text-center">
-                    ✓ Plano Atual
-                  </div>
-                ) : (
-                  <div className="py-2 bg-slate-100 text-slate-500 text-sm font-medium rounded-lg text-center">
-                    Plano Gratuito
-                  </div>
-                )}
-              </div>
-
-              {/* Premium */}
-              <div className="bg-white rounded-xl border-2 border-amber-200 p-4 relative">
-                <div className="absolute -top-2 right-4 bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  COMPLETO
-                </div>
-                {currentPlanId === "PREMIUM" && (
-                  <div className="absolute -top-2 left-4 bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    ✓ Atual
-                  </div>
-                )}
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="font-bold text-slate-800">Premium</h3>
-                    <p className="text-xs text-slate-500">Operação profissional</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold text-slate-800">R$ 97,90</span>
-                    <span className="text-xs text-slate-500">/mês</span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {["OSs ilimitadas", "Usuários ilimitados", "Financeiro", "Fidelidade"].map((f, i) => (
-                    <span key={i} className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded-full">
-                      {f}
-                    </span>
-                  ))}
-                </div>
-                {currentPlanId === "PREMIUM" ? (
-                  subscription?.subscription.hasSubscription ? (
-                    <button
-                      onClick={handlePortal}
-                      disabled={portalLoading}
-                      className="w-full py-2 border-2 border-slate-200 text-slate-700 font-medium rounded-lg text-sm flex items-center justify-center gap-2"
-                    >
-                      {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Gerenciar"}
-                    </button>
-                  ) : (
-                    <div className="py-2 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-lg text-center">
-                      ✓ Plano Ativo
-                    </div>
-                  )
-                ) : (
-                  <button
-                    onClick={() => handleCheckout("PREMIUM")}
-                    disabled={checkoutLoading !== null}
-                    className="w-full py-2 bg-amber-500 text-white font-medium rounded-lg text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                  >
-                    {checkoutLoading === "PREMIUM" ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <>Assinar Premium</>
-                    )}
-                  </button>
-                )}
-              </div>
-
-              {/* Toggle Anual */}
-              <div className="bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl p-4 border border-emerald-200">
-                <div className="flex items-center gap-3">
-                  <Gift className="w-8 h-8 text-emerald-600" />
-                  <div className="flex-1">
-                    <p className="font-bold text-emerald-800">Economize com o Anual!</p>
-                    <p className="text-sm text-emerald-600">
-                      PRO: R$ 39,92/mês (2 meses grátis)
-                    </p>
-                    <p className="text-sm text-emerald-600">
-                      Premium: R$ 56,58/mês (5 meses grátis!)
-                    </p>
-                  </div>
-                </div>
-              </div>
+          {/* Card PREMIUM */}
+          <div className={`flex-shrink-0 w-[85%] snap-center bg-white rounded-2xl border-2 overflow-hidden ${
+            currentPlanId === "PREMIUM" ? "border-emerald-500" : "border-amber-300"
+          }`}>
+            <div className={`text-white text-xs font-bold text-center py-1.5 ${
+              currentPlanId === "PREMIUM" ? "bg-emerald-500" : "bg-amber-500"
+            }`}>
+              {currentPlanId === "PREMIUM" ? "✓ Plano Atual" : "👑 COMPLETO"}
             </div>
-          )}
+            <div className="p-5">
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-slate-800">Premium</h2>
+                <p className="text-slate-500 text-sm">Operação profissional</p>
+              </div>
+
+              <div className="mb-5">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-bold text-slate-900">R$ 97,90</span>
+                  <span className="text-slate-500">/mês</span>
+                </div>
+                <p className="text-xs text-emerald-600 font-medium mt-1">
+                  💳 7 dias grátis para testar
+                </p>
+              </div>
+
+              <div className="space-y-2 mb-5">
+                {[
+                  "Tudo do Pro +",
+                  "OSs ilimitadas",
+                  "Usuários ilimitados",
+                  "Financeiro completo",
+                  "Programa de fidelidade",
+                  "Cashback automático",
+                  "Multi-unidades",
+                  "Suporte prioritário",
+                ].map((feature, i) => (
+                  <div key={i} className={`flex items-center gap-2 ${i === 0 ? "font-medium" : ""}`}>
+                    <Check className="w-4 h-4 text-emerald-500" />
+                    <span className="text-sm text-slate-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              {currentPlanId === "PREMIUM" ? (
+                subscription?.subscription.hasSubscription ? (
+                  <button
+                    onClick={handlePortal}
+                    disabled={portalLoading}
+                    className="w-full py-4 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl flex items-center justify-center gap-2"
+                  >
+                    {portalLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CreditCard className="w-5 h-5" /> Gerenciar</>}
+                  </button>
+                ) : (
+                  <div className="w-full py-4 bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-center flex items-center justify-center gap-2">
+                    <Check className="w-5 h-5" /> Plano Ativo
+                  </div>
+                )
+              ) : (
+                <button
+                  onClick={() => handleCheckout("PREMIUM")}
+                  disabled={checkoutLoading !== null}
+                  className="w-full py-4 bg-amber-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                >
+                  {checkoutLoading === "PREMIUM" ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Crown className="w-5 h-5" /> Assinar Premium</>}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Dica de Economia Anual */}
+        <div className="mx-4 mt-2 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl p-4 border border-emerald-200">
+          <div className="flex items-center gap-3">
+            <Gift className="w-8 h-8 text-emerald-600 flex-shrink-0" />
+            <div>
+              <p className="font-bold text-emerald-800 text-sm">💰 Economize com o Anual!</p>
+              <p className="text-xs text-emerald-600">PRO: R$ 39,92/mês • Premium: R$ 56,58/mês</p>
+            </div>
+          </div>
         </div>
 
         {/* Garantias */}
