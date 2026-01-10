@@ -29,10 +29,23 @@ export interface Plan {
 }
 
 // IDs dos preços no Stripe (configurar após criar no dashboard)
-const STRIPE_PRICE_IDS = {
-  PRO: process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly",
-  PREMIUM: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "price_premium_monthly",
+export const STRIPE_PRICE_IDS = {
+  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || "",
+  PRO_YEARLY: process.env.STRIPE_PRICE_PRO_YEARLY || "",
+  PREMIUM_MONTHLY: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
+  PREMIUM_YEARLY: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
 };
+
+export type BillingInterval = "monthly" | "yearly";
+
+export interface PricingOption {
+  interval: BillingInterval;
+  price: number; // em centavos
+  priceDisplay: string;
+  pricePerMonth: string; // para mostrar economia no anual
+  stripePriceId: string;
+  savings?: string; // ex: "Economize 2 meses"
+}
 
 export const PLANS: Record<PlanType, Plan> = {
   STARTER: {
@@ -69,7 +82,7 @@ export const PLANS: Record<PlanType, Plan> = {
     description: "Para lava-rápidos em crescimento",
     price: 4790, // R$ 47,90
     priceDisplay: "R$ 47,90",
-    stripePriceId: STRIPE_PRICE_IDS.PRO,
+    stripePriceId: STRIPE_PRICE_IDS.PRO_MONTHLY,
     popular: true,
     badge: "Mais Popular",
     features: [
@@ -100,7 +113,7 @@ export const PLANS: Record<PlanType, Plan> = {
     description: "Para operações profissionais",
     price: 9790, // R$ 97,90
     priceDisplay: "R$ 97,90",
-    stripePriceId: STRIPE_PRICE_IDS.PREMIUM,
+    stripePriceId: STRIPE_PRICE_IDS.PREMIUM_MONTHLY,
     badge: "Completo",
     features: [
       "Tudo do Pro +",
@@ -124,6 +137,44 @@ export const PLANS: Record<PlanType, Plan> = {
       relatoriosAvancados: true,
       multiUnidades: true,
       suportePrioritario: true,
+    },
+  },
+};
+
+// Opções de preço para cada plano (mensal e anual)
+export const PRICING_OPTIONS: Record<Exclude<PlanType, "STARTER">, { monthly: PricingOption; yearly: PricingOption }> = {
+  PRO: {
+    monthly: {
+      interval: "monthly",
+      price: 4790,
+      priceDisplay: "R$ 47,90",
+      pricePerMonth: "R$ 47,90",
+      stripePriceId: STRIPE_PRICE_IDS.PRO_MONTHLY,
+    },
+    yearly: {
+      interval: "yearly",
+      price: 47900, // R$ 479,00/ano
+      priceDisplay: "R$ 479,00",
+      pricePerMonth: "R$ 39,92",
+      stripePriceId: STRIPE_PRICE_IDS.PRO_YEARLY,
+      savings: "Economize 2 meses",
+    },
+  },
+  PREMIUM: {
+    monthly: {
+      interval: "monthly",
+      price: 9790,
+      priceDisplay: "R$ 97,90",
+      pricePerMonth: "R$ 97,90",
+      stripePriceId: STRIPE_PRICE_IDS.PREMIUM_MONTHLY,
+    },
+    yearly: {
+      interval: "yearly",
+      price: 67900, // R$ 679,00/ano (desconto maior - ~7 meses grátis)
+      priceDisplay: "R$ 679,00",
+      pricePerMonth: "R$ 56,58",
+      stripePriceId: STRIPE_PRICE_IDS.PREMIUM_YEARLY,
+      savings: "Economize 5 meses!",
     },
   },
 };

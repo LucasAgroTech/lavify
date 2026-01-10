@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { stripe, getStripeUrls } from "@/lib/stripe";
-import { PLANS, PlanType, TRIAL_DAYS } from "@/lib/plans";
+import { PLANS, PlanType, TRIAL_DAYS, PRICING_OPTIONS, BillingInterval } from "@/lib/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,13 +20,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { planId } = body as { planId: PlanType };
+    const { planId, interval = "monthly" } = body as { planId: PlanType; interval?: BillingInterval };
 
     // Validar plano
     const plan = PLANS[planId];
-    if (!plan || !plan.stripePriceId) {
+    if (!plan || planId === "STARTER") {
       return NextResponse.json(
         { error: "Plano inválido" },
+        { status: 400 }
+      );
+    }
+
+    // Buscar o price ID correto baseado no intervalo
+    const pricingOption = PRICING_OPTIONS[planId as Exclude<PlanType, "STARTER">][interval];
+    if (!pricingOption?.stripePriceId) {
+      return NextResponse.json(
+        { error: "Opção de preço não configurada" },
         { status: 400 }
       );
     }
@@ -96,7 +105,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: plan.stripePriceId,
+          price: pricingOption.stripePriceId,
           quantity: 1,
         },
       ],

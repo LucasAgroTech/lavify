@@ -5,8 +5,6 @@ import {
   Crown,
   Check,
   X,
-  Zap,
-  Star,
   Loader2,
   CreditCard,
   ArrowRight,
@@ -16,8 +14,8 @@ import {
   FileText,
   ExternalLink,
   Sparkles,
-  Shield,
   TrendingUp,
+  Gift,
 } from "lucide-react";
 
 interface Plan {
@@ -59,15 +57,19 @@ interface SubscriptionData {
   };
 }
 
+type BillingInterval = "monthly" | "yearly";
+
 const PLANS_DISPLAY = [
   {
     id: "STARTER",
     name: "Starter",
     description: "Para quem está começando",
-    price: 0,
-    priceDisplay: "Grátis",
     badge: null,
     popular: false,
+    pricing: {
+      monthly: { price: 0, display: "Grátis", perMonth: "Grátis" },
+      yearly: { price: 0, display: "Grátis", perMonth: "Grátis" },
+    },
     features: [
       { name: "Dashboard básico", included: true },
       { name: "Kanban do pátio", included: true },
@@ -85,10 +87,12 @@ const PLANS_DISPLAY = [
     id: "PRO",
     name: "Profissional",
     description: "Para lava-rápidos em crescimento",
-    price: 4790,
-    priceDisplay: "R$ 47,90",
     badge: "Mais Popular",
     popular: true,
+    pricing: {
+      monthly: { price: 4790, display: "R$ 47,90", perMonth: "R$ 47,90" },
+      yearly: { price: 47900, display: "R$ 479,00", perMonth: "R$ 39,92", savings: "2 meses grátis" },
+    },
     features: [
       { name: "Tudo do Starter +", included: true, highlight: true },
       { name: "Agendamento online 24h", included: true },
@@ -106,10 +110,12 @@ const PLANS_DISPLAY = [
     id: "PREMIUM",
     name: "Premium",
     description: "Para operações profissionais",
-    price: 9790,
-    priceDisplay: "R$ 97,90",
     badge: "Completo",
     popular: false,
+    pricing: {
+      monthly: { price: 9790, display: "R$ 97,90", perMonth: "R$ 97,90" },
+      yearly: { price: 67900, display: "R$ 679,00", perMonth: "R$ 56,58", savings: "5 meses grátis!" },
+    },
     features: [
       { name: "Tudo do Pro +", included: true, highlight: true },
       { name: "OSs ilimitadas", included: true },
@@ -130,6 +136,7 @@ export default function PlanosPage() {
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [billingInterval, setBillingInterval] = useState<BillingInterval>("monthly");
 
   const fetchSubscription = useCallback(async () => {
     try {
@@ -155,7 +162,7 @@ export default function PlanosPage() {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId }),
+        body: JSON.stringify({ planId, interval: billingInterval }),
       });
 
       const data = await res.json();
@@ -204,7 +211,6 @@ export default function PlanosPage() {
   }
 
   const currentPlanId = subscription?.plan.id || "STARTER";
-  const isActive = subscription?.subscription.isActive || false;
   const isInTrial = subscription?.subscription.isInTrial || false;
   const trialDays = subscription?.subscription.trialDaysRemaining || 0;
 
@@ -222,6 +228,35 @@ export default function PlanosPage() {
         <p className="text-slate-500">
           Comece grátis e faça upgrade quando precisar. Cancele a qualquer momento.
         </p>
+      </div>
+
+      {/* Billing Toggle */}
+      <div className="flex justify-center">
+        <div className="bg-slate-100 p-1 rounded-xl inline-flex items-center gap-1">
+          <button
+            onClick={() => setBillingInterval("monthly")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              billingInterval === "monthly"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            Mensal
+          </button>
+          <button
+            onClick={() => setBillingInterval("yearly")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+              billingInterval === "yearly"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            Anual
+            <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">
+              -17%
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Trial Banner */}
@@ -316,6 +351,8 @@ export default function PlanosPage() {
           const isCurrentPlan = plan.id === currentPlanId;
           const isUpgrade = PLANS_DISPLAY.findIndex((p) => p.id === plan.id) >
             PLANS_DISPLAY.findIndex((p) => p.id === currentPlanId);
+          const pricing = plan.pricing[billingInterval];
+          const hasSavings = "savings" in pricing && pricing.savings;
 
           return (
             <div
@@ -359,18 +396,40 @@ export default function PlanosPage() {
 
                 {/* Price */}
                 <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-slate-900">
-                      {plan.priceDisplay}
-                    </span>
-                    {plan.price > 0 && (
-                      <span className="text-slate-500 text-sm">/mês</span>
-                    )}
-                  </div>
-                  {plan.price > 0 && (
-                    <p className="text-xs text-slate-400 mt-1">
-                      7 dias grátis para testar
-                    </p>
+                  {billingInterval === "yearly" && plan.id !== "STARTER" ? (
+                    <>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-slate-900">
+                          {pricing.perMonth}
+                        </span>
+                        <span className="text-slate-500 text-sm">/mês</span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {pricing.display}/ano
+                      </p>
+                      {hasSavings && (
+                        <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded-full">
+                          <Gift className="w-3 h-3" />
+                          {pricing.savings}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-bold text-slate-900">
+                          {pricing.display}
+                        </span>
+                        {pricing.price > 0 && (
+                          <span className="text-slate-500 text-sm">/mês</span>
+                        )}
+                      </div>
+                      {pricing.price > 0 && (
+                        <p className="text-xs text-slate-400 mt-1">
+                          7 dias grátis para testar
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
 
@@ -401,7 +460,7 @@ export default function PlanosPage() {
                         Plano Ativo
                       </button>
                     )
-                  ) : plan.price === 0 ? (
+                  ) : plan.pricing.monthly.price === 0 ? (
                     <button
                       disabled
                       className="w-full py-3 bg-slate-100 text-slate-500 font-semibold rounded-xl cursor-not-allowed"
@@ -494,6 +553,15 @@ export default function PlanosPage() {
               Se cancelar antes do fim do trial, não será cobrado.
             </p>
           </div>
+          <div>
+            <h3 className="font-semibold text-slate-800 mb-1">
+              Qual a diferença entre mensal e anual?
+            </h3>
+            <p className="text-slate-600">
+              No plano anual você economiza até 5 meses! O pagamento é feito uma vez por ano,
+              garantindo acesso contínuo e economia significativa.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -519,4 +587,3 @@ export default function PlanosPage() {
     </div>
   );
 }
-
