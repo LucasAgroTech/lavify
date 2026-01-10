@@ -298,9 +298,9 @@ export default function EquipePage() {
   return (
     <div className="pb-24 lg:pb-0">
       {/* ==================== MOBILE VERSION ==================== */}
-      <div className="lg:hidden">
-        {/* Header Sticky */}
-        <div className="sticky top-14 z-20 bg-white border-b border-slate-100">
+      <div className="lg:hidden pt-14">
+        {/* Header */}
+        <div className="bg-white border-b border-slate-100">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -309,9 +309,10 @@ export default function EquipePage() {
               </div>
               <button
                 onClick={abrirModalCriar}
-                className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 active:scale-95 transition-transform"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/30 active:scale-95 transition-transform"
               >
-                <UserPlus className="w-6 h-6 text-white" />
+                <UserPlus className="w-5 h-5" />
+                <span>Adicionar</span>
               </button>
             </div>
 
