@@ -421,8 +421,8 @@ export default function ConfiguracoesPage() {
             </div>
           </div>
 
-          {/* Botão Salvar Fixo - 64px = altura da nav inferior */}
-          <div className="fixed left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-lg z-30 lg:hidden" style={{ bottom: '64px' }}>
+          {/* Botão Salvar Fixo - 80px para ficar acima da nav + safe area */}
+          <div className="fixed left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-lg z-30 lg:hidden" style={{ bottom: '80px' }}>
             <button
               onClick={handleSave}
               disabled={saving}
