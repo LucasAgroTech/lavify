@@ -117,6 +117,20 @@ export default function NovaOSPage() {
   }
 
   async function onSubmit(data: FormData) {
+    // Usar valores do estado diretamente para garantir consistência no mobile
+    const clienteIdFinal = data.clienteId || clienteSelecionado;
+    const veiculoIdFinal = data.veiculoId || veiculoId;
+    
+    if (!clienteIdFinal) {
+      alert("Selecione um cliente");
+      return;
+    }
+    
+    if (!veiculoIdFinal) {
+      alert("Selecione um veículo");
+      return;
+    }
+    
     if (servicosSelecionados.length === 0) {
       alert("Selecione pelo menos um serviço");
       return;
@@ -129,13 +143,16 @@ export default function NovaOSPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...data,
+          clienteId: clienteIdFinal,
+          veiculoId: veiculoIdFinal,
+          previsaoSaida: data.previsaoSaida || null,
           servicosIds: servicosSelecionados,
         }),
       });
 
       if (res.ok) {
-        router.push("/kanban");
+        // Usar replace para não permitir voltar para o form de criação
+        router.replace("/kanban");
       } else {
         const errorData = await res.json();
         alert(errorData.error || "Erro ao criar OS");
@@ -459,16 +476,26 @@ export default function NovaOSPage() {
             </div>
             <button
               type="button"
-              onClick={handleSubmit(onSubmit)}
+              onClick={() => {
+                // Chamar submit diretamente sem depender do form
+                onSubmit({
+                  clienteId: clienteSelecionado,
+                  veiculoId: veiculoId,
+                  previsaoSaida: "",
+                });
+              }}
               disabled={submitting || !step1Done || !step2Done || !step3Done}
               className={`px-6 py-4 rounded-xl font-bold flex items-center gap-2 transition-all ${
-                step1Done && step2Done && step3Done
+                step1Done && step2Done && step3Done && !submitting
                   ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30 active:scale-95"
                   : "bg-slate-200 text-slate-400 cursor-not-allowed"
               }`}
             >
               {submitting ? (
-                "Criando..."
+                <span className="flex items-center gap-2">
+                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Criando...
+                </span>
               ) : (
                 <>
                   <Sparkles className="w-5 h-5" />
