@@ -303,7 +303,7 @@ export default function LandingPageEmpresas() {
           </p>
           
           <p className="text-slate-400 text-center text-[14px] leading-relaxed mb-8 max-w-sm mx-auto">
-            Controle de pátio, estoque, equipe e financeiro — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
+            Controle de pátio, agendamentos, estoque, equipe e financeiro — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
           </p>
 
           {/* CTA Principal */}
