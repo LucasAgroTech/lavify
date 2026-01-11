@@ -274,16 +274,29 @@ export default function EquipePage() {
     return (
       <>
         {/* Mobile Loading */}
-        <div className="lg:hidden p-4 pb-24">
-          <div className="animate-pulse space-y-4">
-            <div className="h-12 bg-slate-200 rounded-xl" />
-            <div className="flex gap-2 overflow-x-auto">
+        <div className="lg:hidden min-h-screen bg-slate-50">
+          {/* Header skeleton */}
+          <div className="sticky top-14 z-20 bg-white border-b border-slate-100 p-4 space-y-4">
+            <div className="animate-pulse">
+              <div className="flex items-center justify-between mb-4">
+                <div className="space-y-2">
+                  <div className="h-6 w-24 bg-slate-200 rounded" />
+                  <div className="h-4 w-16 bg-slate-200 rounded" />
+                </div>
+                <div className="h-12 w-28 bg-slate-200 rounded-xl" />
+              </div>
+              <div className="h-12 bg-slate-200 rounded-xl" />
+            </div>
+          </div>
+          {/* Cards skeleton */}
+          <div className="p-4 space-y-3">
+            <div className="flex gap-2 overflow-x-auto pb-2">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-16 w-20 bg-slate-200 rounded-xl flex-shrink-0" />
+                <div key={i} className="h-10 w-24 bg-slate-200 rounded-full flex-shrink-0 animate-pulse" />
               ))}
             </div>
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-slate-200 rounded-xl" />
+              <div key={i} className="h-24 bg-white border border-slate-200 rounded-2xl animate-pulse" />
             ))}
           </div>
         </div>
@@ -298,9 +311,9 @@ export default function EquipePage() {
   return (
     <div className="pb-24 lg:pb-0">
       {/* ==================== MOBILE VERSION ==================== */}
-      <div className="lg:hidden pt-14">
-        {/* Header */}
-        <div className="bg-white border-b border-slate-100">
+      <div className="lg:hidden min-h-screen bg-slate-50">
+        {/* Header - Sticky abaixo do MobileHeader (top-14 = 56px) */}
+        <div className="sticky top-14 z-20 bg-white border-b border-slate-100 shadow-sm">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <div>
