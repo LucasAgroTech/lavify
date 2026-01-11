@@ -522,49 +522,50 @@ export default function ServicosPage() {
           </div>
 
           {/* Desktop Modal */}
-          <Modal
-            isOpen={true}
-            onClose={() => setShowModal(false)}
-            title={editando ? "Editar Serviço" : "Novo Serviço"}
-            className="hidden lg:block"
-          >
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                label="Nome do serviço"
-                value={formNome}
-                onChange={(e) => setFormNome(e.target.value)}
-                placeholder="Ex: Lavagem Completa"
-                required
-              />
-              <div className="grid grid-cols-2 gap-4">
+          <div className="hidden lg:block">
+            <Modal
+              isOpen={true}
+              onClose={() => setShowModal(false)}
+              title={editando ? "Editar Serviço" : "Novo Serviço"}
+            >
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
-                  label="Preço (R$)"
-                  type="number"
-                  step="0.01"
-                  value={formPreco}
-                  onChange={(e) => setFormPreco(e.target.value)}
-                  placeholder="50.00"
+                  label="Nome do serviço"
+                  value={formNome}
+                  onChange={(e) => setFormNome(e.target.value)}
+                  placeholder="Ex: Lavagem Completa"
                   required
                 />
-                <Input
-                  label="Tempo (minutos)"
-                  type="number"
-                  value={formTempo}
-                  onChange={(e) => setFormTempo(e.target.value)}
-                  placeholder="30"
-                  required
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={salvando}>
-                  {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
-                </Button>
-              </div>
-            </form>
-          </Modal>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    label="Preço (R$)"
+                    type="number"
+                    step="0.01"
+                    value={formPreco}
+                    onChange={(e) => setFormPreco(e.target.value)}
+                    placeholder="50.00"
+                    required
+                  />
+                  <Input
+                    label="Tempo (minutos)"
+                    type="number"
+                    value={formTempo}
+                    onChange={(e) => setFormTempo(e.target.value)}
+                    placeholder="30"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={salvando}>
+                    {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
+                  </Button>
+                </div>
+              </form>
+            </Modal>
+          </div>
         </>
       )}
 
