@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Columns3,
-  Wrench,
+  Droplets,
   Menu,
   Crown,
 } from "lucide-react";
@@ -20,7 +20,7 @@ interface MobileNavProps {
 const mobileNavItems = [
   { href: "/dashboard", label: "Início", icon: LayoutDashboard },
   { href: "/kanban", label: "Pátio", icon: Columns3 },
-  { href: "/nova-os", label: "Nova OS", icon: Wrench, highlight: true },
+  { href: "/nova-os", label: "Nova OS", icon: Droplets, highlight: true },
 ];
 
 export function MobileNav({ onMenuClick, userRole, currentPlan }: MobileNavProps) {
