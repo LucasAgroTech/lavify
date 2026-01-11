@@ -520,21 +520,6 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          STICKY CTA MOBILE
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-lg border-t border-slate-200 lg:hidden safe-area-pb">
-        <Link
-          href="/encontrar"
-          className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-[15px] rounded-xl shadow-lg active:scale-[0.98] transition-transform"
-        >
-          <Search className="w-4 h-4" />
-          Buscar Lava Jatos
-        </Link>
-      </div>
-
-      {/* Espaçador para o CTA fixo */}
-      <div className="h-20 lg:hidden" />
     </div>
   );
 }
