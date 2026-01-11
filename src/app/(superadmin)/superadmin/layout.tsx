@@ -30,11 +30,11 @@ export default function SuperAdminLayout({
   const [loading, setLoading] = useState(true);
   const [menuAberto, setMenuAberto] = useState(false);
 
-  // Não aplicar layout na página de login
-  const isLoginPage = pathname === "/superadmin/login";
+  // Não aplicar layout nas páginas públicas (login e setup)
+  const isPublicPage = pathname === "/superadmin/login" || pathname === "/superadmin/setup";
 
   useEffect(() => {
-    if (isLoginPage) {
+    if (isPublicPage) {
       setLoading(false);
       return;
     }
@@ -63,7 +63,7 @@ export default function SuperAdminLayout({
     router.replace("/superadmin/login");
   };
 
-  if (isLoginPage) {
+  if (isPublicPage) {
     return <>{children}</>;
   }
 
