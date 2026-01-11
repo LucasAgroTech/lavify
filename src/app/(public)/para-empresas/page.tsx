@@ -34,9 +34,19 @@ import {
   Wrench,
   Play,
   X,
+  Palmtree,
+  Coffee,
+  Star,
+  Award,
+  Percent,
+  RotateCcw,
+  BadgeCheck,
+  Headphones,
+  Briefcase,
+  Medal,
 } from "lucide-react";
 
-// FAQ Accordion Component - Otimizado para toque mobile
+// FAQ Accordion Component
 function FAQItem({
   pergunta,
   resposta,
@@ -183,10 +193,76 @@ export default function LandingPageEmpresas() {
     },
   ];
 
+  const niveisEquipe = [
+    {
+      icon: Crown,
+      nivel: "Administrador",
+      badge: "Você",
+      badgeColor: "bg-amber-100 text-amber-700",
+      descricao: "Acesso total ao sistema",
+      permissoes: [
+        "Financeiro completo",
+        "Relatórios e métricas",
+        "Configurações do sistema",
+        "Gerenciar toda equipe",
+        "Criar programas de fidelidade",
+      ],
+      cor: "from-amber-500 to-orange-600",
+    },
+    {
+      icon: Briefcase,
+      nivel: "Gerente",
+      descricao: "Braço direito do dono",
+      permissoes: [
+        "Ver e criar OSs",
+        "Gerenciar clientes",
+        "Controlar estoque",
+        "Ver equipe e escalas",
+        "Relatórios básicos",
+      ],
+      cor: "from-blue-500 to-indigo-600",
+    },
+    {
+      icon: Headphones,
+      nivel: "Atendente",
+      descricao: "Recepção e atendimento",
+      permissoes: [
+        "Criar novas OSs",
+        "Cadastrar clientes",
+        "Ver Kanban do pátio",
+        "Consultar preços",
+      ],
+      cor: "from-cyan-500 to-blue-600",
+    },
+    {
+      icon: Medal,
+      nivel: "Lavador Sênior",
+      descricao: "Lavador experiente",
+      permissoes: [
+        "Mover carros no Kanban",
+        "Iniciar e finalizar OSs",
+        "Ver detalhes do serviço",
+        "Reportar problemas",
+      ],
+      cor: "from-emerald-500 to-green-600",
+    },
+    {
+      icon: Wrench,
+      nivel: "Lavador",
+      descricao: "Execução básica",
+      permissoes: [
+        "Mover carros no Kanban",
+        "Ver serviços pendentes",
+        "Marcar como finalizado",
+      ],
+      cor: "from-slate-500 to-gray-600",
+    },
+  ];
+
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* ═══════════════════════════════════════════════════════════════════════
-          HERO SECTION - Mobile First
+          HERO SECTION - Foco na DOR
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800">
         {/* Background sutil */}
@@ -203,33 +279,33 @@ export default function LandingPageEmpresas() {
         <div className="relative px-5 pt-8 pb-12">
           {/* Badge */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[13px] font-medium px-4 py-2 rounded-full">
-              <Sparkles className="w-4 h-4" />
-              <span>Para Donos de Lava-Rápido</span>
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[13px] font-medium px-4 py-2 rounded-full">
+              <Palmtree className="w-4 h-4" />
+              <span>Liberdade para o Dono</span>
             </div>
           </div>
 
-          {/* Headline - Otimizada para leitura mobile */}
+          {/* Headline - Foco na DOR */}
           <h1 className="text-[28px] sm:text-[32px] font-bold text-white text-center leading-[1.2] mb-5">
-            Chega de Correr Atrás de{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-              Planilha e Estoque
+            Seu Lava-Rápido{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
+              Para Quando Você Não Está?
             </span>
           </h1>
 
-          {/* Subheadline curta */}
+          {/* Subheadline */}
           <p className="text-slate-300 text-center text-[15px] leading-relaxed mb-8 max-w-sm mx-auto">
-            Gerencie seu pátio, estoque e financeiro em um único sistema — que
-            até seu lavador vai conseguir usar.
+            Chega de ser escravo do próprio negócio. Com Lavify, sua equipe opera{" "}
+            <span className="text-white font-semibold">sem depender de você</span> — e você acompanha tudo pelo celular.
           </p>
 
-          {/* CTA Principal - Grande para toque fácil */}
+          {/* CTA Principal */}
           <div className="space-y-3">
             <Link
               href="/registro"
               className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-[16px] rounded-2xl shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-transform"
             >
-              Começar Gratuitamente
+              Quero Minha Liberdade
               <ArrowRight className="w-5 h-5" />
             </Link>
 
@@ -242,95 +318,75 @@ export default function LandingPageEmpresas() {
             </button>
           </div>
 
-          {/* Trust badges em linha */}
+          {/* Trust badges */}
           <div className="flex items-center justify-center gap-4 mt-8 text-[12px] text-slate-400">
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Sem cartão</span>
+              <span>Grátis 14 dias</span>
             </div>
             <div className="w-1 h-1 rounded-full bg-slate-600" />
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Setup rápido</span>
+              <span>Sem cartão</span>
             </div>
           </div>
         </div>
 
-        {/* Preview visual compacto - Kanban mini */}
+        {/* Visual - Dono relaxando */}
         <div className="px-5 pb-8">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-              </div>
-              <span className="text-slate-500 text-[11px] ml-2">Kanban do Pátio</span>
+          <div className="bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm rounded-2xl p-5 border border-white/10 text-center">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Coffee className="w-8 h-8 text-amber-400" />
+              <Palmtree className="w-10 h-10 text-emerald-400" />
+              <Smartphone className="w-8 h-8 text-cyan-400" />
             </div>
-
-            {/* Mini Kanban */}
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
-              {[
-                { status: "Aguardando", cor: "bg-amber-500", placas: ["ABC-1D23", "DEF-4G56"] },
-                { status: "Lavando", cor: "bg-blue-500", placas: ["GHI-7J89"] },
-                { status: "Pronto", cor: "bg-emerald-500", placas: ["JKL-0M12", "NOP-3Q45", "RST-6U78"] },
-              ].map((col) => (
-                <div key={col.status} className="flex-shrink-0 w-[100px]">
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <div className={`w-2 h-2 rounded-full ${col.cor}`} />
-                    <span className="text-slate-400 text-[10px] font-medium truncate">
-                      {col.status}
-                    </span>
-                  </div>
-                  <div className="space-y-1.5">
-                    {col.placas.map((placa) => (
-                      <div
-                        key={placa}
-                        className="bg-slate-700/50 rounded-lg px-2 py-1.5 flex items-center gap-1.5"
-                      >
-                        <Car className="w-3 h-3 text-slate-500" />
-                        <span className="text-slate-400 text-[10px] font-mono">
-                          {placa}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="text-white font-semibold text-[15px] mb-1">
+              Você na praia, seu negócio funcionando
+            </p>
+            <p className="text-slate-400 text-[13px]">
+              Acompanhe tudo em tempo real pelo celular
+            </p>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          PAIN SECTION - Cards empilhados mobile
+          DOR PRINCIPAL - O negócio não roda sem o dono
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="px-5 py-12 -mt-4">
-        {/* Header */}
         <div className="flex items-center gap-2 mb-4">
           <AlertTriangle className="w-5 h-5 text-red-500" />
           <h2 className="text-[13px] font-semibold text-red-600 uppercase tracking-wide">
-            Você Conhece Isso?
+            A Dor Que Você Conhece
           </h2>
         </div>
 
-        {/* Pain cards - Stack vertical mobile */}
+        {/* Headline da dor */}
+        <h3 className="text-[22px] font-bold text-slate-900 leading-tight mb-6">
+          Você Trabalha <span className="text-red-600">12h Por Dia</span> e Ainda Assim...
+        </h3>
+
         <div className="space-y-3">
           {[
             {
-              icon: Package,
-              titulo: "Estoque acaba na hora errada",
-              texto: "Shampoo termina no sábado lotado. Você só descobre quando é tarde.",
-            },
-            {
-              icon: Car,
-              titulo: "Briga pra saber qual carro está pronto",
-              texto: "Cliente liga, funcionário para, ninguém sabe o status real.",
-            },
-            {
               icon: Clock,
-              titulo: "Cliente esquece de buscar",
-              texto: "Carro fica ocupando espaço, você não consegue atender novos.",
+              titulo: "Não consegue tirar um dia de folga",
+              texto: "Sem você, ninguém sabe onde está cada carro, qual serviço fazer, ou como fechar o caixa.",
+            },
+            {
+              icon: AlertTriangle,
+              titulo: "Tudo depende de você",
+              texto: "Funcionário liga pra perguntar preço. Cliente reclama porque ninguém sabia o status do carro.",
+            },
+            {
+              icon: TrendingUp,
+              titulo: "Não consegue crescer",
+              texto: "Como abrir outra unidade se você mal dá conta dessa? Escalar parece impossível.",
+            },
+            {
+              icon: Wallet,
+              titulo: "Dinheiro some e você não sabe onde",
+              texto: "Estoque acabando sem você perceber, descontos não autorizados, caixa que não fecha.",
             },
           ].map((pain) => (
             <div
@@ -341,9 +397,9 @@ export default function LandingPageEmpresas() {
                 <pain.icon className="w-5 h-5 text-red-500" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-[15px] mb-1">
+                <h4 className="font-bold text-slate-900 text-[15px] mb-1">
                   {pain.titulo}
-                </h3>
+                </h4>
                 <p className="text-slate-600 text-[13px] leading-relaxed">
                   {pain.texto}
                 </p>
@@ -353,25 +409,188 @@ export default function LandingPageEmpresas() {
         </div>
 
         {/* Frase de transição */}
-        <p className="text-center text-slate-600 text-[14px] mt-8 leading-relaxed">
-          Você trabalha <span className="font-bold text-slate-900">12h por dia</span> e ainda
-          sente que o negócio não roda sem você.
-        </p>
+        <div className="mt-8 p-5 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-2xl border border-cyan-200">
+          <p className="text-center text-slate-700 text-[15px] leading-relaxed">
+            <span className="font-bold text-cyan-700">E se você pudesse...</span><br />
+            Tirar férias, cuidar da família, ou simplesmente dormir tranquilo — sabendo que o negócio está funcionando?
+          </p>
+        </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          FUNCIONALIDADES - Carrossel horizontal mobile
+          SOLUÇÃO - Autonomia da Equipe
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 bg-white">
+        <div className="flex items-center gap-2 mb-2">
+          <Users className="w-5 h-5 text-cyan-500" />
+          <h2 className="text-[13px] font-semibold text-cyan-600 uppercase tracking-wide">
+            A Solução
+          </h2>
+        </div>
+        <h3 className="text-[22px] font-bold text-slate-900 leading-tight mb-2">
+          Equipe Que Funciona{" "}
+          <span className="text-cyan-600">Sem Você</span>
+        </h3>
+        <p className="text-slate-600 text-[14px] mb-8">
+          Cada membro sabe exatamente o que fazer — e você controla tudo pelo celular.
+        </p>
+
+        {/* Níveis de Equipe */}
+        <div className="space-y-4">
+          {niveisEquipe.map((item, index) => (
+            <div
+              key={item.nivel}
+              className="bg-slate-50 rounded-2xl p-5 border border-slate-100"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0 shadow-lg`}
+                >
+                  <item.icon className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-bold text-slate-900 text-[16px]">{item.nivel}</h4>
+                    {item.badge && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badgeColor}`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-slate-500 text-[13px]">{item.descricao}</p>
+                </div>
+              </div>
+              
+              {/* Permissões */}
+              <div className="grid grid-cols-1 gap-2">
+                {item.permissoes.map((perm) => (
+                  <div key={perm} className="flex items-center gap-2 text-[13px]">
+                    <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <span className="text-slate-700">{perm}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Destaque */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="w-8 h-8 text-white/90" />
+            <div>
+              <p className="text-white font-bold text-[15px]">
+                Cada um vê só o que precisa
+              </p>
+              <p className="text-emerald-100 text-[13px]">
+                Lavador não vê financeiro. Gerente não altera configurações.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          PROGRAMAS DE FIDELIDADE - Destaque especial
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 bg-gradient-to-b from-pink-50 to-rose-50">
+        <div className="flex items-center gap-2 mb-2">
+          <Gift className="w-5 h-5 text-pink-500" />
+          <h2 className="text-[13px] font-semibold text-pink-600 uppercase tracking-wide">
+            Fidelização
+          </h2>
+        </div>
+        <h3 className="text-[22px] font-bold text-slate-900 leading-tight mb-2">
+          Crie Programas de Fidelidade{" "}
+          <span className="text-pink-600">No Seu App</span>
+        </h3>
+        <p className="text-slate-600 text-[14px] mb-8">
+          Cliente que volta é cliente que você não precisa conquistar de novo. Automatize a fidelização.
+        </p>
+
+        <div className="space-y-4">
+          {/* Pontos */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                <Star className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-[16px]">Programa de Pontos</h4>
+                <p className="text-slate-500 text-[13px]">A cada R$ gasto, ganha pontos</p>
+              </div>
+            </div>
+            <div className="bg-amber-50 rounded-xl p-4">
+              <p className="text-amber-800 text-[14px]">
+                <span className="font-bold">Exemplo:</span> A cada R$ 10 = 1 ponto. Com 100 pontos = 1 lavagem grátis.
+              </p>
+            </div>
+          </div>
+
+          {/* Cashback */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
+                <Percent className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-[16px]">Cashback Automático</h4>
+                <p className="text-slate-500 text-[13px]">% volta como crédito para próxima visita</p>
+              </div>
+            </div>
+            <div className="bg-emerald-50 rounded-xl p-4">
+              <p className="text-emerald-800 text-[14px]">
+                <span className="font-bold">Exemplo:</span> 5% de cashback. Lavou R$ 100 = R$ 5 de crédito.
+              </p>
+            </div>
+          </div>
+
+          {/* Plano Mensal */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <RotateCcw className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-[16px]">Plano Mensal</h4>
+                <p className="text-slate-500 text-[13px]">Assinatura com lavagens ilimitadas</p>
+              </div>
+            </div>
+            <div className="bg-cyan-50 rounded-xl p-4">
+              <p className="text-cyan-800 text-[14px]">
+                <span className="font-bold">Exemplo:</span> R$ 149/mês = lavagens ilimitadas. Receita recorrente garantida.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefício */}
+        <div className="mt-6 flex items-center gap-4 bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-5">
+          <Award className="w-10 h-10 text-white/90" />
+          <div>
+            <p className="text-white font-bold text-[15px]">
+              Aumente em até 40% a recorrência
+            </p>
+            <p className="text-pink-100 text-[13px]">
+              Clientes fidelizados voltam mais e gastam mais.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          FUNCIONALIDADES - Carrossel
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="py-12 bg-white">
         <div className="px-5 mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-5 h-5 text-cyan-500" />
             <h2 className="text-[13px] font-semibold text-cyan-600 uppercase tracking-wide">
-              A Solução
+              Ferramentas
             </h2>
           </div>
           <h3 className="text-[22px] font-bold text-slate-900 leading-tight">
-            10 Ferramentas Para Profissionalizar Seu Negócio
+            Tudo Que Você Precisa
           </h3>
           <p className="text-slate-600 text-[14px] mt-2">
             Deslize para ver todas →
@@ -401,184 +620,59 @@ export default function LandingPageEmpresas() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          DIFERENCIAL - Por que diferente de planilha
+          TRANSFORMAÇÃO - Antes x Depois
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="px-5 py-12 bg-gradient-to-b from-slate-900 to-slate-800">
         <div className="text-center mb-8">
           <h2 className="text-[20px] font-bold text-white leading-tight mb-2">
-            Por Que é Diferente de Uma{" "}
-            <span className="text-cyan-400">Planilha?</span>
+            Sua Vida{" "}
+            <span className="text-cyan-400">Antes x Depois</span>
           </h2>
-          <p className="text-slate-400 text-[14px]">
-            Planilha não pensa. Lavify trabalha por você.
-          </p>
         </div>
 
         <div className="space-y-4">
-          {[
-            {
-              icon: AlertTriangle,
-              cor: "from-amber-500 to-orange-600",
-              titulo: "Alertas Proativos",
-              itens: ["Estoque baixo? Aviso antes de acabar", "OS parada? Notificação na hora"],
-            },
-            {
-              icon: Kanban,
-              cor: "from-blue-500 to-indigo-600",
-              titulo: "Pátio Visual",
-              itens: ["Drag-and-drop que qualquer um usa", "Cores indicam status sem clicar"],
-            },
-            {
-              icon: Package,
-              cor: "from-emerald-500 to-teal-600",
-              titulo: "Estoque Automático",
-              itens: ["Abate produto ao fechar OS", "Custo real de cada serviço"],
-            },
-          ].map((item) => (
-            <div
-              key={item.titulo}
-              className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center`}
-                >
-                  <item.icon className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-bold text-white text-[16px]">{item.titulo}</h3>
-              </div>
-              <ul className="space-y-2">
-                {item.itens.map((texto) => (
-                  <li key={texto} className="flex items-center gap-2 text-slate-300 text-[14px]">
-                    <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>{texto}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Antes */}
+          <div className="bg-red-500/10 backdrop-blur-sm rounded-2xl p-5 border border-red-500/20">
+            <p className="text-red-400 text-[12px] font-bold uppercase mb-3">❌ Antes</p>
+            <ul className="space-y-2">
+              {[
+                "Trabalha 12h por dia, 7 dias por semana",
+                "Não consegue tirar férias",
+                "Funcionário liga para tudo",
+                "Não sabe quanto está lucrando",
+                "Cliente reclama de demora",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-slate-300 text-[14px]">
+                  <X className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Depois */}
+          <div className="bg-emerald-500/10 backdrop-blur-sm rounded-2xl p-5 border border-emerald-500/20">
+            <p className="text-emerald-400 text-[12px] font-bold uppercase mb-3">✓ Com Lavify</p>
+            <ul className="space-y-2">
+              {[
+                "Equipe opera sozinha com o sistema",
+                "Tira férias e acompanha pelo celular",
+                "Cada um sabe exatamente o que fazer",
+                "Dashboard mostra lucro real em tempo real",
+                "WhatsApp avisa cliente automaticamente",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-slate-300 text-[14px]">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          BENEFÍCIO CLIENTE FINAL - Card visual mobile
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="px-5 py-12 bg-white">
-        <div className="flex items-center gap-2 mb-2">
-          <HeartHandshake className="w-5 h-5 text-emerald-500" />
-          <h2 className="text-[13px] font-semibold text-emerald-600 uppercase tracking-wide">
-            Para Seu Cliente
-          </h2>
-        </div>
-        <h3 className="text-[20px] font-bold text-slate-900 leading-tight mb-6">
-          Seu Cliente Também Ganha
-        </h3>
-
-        <div className="space-y-4">
-          {[
-            {
-              icon: CalendarClock,
-              cor: "from-emerald-500 to-green-600",
-              titulo: "Agendamento Online",
-              texto: "Página exclusiva onde agendam 24h por dia",
-            },
-            {
-              icon: Gift,
-              cor: "from-pink-500 to-rose-600",
-              titulo: "Cashback Automático",
-              texto: "Ganha créditos a cada visita e volta mais vezes",
-            },
-            {
-              icon: MessageCircle,
-              cor: "from-green-500 to-emerald-600",
-              titulo: "Aviso no WhatsApp",
-              texto: "Recebe notificação quando carro fica pronto",
-            },
-          ].map((item) => (
-            <div key={item.titulo} className="flex items-center gap-4 bg-slate-50 rounded-2xl p-4">
-              <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0`}
-              >
-                <item.icon className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 text-[15px]">{item.titulo}</h4>
-                <p className="text-slate-600 text-[13px]">{item.texto}</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-slate-300 flex-shrink-0 ml-auto" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          CONTROLE DE ACESSO - Visual simples mobile
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="px-5 py-12 bg-slate-50">
-        <div className="flex items-center gap-2 mb-2">
-          <ShieldCheck className="w-5 h-5 text-slate-600" />
-          <h2 className="text-[13px] font-semibold text-slate-600 uppercase tracking-wide">
-            Segurança
-          </h2>
-        </div>
-        <h3 className="text-[20px] font-bold text-slate-900 leading-tight mb-2">
-          Cada Um Vê Só o Que Precisa
-        </h3>
-        <p className="text-slate-600 text-[14px] mb-6">
-          Viaje tranquilo. O sistema controla o acesso.
-        </p>
-
-        <div className="space-y-3">
-          {[
-            {
-              icon: Crown,
-              role: "Admin",
-              badge: "Você",
-              badgeColor: "bg-amber-100 text-amber-700",
-              acesso: "Tudo: financeiro, relatórios, config",
-              cor: "from-amber-500 to-orange-600",
-            },
-            {
-              icon: UserCog,
-              role: "Gerente",
-              acesso: "OSs, clientes, estoque",
-              cor: "from-blue-500 to-indigo-600",
-            },
-            {
-              icon: Wrench,
-              role: "Lavador",
-              acesso: "Só move carros no Kanban",
-              cor: "from-slate-500 to-gray-600",
-            },
-          ].map((item) => (
-            <div
-              key={item.role}
-              className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100"
-            >
-              <div
-                className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0`}
-              >
-                <item.icon className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-slate-900 text-[15px]">{item.role}</h4>
-                  {item.badge && (
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${item.badgeColor}`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-                <p className="text-slate-500 text-[13px] truncate">{item.acesso}</p>
-              </div>
-              <Lock className="w-4 h-4 text-slate-300 flex-shrink-0" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          FAQ - Cards expansíveis mobile
+          FAQ
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="px-5 py-12 bg-white">
         <h2 className="text-[20px] font-bold text-slate-900 text-center mb-6">
@@ -595,16 +689,16 @@ export default function LandingPageEmpresas() {
             resposta="Sim! Interface feita mobile-first. Seu lavador pode arrastar carros no Kanban pelo celular, você acompanha o caixa de qualquer lugar."
           />
           <FAQItem
-            pergunta="Como funciona o WhatsApp?"
-            resposta="Usamos a API oficial. Quando a OS muda para 'Pronto', você clica em notificar e a mensagem sai automaticamente pelo seu número comercial."
-          />
-          <FAQItem
             pergunta="E se meu lavador não souber usar?"
             resposta="O Kanban é visual: arrastar carro de 'Lavando' para 'Pronto' é tão simples quanto mover um post-it. Em 10 minutos qualquer um aprende."
           />
           <FAQItem
-            pergunta="Posso testar antes de pagar?"
-            resposta="Sim! Crie sua conta grátis e explore tudo. Sem cartão de crédito, sem compromisso."
+            pergunta="Como configuro os níveis de equipe?"
+            resposta="Na aba Equipe, você cadastra cada funcionário e escolhe o nível: Gerente, Atendente, Lavador Sênior ou Lavador. O sistema já aplica as permissões automaticamente."
+          />
+          <FAQItem
+            pergunta="Posso criar meu próprio programa de fidelidade?"
+            resposta="Sim! Você escolhe entre pontos, cashback ou plano mensal. Define as regras (quantos pontos por real, % de cashback) e o sistema faz tudo automaticamente."
           />
           <FAQItem
             pergunta="Meus dados ficam seguros?"
@@ -614,18 +708,18 @@ export default function LandingPageEmpresas() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          CTA FINAL - Fixo no mobile
+          CTA FINAL
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="px-5 py-12 bg-gradient-to-b from-slate-900 to-slate-950">
         <div className="text-center mb-8">
           <h2 className="text-[22px] font-bold text-white leading-tight mb-3">
-            Profissionalize Seu{" "}
+            Pronto Para Ter Sua{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-              Lava-Rápido
+              Liberdade?
             </span>
           </h2>
           <p className="text-slate-400 text-[14px]">
-            Controle real do pátio, estoque e dinheiro — num sistema que seu time vai usar.
+            Seu negócio rodando sem você. Sua equipe sabendo o que fazer. Você vivendo.
           </p>
         </div>
 
@@ -640,12 +734,12 @@ export default function LandingPageEmpresas() {
         {/* Trust badges */}
         <div className="flex items-center justify-center gap-4 mt-6 text-[12px] text-slate-400">
           <div className="flex items-center gap-1.5">
-            <Smartphone className="w-4 h-4" />
-            <span>Mobile</span>
+            <BadgeCheck className="w-4 h-4" />
+            <span>14 dias grátis</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4" />
-            <span>Setup 5min</span>
+            <Smartphone className="w-4 h-4" />
+            <span>100% Mobile</span>
           </div>
           <div className="flex items-center gap-1.5">
             <MessageCircle className="w-4 h-4" />
@@ -655,7 +749,7 @@ export default function LandingPageEmpresas() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          RODAPÉ MOBILE
+          RODAPÉ
       ═══════════════════════════════════════════════════════════════════════ */}
       <footer className="px-5 py-8 bg-slate-950">
         <div className="flex items-center justify-center gap-3 mb-6">
@@ -680,7 +774,7 @@ export default function LandingPageEmpresas() {
       </footer>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          STICKY CTA MOBILE - Fixo no rodapé
+          STICKY CTA MOBILE
       ═══════════════════════════════════════════════════════════════════════ */}
       <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-lg border-t border-slate-200 lg:hidden safe-area-pb">
         <Link
