@@ -906,20 +906,26 @@ export default function LandingPageEmpresas() {
       ═══════════════════════════════════════════════════════════════════════ */}
       {videoAberto && (
         <div
-          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-5"
+          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4"
           onClick={() => setVideoAberto(false)}
         >
           <button
             onClick={() => setVideoAberto(false)}
-            className="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
           >
             <X className="w-5 h-5 text-white" />
           </button>
-          <div className="w-full max-w-lg aspect-video bg-slate-800 rounded-2xl flex items-center justify-center">
-            <div className="text-center text-white">
-              <Play className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p className="text-sm text-slate-400">Vídeo demonstrativo</p>
-            </div>
+          {/* Container do vídeo 9:16 */}
+          <div 
+            className="relative w-full max-w-[320px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src="https://player.vimeo.com/video/1153360089?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
+              className="absolute inset-0 w-full h-full"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       )}
