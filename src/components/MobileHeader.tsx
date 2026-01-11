@@ -1,7 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { Droplets, Bell, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Droplets, Bell, X, Calendar, Clock } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import Link from "next/link";
+
+interface Notification {
+  id: string;
+  type: "agendamento";
+  title: string;
+  message: string;
+  time: string;
+  unread: boolean;
+  href?: string;
+}
 
 interface MobileHeaderProps {
   lavaJatoNome?: string;
@@ -9,16 +22,53 @@ interface MobileHeaderProps {
   userName?: string;
 }
 
-// Notificações de exemplo (futuramente virá de uma API)
-const mockNotifications = [
-  { id: 1, title: "Novo agendamento", message: "Cliente João agendou para hoje às 14h", time: "5 min", unread: true },
-  { id: 2, title: "Serviço concluído", message: "Lavagem completa do HB20 finalizada", time: "20 min", unread: true },
-  { id: 3, title: "Estoque baixo", message: "Shampoo automotivo abaixo do mínimo", time: "1h", unread: false },
-];
-
 export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
-  const unreadCount = mockNotifications.filter(n => n.unread).length;
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Buscar agendamentos pendentes
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        const res = await fetch("/api/agendamentos?status=PENDENTE");
+        if (res.ok) {
+          const agendamentos = await res.json();
+          
+          // Transformar agendamentos em notificações
+          const notifs: Notification[] = agendamentos.map((ag: {
+            id: string;
+            dataHora: string;
+            cliente: { nome: string };
+            veiculo: { modelo: string; placa: string };
+            createdAt: string;
+          }) => ({
+            id: ag.id,
+            type: "agendamento" as const,
+            title: "Agendamento pendente",
+            message: `${ag.cliente.nome} - ${ag.veiculo.modelo} (${ag.veiculo.placa})`,
+            time: formatDistanceToNow(new Date(ag.createdAt), { addSuffix: true, locale: ptBR }),
+            unread: true,
+            href: "/agendamentos",
+          }));
+          
+          setNotifications(notifs);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar notificações:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchNotifications();
+    
+    // Atualizar a cada 30 segundos
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
     <>
@@ -55,8 +105,8 @@ export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHead
               <Bell className="w-5 h-5 text-slate-600" />
               {/* Badge de notificação */}
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                  {unreadCount}
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                  {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </button>
@@ -78,7 +128,14 @@ export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHead
             <div className="bg-white rounded-b-2xl shadow-xl max-h-[70vh] overflow-hidden">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-slate-100">
-                <h2 className="font-bold text-lg text-slate-800">Notificações</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-bold text-lg text-slate-800">Notificações</h2>
+                  {unreadCount > 0 && (
+                    <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
+                </div>
                 <button 
                   onClick={() => setShowNotifications(false)}
                   className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"
@@ -88,36 +145,62 @@ export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHead
               </div>
 
               {/* Lista de Notificações */}
-              <div className="overflow-y-auto max-h-[calc(70vh-60px)]">
-                {mockNotifications.length === 0 ? (
+              <div className="overflow-y-auto max-h-[calc(70vh-120px)]">
+                {loading ? (
+                  <div className="p-8 text-center">
+                    <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                    <p className="text-slate-500 text-sm">Carregando...</p>
+                  </div>
+                ) : notifications.length === 0 ? (
                   <div className="p-8 text-center">
                     <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-500">Nenhuma notificação</p>
+                    <p className="text-slate-600 font-medium">Tudo em dia! 🎉</p>
+                    <p className="text-slate-400 text-sm mt-1">
+                      Nenhum agendamento pendente
+                    </p>
                   </div>
                 ) : (
                   <div className="divide-y divide-slate-100">
-                    {mockNotifications.map((notification) => (
-                      <div 
+                    {notifications.map((notification) => (
+                      <Link
                         key={notification.id}
-                        className={`p-4 ${notification.unread ? 'bg-cyan-50/50' : ''}`}
+                        href={notification.href || "#"}
+                        onClick={() => setShowNotifications(false)}
+                        className={`block p-4 hover:bg-slate-50 active:bg-slate-100 transition-colors ${
+                          notification.unread ? 'bg-cyan-50/50' : ''
+                        }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`w-2 h-2 rounded-full mt-2 ${notification.unread ? 'bg-cyan-500' : 'bg-transparent'}`} />
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                            notification.type === "agendamento" 
+                              ? "bg-cyan-100" 
+                              : "bg-slate-100"
+                          }`}>
+                            <Calendar className={`w-5 h-5 ${
+                              notification.type === "agendamento" 
+                                ? "text-cyan-600" 
+                                : "text-slate-600"
+                            }`} />
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2">
-                              <p className="font-semibold text-sm text-slate-800 truncate">
+                              <p className="font-semibold text-sm text-slate-800">
                                 {notification.title}
                               </p>
-                              <span className="text-[10px] text-slate-400 whitespace-nowrap">
-                                {notification.time}
-                              </span>
+                              {notification.unread && (
+                                <span className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0" />
+                              )}
                             </div>
-                            <p className="text-sm text-slate-600 mt-0.5">
+                            <p className="text-sm text-slate-600 mt-0.5 line-clamp-2">
                               {notification.message}
                             </p>
+                            <div className="flex items-center gap-1 mt-1.5 text-[11px] text-slate-400">
+                              <Clock className="w-3 h-3" />
+                              <span>{notification.time}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -125,12 +208,22 @@ export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHead
 
               {/* Footer */}
               <div className="p-4 border-t border-slate-100 safe-area-pb">
-                <button 
-                  onClick={() => setShowNotifications(false)}
-                  className="w-full py-3 bg-slate-100 text-slate-700 font-medium rounded-xl hover:bg-slate-200 transition-colors"
-                >
-                  Fechar
-                </button>
+                {notifications.length > 0 ? (
+                  <Link
+                    href="/agendamentos"
+                    onClick={() => setShowNotifications(false)}
+                    className="block w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl text-center active:scale-[0.98] transition-transform"
+                  >
+                    Ver todos os agendamentos
+                  </Link>
+                ) : (
+                  <button 
+                    onClick={() => setShowNotifications(false)}
+                    className="w-full py-3 bg-slate-100 text-slate-700 font-medium rounded-xl hover:bg-slate-200 transition-colors"
+                  >
+                    Fechar
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -139,4 +232,3 @@ export function MobileHeader({ lavaJatoNome, corPrimaria, userName }: MobileHead
     </>
   );
 }
-
