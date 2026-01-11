@@ -579,6 +579,111 @@ export default function LandingPageEmpresas() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
+          DOR DO CLIENTE FINAL - Agendamento
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 bg-gradient-to-b from-slate-900 to-slate-800">
+        <div className="flex items-center gap-2 mb-4">
+          <Car className="w-5 h-5 text-cyan-400" />
+          <h2 className="text-[13px] font-semibold text-cyan-400 uppercase tracking-wide">
+            Para Seu Cliente
+          </h2>
+        </div>
+        
+        <h3 className="text-[22px] font-bold text-white leading-tight mb-3">
+          Chega de Cliente{" "}
+          <span className="text-amber-400">Rodando a Cidade</span>
+        </h3>
+        
+        <p className="text-slate-300 text-[15px] leading-relaxed mb-8">
+          Seu cliente também sofre: fica rodando de lava-jato em lava-jato procurando um que não esteja lotado. 
+          <span className="text-white font-semibold"> Com agendamento online, ele resolve em 2 minutos.</span>
+        </p>
+
+        {/* Comparativo visual */}
+        <div className="space-y-4">
+          {/* Sem agendamento */}
+          <div className="bg-red-500/10 backdrop-blur-sm rounded-2xl p-5 border border-red-500/20">
+            <p className="text-red-400 text-[12px] font-bold uppercase mb-3">😤 Sem Agendamento</p>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex -space-x-2">
+                {[1,2,3,4].map((i) => (
+                  <div key={i} className="w-8 h-8 rounded-full bg-red-500/30 border-2 border-slate-800 flex items-center justify-center">
+                    <Car className="w-4 h-4 text-red-400" />
+                  </div>
+                ))}
+              </div>
+              <span className="text-slate-400 text-[13px]">Fila enorme...</span>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "Vai até o lava-jato e encontra fila",
+                "Tenta outro, mesma coisa",
+                "Perde 1 hora rodando a cidade",
+                "Desiste ou aceita esperar muito",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-slate-400 text-[13px]">
+                  <X className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Com agendamento */}
+          <div className="bg-emerald-500/10 backdrop-blur-sm rounded-2xl p-5 border border-emerald-500/20">
+            <p className="text-emerald-400 text-[12px] font-bold uppercase mb-3">😎 Com Lavify</p>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/30 border-2 border-slate-800 flex items-center justify-center">
+                <CalendarClock className="w-5 h-5 text-emerald-400" />
+              </div>
+              <span className="text-emerald-300 text-[13px] font-medium">Horário garantido!</span>
+            </div>
+            <ul className="space-y-2">
+              {[
+                "Abre o celular, escolhe o horário",
+                "Chega na hora marcada, sem fila",
+                "Deixa o carro e vai resolver a vida",
+                "Recebe WhatsApp quando está pronto",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-slate-300 text-[13px]">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Benefício para o dono */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl">
+          <div className="flex items-center gap-3">
+            <Target className="w-8 h-8 text-white/90" />
+            <div>
+              <p className="text-white font-bold text-[15px]">
+                Cliente satisfeito = cliente fiel
+              </p>
+              <p className="text-cyan-100 text-[13px]">
+                E você ainda organiza melhor seu dia com agendamentos previsíveis.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Link para página do cliente */}
+        <div className="mt-6 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
+          <p className="text-slate-400 text-[13px] mb-3">Seu cliente terá uma página exclusiva:</p>
+          <div className="bg-slate-800 rounded-xl p-3 flex items-center gap-3">
+            <Droplets className="w-6 h-6 text-cyan-400" />
+            <div className="flex-1">
+              <p className="text-white font-mono text-[13px]">lavify.com.br/seulava</p>
+              <p className="text-slate-500 text-[11px]">Agendamento 24h por dia</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-500" />
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
           FUNCIONALIDADES - Carrossel
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="py-12 bg-white">
