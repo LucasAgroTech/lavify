@@ -277,28 +277,11 @@ export default function LandingPageEmpresas() {
         </div>
 
         <div className="relative px-5 pt-8 pb-12">
-          {/* Segmentos atendidos */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-            {[
-              { icon: Droplets, label: "Lava-Rápido" },
-              { icon: Sparkles, label: "Estética Automotiva" },
-              { icon: Car, label: "Polimento" },
-            ].map((seg) => (
-              <div 
-                key={seg.label}
-                className="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-white text-[12px] font-medium px-3 py-1.5 rounded-full"
-              >
-                <seg.icon className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{seg.label}</span>
-              </div>
-            ))}
-          </div>
-
           {/* Badge principal */}
           <div className="flex justify-center mb-5">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300 text-[13px] font-semibold px-4 py-2 rounded-full">
-              <Car className="w-4 h-4" />
-              <span>Sistema para Lava-Jatos e Estéticas</span>
+              <Droplets className="w-4 h-4" />
+              <span>Sistema Completo para Lava-Rápidos</span>
             </div>
           </div>
 
@@ -306,7 +289,7 @@ export default function LandingPageEmpresas() {
           <h1 className="text-[28px] sm:text-[32px] font-bold text-white text-center leading-[1.2] mb-4">
             Seu{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-              Lava-Jato
+              Lava-Rápido
             </span>{" "}
             Para Quando{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
@@ -316,11 +299,11 @@ export default function LandingPageEmpresas() {
 
           {/* Subheadline */}
           <p className="text-slate-300 text-center text-[15px] leading-relaxed mb-4 max-w-sm mx-auto">
-            O sistema completo para <span className="text-white font-semibold">lava-rápidos</span>, <span className="text-white font-semibold">estéticas automotivas</span> e <span className="text-white font-semibold">centros de polimento</span>.
+            O sistema que <span className="text-white font-semibold">profissionaliza seu lava-rápido</span> e faz sua equipe operar sem depender de você.
           </p>
           
           <p className="text-slate-400 text-center text-[14px] leading-relaxed mb-8 max-w-sm mx-auto">
-            Sua equipe opera <span className="text-cyan-400 font-semibold">sem depender de você</span> — e você acompanha tudo pelo celular, de qualquer lugar.
+            Controle de pátio, estoque, equipe e financeiro — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
           </p>
 
           {/* CTA Principal */}
@@ -353,30 +336,6 @@ export default function LandingPageEmpresas() {
               <Check className="w-4 h-4 text-emerald-400" />
               <span>Plano freemium</span>
             </div>
-          </div>
-        </div>
-
-        {/* Para quem é */}
-        <div className="px-5 pb-4">
-          <p className="text-center text-slate-500 text-[12px] uppercase tracking-wider mb-3">
-            Ideal para
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: Droplets, titulo: "Lava-Rápido", desc: "Lavagem simples e completa" },
-              { icon: Sparkles, titulo: "Estética Automotiva", desc: "Higienização e detalhamento" },
-              { icon: Car, titulo: "Centro de Polimento", desc: "Correção e vitrificação" },
-              { icon: Wrench, titulo: "Martelinho de Ouro", desc: "Reparos e retoques" },
-            ].map((item) => (
-              <div 
-                key={item.titulo}
-                className="bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10"
-              >
-                <item.icon className="w-6 h-6 text-cyan-400 mb-2" />
-                <p className="text-white font-semibold text-[13px]">{item.titulo}</p>
-                <p className="text-slate-500 text-[11px]">{item.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
 
