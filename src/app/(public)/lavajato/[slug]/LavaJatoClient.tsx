@@ -102,7 +102,7 @@ export default function LavaJatoClient({ slug }: Props) {
   }
 
   return (
-    <div className="pb-24">
+    <div className={servicosSelecionados.length > 0 ? "pb-40" : "pb-8"}>
       {/* Header Mobile */}
       <div className="sticky top-12 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-3 flex items-center justify-between lg:hidden">
         <button onClick={() => router.back()} className="p-1">
@@ -237,8 +237,11 @@ export default function LavaJatoClient({ slug }: Props) {
 
       {/* Fixed Bottom CTA */}
       {servicosSelecionados.length > 0 && (
-        <div className="fixed bottom-14 lg:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 z-50 safe-area-pb">
-          <div className="flex items-center justify-between mb-3">
+        <div 
+          className="fixed left-0 right-0 bg-white border-t border-slate-200 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]"
+          style={{ bottom: 'calc(56px + env(safe-area-inset-bottom, 0px))' }}
+        >
+          <div className="flex items-center justify-between lg:max-w-4xl lg:mx-auto">
             <div>
               <p className="text-sm text-slate-500">
                 {servicosSelecionados.length} serviço{servicosSelecionados.length !== 1 && "s"}
@@ -249,7 +252,7 @@ export default function LavaJatoClient({ slug }: Props) {
             </div>
             <Link
               href={`/agendar/${lavaJato.slug}?servicos=${servicosSelecionados.join(",")}`}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-transform"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/30 active:scale-[0.98] transition-transform"
             >
               <Calendar className="w-5 h-5" />
               Agendar

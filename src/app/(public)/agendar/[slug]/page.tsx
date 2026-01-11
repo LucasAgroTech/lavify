@@ -238,7 +238,7 @@ function AgendarContent() {
   }
 
   return (
-    <div className="pb-32">
+    <div className="pb-48">
       {/* Header */}
       <div className="sticky top-12 z-40 bg-white border-b border-slate-100 px-4 py-3 flex items-center gap-3 lg:top-0">
         <button onClick={() => router.back()} className="p-1">
@@ -523,8 +523,11 @@ function AgendarContent() {
       )}
 
       {/* Resumo e Botões */}
-      <div className="fixed bottom-14 lg:bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 z-50">
-        <div className="flex items-center justify-between mb-3">
+      <div 
+        className="fixed left-0 right-0 bg-white border-t border-slate-200 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] lg:bottom-0"
+        style={{ bottom: 'calc(56px + env(safe-area-inset-bottom, 0px))' }}
+      >
+        <div className="flex items-center justify-between lg:max-w-4xl lg:mx-auto">
           <div>
             {servicosSelecionados.length > 0 && (
               <>
