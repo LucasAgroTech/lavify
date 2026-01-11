@@ -56,7 +56,7 @@ export default function SuperAdminLayout({
     };
 
     checkAuth();
-  }, [isLoginPage, router]);
+  }, [isPublicPage, router]);
 
   const handleLogout = async () => {
     await fetch("/api/superadmin/auth/logout", { method: "POST" });
