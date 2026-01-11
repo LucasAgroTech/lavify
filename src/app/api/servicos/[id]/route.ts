@@ -80,7 +80,7 @@ export async function DELETE(
     }
 
     // Verificar se o serviço está sendo usado em alguma OS
-    const osComServico = await prisma.itemOS.count({
+    const osComServico = await prisma.itemOrdem.count({
       where: { servicoId: id },
     });
 
