@@ -239,7 +239,7 @@ export default function LavaJatoClient({ slug }: Props) {
       {servicosSelecionados.length > 0 && (
         <div 
           className="fixed left-0 right-0 bg-white border-t border-slate-200 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] lg:bottom-0"
-          style={{ bottom: 'max(80px, calc(56px + env(safe-area-inset-bottom, 0px) + 16px))' }}
+          style={{ bottom: 'calc(56px + env(safe-area-inset-bottom, 0px))' }}
         >
           <div className="flex items-center justify-between lg:max-w-4xl lg:mx-auto">
             <div>
