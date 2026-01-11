@@ -322,12 +322,12 @@ export default function LandingPageEmpresas() {
           <div className="flex items-center justify-center gap-4 mt-8 text-[12px] text-slate-400">
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Grátis 14 dias</span>
+              <span>7 dias grátis</span>
             </div>
             <div className="w-1 h-1 rounded-full bg-slate-600" />
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Sem cartão</span>
+              <span>Plano freemium</span>
             </div>
           </div>
         </div>
@@ -840,15 +840,15 @@ export default function LandingPageEmpresas() {
         <div className="flex items-center justify-center gap-4 mt-6 text-[12px] text-slate-400">
           <div className="flex items-center gap-1.5">
             <BadgeCheck className="w-4 h-4" />
-            <span>14 dias grátis</span>
+            <span>7 dias grátis</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Gift className="w-4 h-4" />
+            <span>Freemium</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Smartphone className="w-4 h-4" />
             <span>100% Mobile</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <MessageCircle className="w-4 h-4" />
-            <span>Suporte</span>
           </div>
         </div>
       </section>
