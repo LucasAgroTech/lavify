@@ -243,7 +243,7 @@ export default function NovaOSPage() {
   return (
     <>
       {/* ==================== MOBILE VERSION ==================== */}
-      <div className="lg:hidden min-h-screen bg-slate-50 pb-48">
+      <div className="lg:hidden min-h-screen bg-slate-50 pb-40">
         {/* Header */}
         <div className="sticky top-14 z-20 bg-white border-b border-slate-100 px-4 py-3">
           <div className="flex items-center gap-3">
@@ -459,25 +459,30 @@ export default function NovaOSPage() {
           <input type="hidden" {...register("veiculoId")} />
         </form>
 
-        {/* Floating Summary - 80px para ficar acima da nav + safe area */}
-        <div className="fixed left-0 right-0 bg-white border-t border-slate-200 shadow-lg p-4 z-30 lg:hidden" style={{ bottom: '80px' }}>
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <p className="text-xs text-slate-500">Total</p>
-              <p className="text-2xl font-bold text-slate-800">
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(totalServicos)}
+        {/* Floating Summary - Posicionado acima da nav (h-16 = 64px + safe-area) */}
+        <div className="fixed left-0 right-0 bottom-16 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-40 lg:hidden safe-area-pb">
+          <div className="flex items-center gap-4 px-4 py-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline gap-2">
+                <p className="text-2xl font-bold text-slate-800">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(totalServicos)}
+                </p>
+                {tempoTotal > 0 && (
+                  <p className="text-xs text-slate-400">• {tempoTotal} min</p>
+                )}
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {servicosSelecionados.length === 0 
+                  ? "Nenhum serviço" 
+                  : `${servicosSelecionados.length} serviço${servicosSelecionados.length > 1 ? 's' : ''}`}
               </p>
-              {tempoTotal > 0 && (
-                <p className="text-xs text-slate-500">{tempoTotal} min estimados</p>
-              )}
             </div>
             <button
               type="button"
               onClick={() => {
-                // Chamar submit diretamente sem depender do form
                 onSubmit({
                   clienteId: clienteSelecionado,
                   veiculoId: veiculoId,
@@ -485,7 +490,7 @@ export default function NovaOSPage() {
                 });
               }}
               disabled={submitting || !step1Done || !step2Done || !step3Done}
-              className={`px-6 py-4 rounded-xl font-bold flex items-center gap-2 transition-all ${
+              className={`flex-shrink-0 px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
                 step1Done && step2Done && step3Done && !submitting
                   ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30 active:scale-95"
                   : "bg-slate-200 text-slate-400 cursor-not-allowed"
@@ -493,12 +498,12 @@ export default function NovaOSPage() {
             >
               {submitting ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Criando...
                 </span>
               ) : (
                 <>
-                  <Sparkles className="w-5 h-5" />
+                  <Sparkles className="w-4 h-4" />
                   Criar OS
                 </>
               )}
