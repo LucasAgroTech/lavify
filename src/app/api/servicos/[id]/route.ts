@@ -91,8 +91,29 @@ export async function DELETE(
       );
     }
 
-    await prisma.servico.delete({
-      where: { id },
+    // Verificar se o serviço está sendo usado em algum agendamento
+    const agendamentosComServico = await prisma.agendamentoServico.count({
+      where: { servicoId: id },
+    });
+
+    if (agendamentosComServico > 0) {
+      return NextResponse.json(
+        { error: "Este serviço não pode ser excluído pois está sendo usado em agendamentos" },
+        { status: 400 }
+      );
+    }
+
+    // Usar transação para deletar relações e o serviço
+    await prisma.$transaction(async (tx) => {
+      // Deletar consumo de produtos associados ao serviço
+      await tx.consumoProduto.deleteMany({
+        where: { servicoId: id },
+      });
+
+      // Deletar o serviço
+      await tx.servico.delete({
+        where: { id },
+      });
     });
 
     return NextResponse.json({ success: true });
