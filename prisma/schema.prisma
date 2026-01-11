@@ -88,6 +88,31 @@ model Sessao {
 }
 
 // ============================================
+// SUPER ADMIN - Controle total do sistema
+// ============================================
+
+model SuperAdmin {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  senha         String
+  nome          String
+  ativo         Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  
+  sessoes       SessaoSuperAdmin[]
+}
+
+model SessaoSuperAdmin {
+  id            String      @id @default(uuid())
+  token         String      @unique
+  expiresAt     DateTime
+  createdAt     DateTime    @default(now())
+  
+  superAdminId  String
+  superAdmin    SuperAdmin  @relation(fields: [superAdminId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
 // ENUMS
 // ============================================
 
