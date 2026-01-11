@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Loader2,
+  Users,
 } from "lucide-react";
 
 interface SuperAdmin {
@@ -78,6 +79,7 @@ export default function SuperAdminLayout({
   const menuItems = [
     { href: "/superadmin", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/superadmin/lavajatos", icon: Building2, label: "Lava-Jatos" },
+    { href: "/superadmin/admins", icon: Users, label: "Super Admins" },
   ];
 
   return (
