@@ -79,7 +79,8 @@ export default function SuperAdminLayout({
   const menuItems = [
     { href: "/superadmin", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/superadmin/lavajatos", icon: Building2, label: "Lava-Jatos" },
-    { href: "/superadmin/admins", icon: Users, label: "Super Admins" },
+    { href: "/superadmin/usuarios", icon: Users, label: "Usuários" },
+    { href: "/superadmin/admins", icon: Shield, label: "Super Admins" },
   ];
 
   return (

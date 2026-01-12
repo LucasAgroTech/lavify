@@ -98,13 +98,13 @@ export default function ServicosPage() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      });
+    });
 
-      if (res.ok) {
-        await fetchServicos();
-        setShowModal(false);
+    if (res.ok) {
+      await fetchServicos();
+      setShowModal(false);
       } else {
         const data = await res.json();
         alert(data.error || "Erro ao salvar serviço");
@@ -299,20 +299,20 @@ export default function ServicosPage() {
 
       {/* ==================== DESKTOP VERSION ==================== */}
       <div className="hidden lg:block p-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Serviços</h1>
-            <p className="text-slate-500 mt-1">
-              Gerencie os serviços oferecidos
-            </p>
-          </div>
-          <Button onClick={abrirModalCriar} icon={<Plus className="w-4 h-4" />}>
-            Novo Serviço
-          </Button>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">Serviços</h1>
+          <p className="text-slate-500 mt-1">
+            Gerencie os serviços oferecidos
+          </p>
         </div>
+          <Button onClick={abrirModalCriar} icon={<Plus className="w-4 h-4" />}>
+          Novo Serviço
+        </Button>
+      </div>
 
-        {/* Lista */}
+      {/* Lista */}
         {servicos.length === 0 ? (
           <div className="text-center py-12">
             <Droplets className="w-12 h-12 text-slate-300 mx-auto mb-4" />
@@ -320,14 +320,14 @@ export default function ServicosPage() {
             <p className="text-slate-400 text-sm mt-1">
               Cadastre seu primeiro serviço
             </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {servicos.map((servico) => (
-              <Card
-                key={servico.id}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {servicos.map((servico) => (
+            <Card
+              key={servico.id}
                 className="hover:shadow-md transition-shadow group relative"
-              >
+            >
                 {/* Botões de ação */}
                 <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
@@ -344,61 +344,61 @@ export default function ServicosPage() {
                   </button>
                 </div>
 
-                <div className="space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform">
-                      <Droplets className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-slate-800 text-lg">
-                        {servico.nome}
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <Clock className="w-3.5 h-3.5" />
-                        {servico.tempoEstimado} min
-                      </div>
+              <div className="space-y-4">
+                {/* Header */}
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform">
+                    <Droplets className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-slate-800 text-lg">
+                      {servico.nome}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <Clock className="w-3.5 h-3.5" />
+                      {servico.tempoEstimado} min
                     </div>
                   </div>
-
-                  {/* Preço */}
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <div className="flex items-center gap-1.5 text-slate-500">
-                      <DollarSign className="w-4 h-4" />
-                      <span className="text-sm">Preço</span>
-                    </div>
-                    <span className="text-2xl font-bold text-emerald-600">
-                      {formatCurrency(servico.preco)}
-                    </span>
-                  </div>
-
-                  {/* Produtos consumidos */}
-                  {servico.produtos.length > 0 && (
-                    <div className="pt-3 border-t border-slate-100">
-                      <p className="text-xs text-slate-500 mb-2">
-                        Produtos consumidos:
-                      </p>
-                      <div className="space-y-1">
-                        {servico.produtos.map((p) => (
-                          <div
-                            key={p.id}
-                            className="text-xs flex justify-between text-slate-600"
-                          >
-                            <span>{p.produto.nome}</span>
-                            <span>
-                              {p.quantidade}
-                              {p.produto.unidade}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </Card>
-            ))}
-          </div>
-        )}
+
+                {/* Preço */}
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-1.5 text-slate-500">
+                    <DollarSign className="w-4 h-4" />
+                    <span className="text-sm">Preço</span>
+                  </div>
+                  <span className="text-2xl font-bold text-emerald-600">
+                    {formatCurrency(servico.preco)}
+                  </span>
+                </div>
+
+                {/* Produtos consumidos */}
+                {servico.produtos.length > 0 && (
+                  <div className="pt-3 border-t border-slate-100">
+                    <p className="text-xs text-slate-500 mb-2">
+                      Produtos consumidos:
+                    </p>
+                    <div className="space-y-1">
+                      {servico.produtos.map((p) => (
+                        <div
+                          key={p.id}
+                          className="text-xs flex justify-between text-slate-600"
+                        >
+                          <span>{p.produto.nome}</span>
+                          <span>
+                            {p.quantidade}
+                            {p.produto.unidade}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
       </div>
 
       {/* Modal de criar/editar */}
@@ -485,10 +485,10 @@ export default function ServicosPage() {
                     </div>
                     <p className="text-xl font-bold text-emerald-600">
                       {formPreco ? formatCurrency(parseFloat(formPreco)) : "R$ --"}
-                    </p>
-                  </div>
+          </p>
+        </div>
                 </div>
-              )}
+      )}
             </form>
 
             {/* Botões fixos */}
@@ -523,48 +523,48 @@ export default function ServicosPage() {
 
           {/* Desktop Modal */}
           <div className="hidden lg:block">
-            <Modal
+      <Modal
               isOpen={true}
-              onClose={() => setShowModal(false)}
+        onClose={() => setShowModal(false)}
               title={editando ? "Editar Serviço" : "Novo Serviço"}
-            >
+      >
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  label="Nome do serviço"
+          <Input
+            label="Nome do serviço"
                   value={formNome}
                   onChange={(e) => setFormNome(e.target.value)}
-                  placeholder="Ex: Lavagem Completa"
-                  required
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    label="Preço (R$)"
-                    type="number"
-                    step="0.01"
+            placeholder="Ex: Lavagem Completa"
+            required
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Preço (R$)"
+              type="number"
+              step="0.01"
                     value={formPreco}
                     onChange={(e) => setFormPreco(e.target.value)}
-                    placeholder="50.00"
-                    required
-                  />
-                  <Input
-                    label="Tempo (minutos)"
-                    type="number"
+              placeholder="50.00"
+              required
+            />
+            <Input
+              label="Tempo (minutos)"
+              type="number"
                     value={formTempo}
                     onChange={(e) => setFormTempo(e.target.value)}
-                    placeholder="30"
-                    required
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-4">
-                  <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
-                    Cancelar
-                  </Button>
+              placeholder="30"
+              required
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
+              Cancelar
+            </Button>
                   <Button type="submit" disabled={salvando}>
                     {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
                   </Button>
-                </div>
-              </form>
-            </Modal>
+          </div>
+        </form>
+      </Modal>
           </div>
         </>
       )}
