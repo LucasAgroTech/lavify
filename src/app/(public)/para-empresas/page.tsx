@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -119,6 +119,21 @@ function FeatureCard({
 
 export default function LandingPageEmpresas() {
   const [videoAberto, setVideoAberto] = useState(false);
+  const [slideAtual, setSlideAtual] = useState(0);
+
+  const imagensHero = [
+    "/hero-1.png",
+    "/hero-2.png",
+    "/hero-3.png",
+  ];
+
+  // Auto-play do carrossel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlideAtual((prev) => (prev + 1) % imagensHero.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [imagensHero.length]);
 
   const funcionalidades = [
     {
@@ -262,7 +277,7 @@ export default function LandingPageEmpresas() {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* ═══════════════════════════════════════════════════════════════════════
-          HERO SECTION - Foco na DOR
+          HERO SECTION - Gestão de Lava-Rápido
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800">
         {/* Background sutil */}
@@ -280,41 +295,67 @@ export default function LandingPageEmpresas() {
           {/* Badge principal */}
           <div className="flex justify-center mb-5 lg:mb-8">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300 text-[13px] lg:text-[14px] font-semibold px-4 py-2 rounded-full">
-              <Droplets className="w-4 h-4" />
-              <span>Sistema Completo para Lava-Rápidos</span>
+              <Smartphone className="w-4 h-4" />
+              <span>App pra Celular e Computador</span>
             </div>
           </div>
 
-          {/* Headline - Foco na DOR */}
+          {/* Headline - Direto ao ponto */}
           <h1 className="text-[28px] sm:text-[32px] lg:text-[48px] font-bold text-white text-center leading-[1.2] mb-4 lg:mb-6">
-            <span className="lg:block">Seu{" "}
+            <span className="block">Sistema para{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
               Lava-Rápido
-            </span>{" "}
-            Para</span>
-            <span className="lg:block">Quando{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
-              Você Não Está?
             </span></span>
+            <span className="block">Simples e Completo</span>
           </h1>
 
-          {/* Subheadline */}
-          <p className="text-slate-300 text-center text-[15px] lg:text-[18px] leading-relaxed mb-4 max-w-sm lg:max-w-2xl mx-auto">
-            O sistema que <span className="text-white font-semibold">profissionaliza seu lava-rápido</span> e faz sua equipe operar sem depender de você.
+          {/* Subheadline - Funcionalidades */}
+          <p className="text-slate-300 text-center text-[15px] lg:text-[18px] leading-relaxed mb-6 max-w-sm lg:max-w-2xl mx-auto">
+            Controle o <span className="text-white font-semibold">pátio</span>, <span className="text-white font-semibold">agendamentos</span>, <span className="text-white font-semibold">estoque</span>, <span className="text-white font-semibold">equipe</span> e <span className="text-white font-semibold">financeiro</span> — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
           </p>
-          
-          <p className="text-slate-400 text-center text-[14px] lg:text-[16px] leading-relaxed mb-8 max-w-sm lg:max-w-xl mx-auto">
-            Controle de pátio, agendamentos, estoque, equipe e financeiro — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
-          </p>
+
+          {/* Carrossel de Imagens */}
+          <div className="relative mb-8 max-w-3xl mx-auto">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
+              <div 
+                className="flex transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+              >
+                {imagensHero.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`Sistema Lavify em ação ${index + 1}`}
+                    className="w-full flex-shrink-0 object-cover aspect-[4/3] lg:aspect-[21/9]"
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Indicadores do carrossel */}
+            <div className="flex justify-center gap-2 mt-4">
+              {imagensHero.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSlideAtual(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    slideAtual === index 
+                      ? "bg-cyan-400 w-6" 
+                      : "bg-white/30 hover:bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
 
           {/* CTA Principal */}
           <div className="space-y-3 lg:space-y-0 lg:flex lg:items-center lg:justify-center lg:gap-4">
             <Link
               href="/registro"
-              className="flex items-center justify-center gap-2 w-full lg:w-auto lg:px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-[16px] rounded-2xl shadow-lg shadow-cyan-500/20 active:scale-[0.98] lg:hover:shadow-xl lg:hover:shadow-cyan-500/30 transition-all"
+              className="flex items-center justify-center gap-2 w-full lg:w-auto lg:px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-[16px] rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] lg:hover:shadow-xl lg:hover:shadow-emerald-500/30 transition-all"
             >
-              Quero Minha Liberdade
-              <ArrowRight className="w-5 h-5" />
+              <Zap className="w-5 h-5" />
+              Testar Grátis Agora
             </Link>
 
             <button
@@ -327,35 +368,24 @@ export default function LandingPageEmpresas() {
           </div>
 
           {/* Trust badges */}
-          <div className="flex items-center justify-center gap-4 lg:gap-6 mt-8 text-[12px] lg:text-[13px] text-slate-400">
+          <div className="flex flex-wrap items-center justify-center gap-3 lg:gap-5 mt-8 text-[12px] lg:text-[13px] text-slate-400">
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>7 dias grátis</span>
+              <span>100% grátis pra testar</span>
             </div>
-            <div className="w-1 h-1 rounded-full bg-slate-600" />
+            <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
             <div className="flex items-center gap-1.5">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Plano freemium</span>
+              <span>Não precisa baixar nada</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
+            <div className="flex items-center gap-1.5">
+              <Check className="w-4 h-4 text-emerald-400" />
+              <span>Começa em 2 minutos</span>
             </div>
           </div>
         </div>
 
-        {/* Visual - Dono relaxando */}
-        <div className="px-5 pb-8 lg:pb-16 max-w-lg mx-auto">
-          <div className="bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm rounded-2xl p-5 lg:p-6 border border-white/10 text-center">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <Coffee className="w-8 h-8 text-amber-400" />
-              <Palmtree className="w-10 h-10 text-emerald-400" />
-              <Smartphone className="w-8 h-8 text-cyan-400" />
-            </div>
-            <p className="text-white font-semibold text-[15px] lg:text-[17px] mb-1">
-              Você na praia, seu negócio funcionando
-            </p>
-            <p className="text-slate-400 text-[13px] lg:text-[14px]">
-              Acompanhe tudo em tempo real pelo celular
-            </p>
-          </div>
-        </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
