@@ -974,15 +974,15 @@ export default function LandingPageEmpresas() {
           >
             <X className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
           </button>
-          {/* Container do vídeo 9:16 - maior no desktop */}
+          {/* Container do vídeo 16:9 - horizontal */}
           <div 
-            className="relative w-full max-w-[320px] lg:max-w-[400px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl"
+            className="relative w-full max-w-[90vw] lg:max-w-[900px] aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
-              src="https://player.vimeo.com/video/1153360089?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
+              src="https://player.vimeo.com/video/1153715771?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
               className="absolute inset-0 w-full h-full"
-              allow="autoplay; fullscreen; picture-in-picture"
+              allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
               allowFullScreen
             />
           </div>
