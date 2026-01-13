@@ -519,22 +519,27 @@ export default function KanbanPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 space-y-6">
+      <div className="hidden lg:block p-8 xl:p-10 space-y-8 max-w-[1800px] mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">Fila do Pátio</h1>
-          <p className="text-slate-500 mt-1">
-            Arraste os cards para atualizar o status
-          </p>
+      <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-amber-500/25">
+            <Car className="w-7 h-7" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Fila do Pátio</h1>
+            <p className="text-slate-500">
+              Arraste os cards para atualizar o status • {ordens.length} veículos
+            </p>
+          </div>
         </div>
-        <Button onClick={fetchOrdens} icon={<RefreshCw className="w-4 h-4" />}>
+        <Button onClick={fetchOrdens} icon={<RefreshCw className="w-5 h-5" />} className="px-6 py-3 text-base">
           Atualizar
         </Button>
       </div>
 
       {/* Kanban Board */}
-      <div className="grid grid-cols-4 gap-6 min-h-[calc(100vh-200px)]">
+      <div className="grid grid-cols-4 gap-6 min-h-[calc(100vh-250px)]">
         {colunas.map((coluna) => {
           const ordensColuna = getOrdensPorStatus(coluna.status);
           const isDropTarget = dropTarget === coluna.status;
@@ -543,9 +548,9 @@ export default function KanbanPage() {
             <div
               key={coluna.status}
               className={`
-                ${coluna.bgColor} rounded-2xl p-4 transition-all duration-200
-                border-2 ${coluna.borderColor}
-                ${isDropTarget ? "ring-2 ring-cyan-400 ring-offset-2 scale-[1.02]" : ""}
+                ${coluna.bgColor} rounded-2xl p-5 transition-all duration-300
+                border-2 ${coluna.borderColor} shadow-sm
+                ${isDropTarget ? "ring-4 ring-cyan-400/50 ring-offset-2 scale-[1.02] shadow-xl" : ""}
               `}
               onDragOver={(e) => handleDragOver(e, coluna.status)}
               onDragLeave={handleDragLeave}
@@ -553,105 +558,161 @@ export default function KanbanPage() {
             >
               {/* Column Header */}
               <div
-                className={`flex items-center justify-between mb-4 pb-3 border-b-2 ${coluna.borderColor}`}
+                className={`flex items-center justify-between mb-5 pb-4 border-b-2 ${coluna.borderColor}`}
               >
-                <h2 className={`font-semibold text-slate-700 ${coluna.headerBg} px-3 py-1 rounded-lg`}>
-                  {coluna.titulo}
-                </h2>
-                <span className="text-sm font-medium text-slate-600 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{coluna.emoji}</span>
+                  <h2 className={`font-bold text-lg text-slate-700`}>
+                    {coluna.tituloMobile}
+                  </h2>
+                </div>
+                <span className={`text-lg font-bold text-slate-700 ${coluna.headerBg} w-10 h-10 rounded-xl flex items-center justify-center shadow-sm`}>
                   {ordensColuna.length}
                 </span>
               </div>
 
               {/* Cards */}
-              <div className="space-y-3">
-                {ordensColuna.map((ordem) => (
+              <div className="space-y-4">
+                {ordensColuna.map((ordem) => {
+                  const proximo = proximoStatus[ordem.status];
+                  const proximaColuna = colunas.find(c => c.status === proximo);
+                  
+                  return (
                   <div
                     key={ordem.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, ordem)}
                     onDragEnd={handleDragEnd}
                     className={`
-                      bg-white rounded-xl p-4 shadow-md border-2 border-slate-200
-                      cursor-grab active:cursor-grabbing
-                      hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5
-                      transition-all duration-200
+                      bg-white rounded-2xl p-5 shadow-md border-2 border-white
+                      cursor-grab active:cursor-grabbing group
+                      hover:shadow-xl hover:border-slate-200 hover:-translate-y-1
+                      transition-all duration-300
                       ${dragging === ordem.id ? "opacity-50 scale-95 rotate-2" : ""}
                     `}
                   >
                     {/* Card Header */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-slate-400">
-                          #{ordem.codigo}
-                        </span>
-                        <StatusBadge status={ordem.status} />
-                      </div>
-                    </div>
-
-                    {/* Vehicle Info */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <Car className="w-4 h-4 text-slate-400" />
-                      <span className="font-semibold text-slate-800">
-                        {ordem.veiculo.modelo}
+                    <div className="flex items-start justify-between mb-4">
+                      <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
+                        #{ordem.codigo}
                       </span>
-                      {ordem.veiculo.cor && (
-                        <span className="text-sm text-slate-500">
-                          ({ordem.veiculo.cor})
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Plate */}
-                    <div className="inline-block bg-slate-100 px-3 py-1 rounded-lg mb-3">
-                      <span className="font-mono font-bold text-slate-700">
-                        {ordem.veiculo.placa}
-                      </span>
-                    </div>
-
-                    {/* Services */}
-                    <div className="text-sm text-slate-600 mb-3">
-                      {ordem.itens.map((item, i) => (
-                        <span key={item.id}>
-                          {item.servico.nome}
-                          {i < ordem.itens.length - 1 ? ", " : ""}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Client Info */}
-                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-                      <User className="w-3.5 h-3.5" />
-                      <span>{ordem.cliente.nome}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>{ordem.cliente.telefone}</span>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <div className="flex items-center gap-1 text-xs text-slate-400">
-                        <Clock className="w-3.5 h-3.5" />
-                        {format(new Date(ordem.dataEntrada), "HH:mm", {
-                          locale: ptBR,
-                        })}
-                      </div>
-                      <span className="font-semibold text-emerald-600">
+                      <span className="text-lg font-bold text-emerald-600">
                         {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         }).format(ordem.total)}
                       </span>
                     </div>
+
+                    {/* Plate - Destacada */}
+                    <div className="bg-slate-800 text-white px-4 py-2.5 rounded-xl mb-4 inline-block">
+                      <span className="font-mono font-bold text-lg tracking-wider">
+                        {ordem.veiculo.placa}
+                      </span>
+                    </div>
+
+                    {/* Vehicle Info */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <Car className="w-5 h-5 text-slate-400" />
+                      <span className="font-semibold text-slate-800 text-lg">
+                        {ordem.veiculo.modelo}
+                      </span>
+                      {ordem.veiculo.cor && (
+                        <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                          {ordem.veiculo.cor}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Services */}
+                    <div className="text-sm text-slate-600 mb-4 bg-slate-50 rounded-xl p-3">
+                      {ordem.itens.map((item, i) => (
+                        <span key={item.id} className="font-medium">
+                          {item.servico.nome}
+                          {i < ordem.itens.length - 1 ? " • " : ""}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Client Info */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-slate-600">
+                        <User className="w-4 h-4 text-slate-400" />
+                        <span className="font-medium">{ordem.cliente.nome}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-slate-500">
+                        <Phone className="w-4 h-4 text-slate-400" />
+                        <span>{ordem.cliente.telefone}</span>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <Clock className="w-4 h-4" />
+                        <span>Entrada: {format(new Date(ordem.dataEntrada), "HH:mm", {
+                          locale: ptBR,
+                        })}</span>
+                      </div>
+                    </div>
+
+                    {/* Botão de ação - hover */}
+                    {proximo && (
+                      <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                        <button
+                          onClick={() => {
+                            setOrdens((prev) =>
+                              prev.map((o) => (o.id === ordem.id ? { ...o, status: proximo } : o))
+                            );
+                            atualizarStatus(ordem.id, proximo);
+                          }}
+                          className={`
+                            w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold
+                            transition-all hover:shadow-lg active:scale-95
+                            ${proximo === "ENTREGUE" 
+                              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-emerald-500/30' 
+                              : `${proximaColuna?.headerBg} text-slate-700 border-2 ${proximaColuna?.borderColor}`
+                            }
+                          `}
+                        >
+                          {proximo === "ENTREGUE" ? (
+                            <>
+                              <CheckCircle2 className="w-5 h-5" />
+                              Entregar ao Cliente
+                            </>
+                          ) : (
+                            <>
+                              <ArrowRight className="w-5 h-5" />
+                              Mover para {proximaColuna?.emoji} {proximaColuna?.tituloMobile}
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Botão WhatsApp quando pronto */}
+                    {ordem.status === "PRONTO" && (
+                      <button
+                        onClick={() => handleWhatsApp(
+                          ordem.cliente.telefone, 
+                          ordem.cliente.nome.split(" ")[0],
+                          ordem.veiculo.placa
+                        )}
+                        className="w-full mt-3 flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition-all hover:shadow-lg active:scale-95"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        Avisar Cliente via WhatsApp
+                      </button>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
 
                 {ordensColuna.length === 0 && (
-                  <div className="text-center py-8 text-slate-400">
-                    <Car className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Nenhum veículo</p>
+                  <div className="text-center py-12 bg-white/50 rounded-2xl border-2 border-dashed border-slate-200">
+                    <Car className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+                    <p className="text-slate-500 font-medium">Nenhum veículo</p>
+                    <p className="text-sm text-slate-400">nesta etapa</p>
                   </div>
                 )}
               </div>

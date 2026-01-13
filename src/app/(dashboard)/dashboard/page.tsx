@@ -425,22 +425,34 @@ export default function Dashboard() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 space-y-8">
+      <div className="hidden lg:block p-8 xl:p-10 space-y-8 max-w-[1600px] mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Dashboard</h1>
+          <p className="text-slate-500 text-sm">{getGreeting()},</p>
+          <h1 className="text-3xl font-bold text-slate-800 mt-1">
+            {usuario?.nome?.split(" ")[0] || "Usuário"}! 👋
+          </h1>
           <p className="text-slate-500 mt-1">
-            Bem-vindo ao Lavify
+            Aqui está o resumo do seu lava-rápido
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <Clock className="w-4 h-4" />
-          {new Date().toLocaleDateString("pt-BR", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-          })}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm text-slate-500">
+              {new Date().toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
+            </p>
+            <div className="flex items-center justify-end gap-2 mt-1">
+              <Clock className="w-4 h-4 text-slate-400" />
+              <span className="text-lg font-semibold text-slate-700">
+                {new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -498,71 +510,132 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Quick Actions Desktop */}
+      <div className="grid grid-cols-4 gap-4">
+        {quickActions.map((action) => (
+          <Link
+            key={action.href}
+            href={action.href}
+            className="flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:border-slate-200 hover:-translate-y-1 transition-all duration-300 group"
+          >
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+              <action.icon className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <p className="font-bold text-slate-800 text-lg">{action.label}</p>
+              <p className="text-sm text-slate-500">{action.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Stats Grid - Principal */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard
           title="OS Hoje"
           value={data?.osHoje || 0}
-          icon={<Car className="w-7 h-7" />}
+          subtitle="Ordens de serviço"
+          icon={<Car className="w-8 h-8" />}
           color="cyan"
         />
         <StatCard
           title="Em Andamento"
           value={data?.osEmAndamento || 0}
-          icon={<Droplets className="w-7 h-7" />}
+          subtitle="No pátio agora"
+          icon={<Droplets className="w-8 h-8" />}
           color="amber"
         />
         <StatCard
           title="Faturamento Hoje"
           value={formatCurrency(data?.faturamentoHoje || 0)}
-          icon={<DollarSign className="w-7 h-7" />}
+          subtitle="Receita do dia"
+          icon={<DollarSign className="w-8 h-8" />}
           color="green"
         />
         <StatCard
           title="Faturamento Mês"
           value={formatCurrency(data?.faturamentoMes || 0)}
-          icon={<TrendingUp className="w-7 h-7" />}
+          subtitle="Acumulado"
+          icon={<TrendingUp className="w-8 h-8" />}
           color="purple"
         />
       </div>
 
       {/* Segunda linha de stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         <StatCard
           title="Total de Clientes"
           value={data?.totalClientes || 0}
-          icon={<Users className="w-7 h-7" />}
+          subtitle="Cadastrados"
+          icon={<Users className="w-8 h-8" />}
           color="cyan"
         />
         <StatCard
-          title="Clientes Novos (Mês)"
-          value={data?.clientesNovosMes || 0}
-          icon={<Users className="w-7 h-7" />}
+          title="Novos Clientes"
+          value={`+${data?.clientesNovosMes || 0}`}
+          subtitle="Este mês"
+          icon={<Users className="w-8 h-8" />}
           color="green"
         />
         <StatCard
-          title="Produtos em Estoque Baixo"
+          title="Estoque Baixo"
           value={data?.produtosEstoqueBaixo?.length || 0}
-          icon={<Package className="w-7 h-7" />}
+          subtitle={data?.produtosEstoqueBaixo?.length ? "Produtos para repor" : "Tudo em ordem!"}
+          icon={<Package className="w-8 h-8" />}
           color={data?.produtosEstoqueBaixo?.length ? "red" : "green"}
         />
       </div>
 
+      {/* Status do Pátio - Desktop Visual */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-lg transition-all duration-300">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25">
+              <Columns3 className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-lg text-slate-800">Status do Pátio</h3>
+              <p className="text-sm text-slate-500">{totalEmPatio} veículos agora</p>
+            </div>
+          </div>
+          <Link 
+            href="/kanban"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
+          >
+            Ver Fila
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-4 gap-4">
+          {statusConfig.map((status) => {
+            const count = data?.ordensPorStatus?.[status.key] || 0;
+            return (
+              <Link
+                key={status.key}
+                href="/kanban"
+                className={`${status.bgLight} ${status.border} border-2 rounded-2xl p-6 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group`}
+              >
+                <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">{status.emoji}</span>
+                <p className="text-4xl font-bold text-slate-800">{count}</p>
+                <p className="text-sm font-medium text-slate-500 mt-1">{status.label}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Status das OS */}
-        <Card title="Status das Ordens" icon={<Car className="w-5 h-5" />}>
-          <div className="space-y-4">
+        <Card title="Distribuição de Status" icon={<Car className="w-6 h-6" />}>
+          <div className="space-y-5">
             {[
-              { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
-              { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
-              {
-                key: "FINALIZANDO",
-                label: "Finalizando",
-                color: "bg-blue-500",
-              },
-              { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
-              { key: "ENTREGUE", label: "Entregue", color: "bg-slate-400" },
+              { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500", bgLight: "bg-amber-100" },
+              { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500", bgLight: "bg-cyan-100" },
+              { key: "FINALIZANDO", label: "Finalizando", color: "bg-blue-500", bgLight: "bg-blue-100" },
+              { key: "PRONTO", label: "Pronto", color: "bg-emerald-500", bgLight: "bg-emerald-100" },
+              { key: "ENTREGUE", label: "Entregue", color: "bg-slate-400", bgLight: "bg-slate-100" },
             ].map((status) => {
               const count = data?.ordensPorStatus?.[status.key] || 0;
               const total = Object.values(data?.ordensPorStatus || {}).reduce(
@@ -573,13 +646,20 @@ export default function Dashboard() {
 
               return (
                 <div key={status.key} className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600">{status.label}</span>
-                    <span className="font-medium text-slate-800">{count}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${status.color}`} />
+                      <span className="font-medium text-slate-700">{status.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-bold ${status.bgLight} text-slate-700`}>
+                        {count}
+                      </span>
+                    </div>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                     <div
-                      className={`h-full ${status.color} rounded-full transition-all duration-500`}
+                      className={`h-full ${status.color} rounded-full transition-all duration-700 ease-out`}
                       style={{ width: `${percent}%` }}
                     />
                   </div>
@@ -591,33 +671,39 @@ export default function Dashboard() {
 
         {/* Serviços mais vendidos */}
         <Card
-          title="Serviços Mais Vendidos"
-          icon={<Droplets className="w-5 h-5" />}
+          title="Top Serviços do Mês"
+          icon={<Droplets className="w-6 h-6" />}
         >
           {chartData && chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={280}>
               <BarChart data={chartData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis type="number" stroke="#94a3b8" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={true} vertical={false} />
+                <XAxis type="number" stroke="#94a3b8" fontSize={12} axisLine={false} tickLine={false} />
                 <YAxis
                   type="category"
                   dataKey="name"
-                  stroke="#94a3b8"
-                  fontSize={12}
-                  width={100}
+                  stroke="#475569"
+                  fontSize={13}
+                  fontWeight={500}
+                  width={120}
+                  axisLine={false}
+                  tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
                     background: "#fff",
                     border: "none",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                    borderRadius: "16px",
+                    boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
+                    padding: "12px 16px",
                   }}
+                  labelStyle={{ fontWeight: "bold", marginBottom: "4px" }}
                 />
                 <Bar
                   dataKey="quantidade"
                   fill="url(#colorGradient)"
-                  radius={[0, 8, 8, 0]}
+                  radius={[0, 12, 12, 0]}
+                  barSize={24}
                 />
                 <defs>
                   <linearGradient
@@ -634,8 +720,10 @@ export default function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[250px] flex items-center justify-center text-slate-400">
-              Nenhum serviço registrado ainda
+            <div className="h-[280px] flex flex-col items-center justify-center text-slate-400">
+              <Sparkles className="w-12 h-12 mb-3 text-slate-300" />
+              <p className="font-medium">Nenhum serviço registrado ainda</p>
+              <p className="text-sm">Os dados aparecerão aqui</p>
             </div>
           )}
         </Card>
