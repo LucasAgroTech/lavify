@@ -414,95 +414,192 @@ export default function VeiculosPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Veículos</h1>
-            <p className="text-slate-500 mt-1">
-              Gerencie os veículos cadastrados
-            </p>
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1400px] mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">Veículos</h1>
+              <p className="text-slate-500 text-sm mt-0.5">{veiculos.length} veículos cadastrados</p>
+            </div>
+            <button
+              onClick={abrirModalCriar}
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Novo Veículo
+            </button>
           </div>
-          <Button onClick={abrirModalCriar} icon={<Plus className="w-4 h-4" />}>
-            Novo Veículo
-          </Button>
-        </div>
 
-        {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Buscar por placa, modelo ou cliente..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
-          />
-        </div>
-
-        {/* Lista */}
-        {veiculosFiltrados.length === 0 ? (
-          <div className="text-center py-12">
-            <Car className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-slate-600 font-medium">Nenhum veículo encontrado</h3>
-            <p className="text-slate-400 text-sm mt-1">
-              {busca ? "Tente outro termo de busca" : "Cadastre seu primeiro veículo"}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {veiculosFiltrados.map((veiculo) => (
-              <Card key={veiculo.id} className="hover:shadow-md transition-shadow group relative">
-                {/* Botões de ação */}
-                <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => abrirModalEditar(veiculo)}
-                    className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                  >
-                    <Pencil className="w-4 h-4 text-slate-600" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(veiculo.id)}
-                    className="p-2 bg-red-100 hover:bg-red-200 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4 text-red-600" />
-                  </button>
+          {/* Stats */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{veiculos.length}</p>
+                  <p className="text-sm text-slate-500">Total</p>
                 </div>
-
-                <div className="space-y-3">
-                  {/* Placa estilizada */}
-                  <div className="bg-slate-100 rounded-xl p-4 text-center">
-                    <span className="font-mono font-bold text-2xl text-slate-800 tracking-wider">
-                      {veiculo.placa}
-                    </span>
-                  </div>
-
-                  {/* Info */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Car className="w-4 h-4 text-slate-400" />
-                      <span className="font-medium text-slate-700">
-                        {veiculo.modelo}
-                      </span>
-                    </div>
-
-                    {veiculo.cor && (
-                      <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <div className={`w-4 h-4 rounded-full ${getCorClass(veiculo.cor)}`} />
-                        {veiculo.cor}
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-2 text-sm text-slate-500 pt-2 border-t border-slate-100">
-                      <User className="w-4 h-4" />
-                      {veiculo.cliente.nome}
-                    </div>
-                  </div>
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Car className="w-5 h-5 text-slate-600" />
                 </div>
-              </Card>
-            ))}
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{new Set(veiculos.map(v => v.cliente.id)).size}</p>
+                  <p className="text-sm text-slate-500">Proprietários</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                  <User className="w-5 h-5 text-cyan-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{new Set(veiculos.map(v => v.modelo.split(' ')[0])).size}</p>
+                  <p className="text-sm text-slate-500">Marcas</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <Car className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{new Set(veiculos.filter(v => v.cor).map(v => v.cor?.toLowerCase())).size}</p>
+                  <p className="text-sm text-slate-500">Cores</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Palette className="w-5 h-5 text-purple-600" />
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Busca e Tabela */}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            {/* Barra de busca */}
+            <div className="p-4 border-b border-slate-100">
+              <div className="relative max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar por placa, modelo ou cliente..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                />
+                {busca && (
+                  <button
+                    onClick={() => setBusca("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                  >
+                    <X className="w-3 h-3 text-slate-500" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Tabela */}
+            {veiculosFiltrados.length === 0 ? (
+              <div className="text-center py-16">
+                <Car className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-slate-700 font-medium">Nenhum veículo encontrado</h3>
+                <p className="text-slate-500 text-sm mt-1">
+                  {busca ? "Tente outro termo de busca" : "Cadastre seu primeiro veículo"}
+                </p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Placa</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Modelo</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Cor</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Proprietário</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Telefone</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {veiculosFiltrados.map((veiculo) => (
+                    <tr key={veiculo.id} className="hover:bg-slate-50 transition-colors">
+                      {/* Placa */}
+                      <td className="py-3 px-4">
+                        <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded text-sm tracking-wider">
+                          {veiculo.placa}
+                        </span>
+                      </td>
+
+                      {/* Modelo */}
+                      <td className="py-3 px-4">
+                        <span className="font-medium text-slate-800">{veiculo.modelo}</span>
+                      </td>
+
+                      {/* Cor */}
+                      <td className="py-3 px-4">
+                        {veiculo.cor ? (
+                          <div className="flex items-center gap-2">
+                            <div className={`w-4 h-4 rounded-full flex-shrink-0 ${getCorClass(veiculo.cor)}`} />
+                            <span className="text-slate-600 text-sm">{veiculo.cor}</span>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 text-sm">—</span>
+                        )}
+                      </td>
+
+                      {/* Proprietário */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center text-white font-medium text-xs">
+                            {veiculo.cliente.nome.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-slate-700">{veiculo.cliente.nome}</span>
+                        </div>
+                      </td>
+
+                      {/* Telefone */}
+                      <td className="py-3 px-4">
+                        <span className="text-slate-600 text-sm">{veiculo.cliente.telefone}</span>
+                      </td>
+
+                      {/* Ações */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => abrirModalEditar(veiculo)}
+                            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(veiculo.id)}
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {/* Footer com contagem */}
+            {veiculosFiltrados.length > 0 && (
+              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 text-sm text-slate-500">
+                Mostrando {veiculosFiltrados.length} de {veiculos.length} veículos
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Modal de criar/editar */}
@@ -699,58 +796,140 @@ export default function VeiculosPage() {
           </div>
 
           {/* Desktop Modal */}
-          <div className="hidden lg:block">
-            <Modal
-              isOpen={true}
-              onClose={() => setShowModal(false)}
-              title={editando ? "Editar Veículo" : "Novo Veículo"}
-            >
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Select
-                  name="clienteId"
-                  label="Cliente"
-                  value={formClienteId}
-                  onChange={(e) => setFormClienteId(e.target.value)}
-                  options={clientes.map((c) => ({
-                    value: c.id,
-                    label: `${c.nome} - ${c.telefone}`,
-                  }))}
-                  required
-                />
-                <Input
-                  name="placa"
-                  label="Placa"
-                  value={formPlaca}
-                  onChange={(e) => setFormPlaca(e.target.value.toUpperCase())}
-                  placeholder="ABC-1234"
-                  required
-                  style={{ textTransform: "uppercase" }}
-                />
-                <Input
-                  name="modelo"
-                  label="Modelo"
-                  value={formModelo}
-                  onChange={(e) => setFormModelo(e.target.value)}
-                  placeholder="Ex: Honda Civic"
-                  required
-                />
-                <Input 
-                  name="cor" 
-                  label="Cor" 
-                  value={formCor}
-                  onChange={(e) => setFormCor(e.target.value)}
-                  placeholder="Ex: Prata" 
-                />
-                <div className="flex justify-end gap-3 pt-4">
-                  <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
-                    Cancelar
-                  </Button>
-                  <Button type="submit" disabled={salvando}>
-                    {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
-                  </Button>
+          <div className="hidden lg:flex fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-slate-800">
+                  {editando ? "Editar Veículo" : "Novo Veículo"}
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                {/* Cliente */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Cliente *
+                  </label>
+                  <select
+                    value={formClienteId}
+                    onChange={(e) => setFormClienteId(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 bg-white"
+                  >
+                    <option value="">Selecione um cliente</option>
+                    {clientes.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nome} - {c.telefone}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Placa */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Placa *
+                  </label>
+                  <input
+                    type="text"
+                    value={formPlaca}
+                    onChange={(e) => setFormPlaca(e.target.value.toUpperCase())}
+                    required
+                    maxLength={8}
+                    placeholder="ABC1D23"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 font-mono uppercase tracking-wider"
+                  />
+                </div>
+
+                {/* Modelo */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Modelo *
+                  </label>
+                  <input
+                    type="text"
+                    value={formModelo}
+                    onChange={(e) => setFormModelo(e.target.value)}
+                    required
+                    placeholder="Ex: Honda Civic"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                  />
+                </div>
+
+                {/* Cor */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Cor
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formCor}
+                      onChange={(e) => setFormCor(e.target.value)}
+                      placeholder="Ex: Prata"
+                      className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 pr-12"
+                    />
+                    {formCor && (
+                      <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full ${getCorClass(formCor)}`} />
+                    )}
+                  </div>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {["Branco", "Prata", "Preto", "Azul", "Vermelho"].map((cor) => (
+                      <button
+                        key={cor}
+                        type="button"
+                        onClick={() => setFormCor(cor)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                          formCor.toLowerCase() === cor.toLowerCase()
+                            ? "bg-slate-800 text-white"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {cor}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </form>
-            </Modal>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3 bg-slate-50">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium text-sm rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const form = document.querySelector('form') as HTMLFormElement;
+                    if (form) form.requestSubmit();
+                  }}
+                  disabled={salvando || !formClienteId}
+                  className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {salvando ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    editando ? "Salvar" : "Cadastrar"
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </>
       )}
