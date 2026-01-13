@@ -131,6 +131,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
