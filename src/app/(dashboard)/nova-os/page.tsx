@@ -601,178 +601,301 @@ export default function NovaOSPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 space-y-6 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Nova OS</h1>
-            <p className="text-slate-500 mt-1">
-              Registre uma nova ordem de serviço
-            </p>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Cliente */}
-          <Card title="Cliente" icon={<User className="w-5 h-5" />}>
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <Select
-                    label="Selecione o cliente"
-                    options={clientes.map((c) => ({
-                      value: c.id,
-                      label: `${c.nome} - ${c.telefone}`,
-                    }))}
-                    {...register("clienteId", { required: true })}
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setShowNovoCliente(true)}
-                    icon={<Plus className="w-4 h-4" />}
-                  >
-                    Novo
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Veículo */}
-          <Card title="Veículo" icon={<Car className="w-5 h-5" />}>
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <Select
-                    label="Selecione o veículo"
-                    options={veiculosSelecionados.map((v) => ({
-                      value: v.id,
-                      label: `${v.placa} - ${v.modelo} ${v.cor || ""}`,
-                    }))}
-                    disabled={!clienteSelecionado}
-                    {...register("veiculoId", { required: true })}
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setShowNovoVeiculo(true)}
-                    disabled={!clienteSelecionado}
-                    icon={<Plus className="w-4 h-4" />}
-                  >
-                    Novo
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Serviços */}
-          <Card title="Serviços" icon={<Wrench className="w-5 h-5" />}>
-            <div className="grid grid-cols-2 gap-4">
-              {servicos.map((servico) => {
-                const selecionado = servicosSelecionados.includes(servico.id);
-                return (
-                  <button
-                    key={servico.id}
-                    type="button"
-                    onClick={() => toggleServico(servico.id)}
-                    className={`
-                      p-4 rounded-xl border-2 text-left transition-all duration-200
-                      ${
-                        selecionado
-                          ? "border-cyan-500 bg-cyan-50"
-                          : "border-slate-200 hover:border-slate-300"
-                      }
-                    `}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-medium text-slate-800">
-                          {servico.nome}
-                        </p>
-                        <p className="text-sm text-slate-500">
-                          {servico.tempoEstimado} min
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-emerald-600">
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(servico.preco)}
-                        </span>
-                        {selecionado && (
-                          <div className="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center">
-                            <Check className="w-4 h-4 text-white" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {servicos.length === 0 && (
-              <p className="text-slate-400 text-center py-8">
-                Nenhum serviço cadastrado. Cadastre serviços primeiro.
-              </p>
-            )}
-          </Card>
-
-          {/* Previsão */}
-          <Card title="Previsão" icon={<Clock className="w-5 h-5" />}>
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                type="datetime-local"
-                label="Previsão de Saída"
-                {...register("previsaoSaida")}
-              />
-              <div className="flex items-end">
-                <div className="text-sm text-slate-500">
-                  Tempo estimado: <strong>{tempoTotal} min</strong>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Resumo e Submit */}
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl p-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-cyan-100">Total da OS</p>
-                <p className="text-4xl font-bold">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(totalServicos)}
-                </p>
-                <p className="text-cyan-100 mt-1">
-                  {servicosSelecionados.length} serviço(s) selecionado(s)
-                </p>
-              </div>
-              <Button
-                type="submit"
-                disabled={submitting || servicosSelecionados.length === 0}
-                className="bg-white text-cyan-600 hover:bg-cyan-50 shadow-none"
-                size="lg"
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1200px] mx-auto">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.back()}
+                className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors"
               >
-                {submitting ? "Criando..." : "Criar OS"}
-              </Button>
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800">Nova Ordem de Serviço</h1>
+                <p className="text-slate-500 text-sm">Preencha os dados para criar uma nova OS</p>
+              </div>
             </div>
           </div>
-        </form>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-3 gap-6">
+              
+              {/* Coluna Esquerda - Cliente e Veículo */}
+              <div className="col-span-2 space-y-6">
+                
+                {/* Cliente e Veículo em linha */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Cliente */}
+                  <div className="bg-white rounded-xl border border-slate-200 p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-slate-500" />
+                        <h3 className="font-semibold text-slate-800">Cliente</h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowNovoCliente(true)}
+                        className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Novo
+                      </button>
+                    </div>
+                    
+                    <select
+                      {...register("clienteId", { required: true })}
+                      className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                    >
+                      <option value="">Selecione o cliente</option>
+                      {clientes.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.nome} - {c.telefone}
+                        </option>
+                      ))}
+                    </select>
+
+                    {clienteObj && (
+                      <div className="mt-3 p-3 bg-slate-50 rounded-lg flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                          <User className="w-5 h-5 text-cyan-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-slate-800">{clienteObj.nome}</p>
+                          <p className="text-sm text-slate-500">{clienteObj.telefone}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Veículo */}
+                  <div className={`bg-white rounded-xl border border-slate-200 p-5 ${!clienteSelecionado ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Car className="w-4 h-4 text-slate-500" />
+                        <h3 className="font-semibold text-slate-800">Veículo</h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowNovoVeiculo(true)}
+                        disabled={!clienteSelecionado}
+                        className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1 disabled:opacity-50"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Novo
+                      </button>
+                    </div>
+                    
+                    <select
+                      {...register("veiculoId", { required: true })}
+                      disabled={!clienteSelecionado}
+                      className="w-full px-4 py-3 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 disabled:bg-slate-100"
+                    >
+                      <option value="">Selecione o veículo</option>
+                      {veiculosSelecionados.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.placa} - {v.modelo} {v.cor || ""}
+                        </option>
+                      ))}
+                    </select>
+
+                    {veiculoObj && (
+                      <div className="mt-3 p-3 bg-slate-50 rounded-lg flex items-center gap-3">
+                        <div className="bg-slate-800 text-white px-3 py-1.5 rounded-md">
+                          <span className="font-mono font-bold text-sm">{veiculoObj.placa}</span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-slate-800">{veiculoObj.modelo}</p>
+                          {veiculoObj.cor && <p className="text-sm text-slate-500">{veiculoObj.cor}</p>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Serviços */}
+                <div className="bg-white rounded-xl border border-slate-200 p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Wrench className="w-4 h-4 text-slate-500" />
+                      <h3 className="font-semibold text-slate-800">Serviços</h3>
+                    </div>
+                    {servicosSelecionados.length > 0 && (
+                      <span className="text-sm text-cyan-600 font-medium">
+                        {servicosSelecionados.length} selecionado{servicosSelecionados.length > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+
+                  {servicos.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      {servicos.map((servico) => {
+                        const selecionado = servicosSelecionados.includes(servico.id);
+                        return (
+                          <button
+                            key={servico.id}
+                            type="button"
+                            onClick={() => toggleServico(servico.id)}
+                            className={`
+                              flex items-center justify-between p-4 rounded-lg border-2 text-left transition-all
+                              ${selecionado
+                                ? "border-cyan-500 bg-cyan-50"
+                                : "border-slate-200 hover:border-slate-300"
+                              }
+                            `}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                                selecionado ? "border-cyan-500 bg-cyan-500" : "border-slate-300"
+                              }`}>
+                                {selecionado && <Check className="w-3 h-3 text-white" />}
+                              </div>
+                              <div>
+                                <p className="font-medium text-slate-800">{servico.nome}</p>
+                                <p className="text-xs text-slate-500">{servico.tempoEstimado} min</p>
+                              </div>
+                            </div>
+                            <span className="font-semibold text-emerald-600">
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(servico.preco)}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-slate-400">
+                      <Wrench className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p>Nenhum serviço cadastrado</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Previsão */}
+                <div className="bg-white rounded-xl border border-slate-200 p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Clock className="w-4 h-4 text-slate-500" />
+                    <h3 className="font-semibold text-slate-800">Previsão de Saída</h3>
+                    <span className="text-sm text-slate-400">(opcional)</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-6">
+                    <input
+                      type="datetime-local"
+                      {...register("previsaoSaida")}
+                      className="px-4 py-3 rounded-lg border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                    />
+                    {tempoTotal > 0 && (
+                      <p className="text-sm text-slate-500">
+                        Tempo estimado: <strong className="text-slate-800">{tempoTotal} min</strong>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Coluna Direita - Resumo */}
+              <div className="col-span-1">
+                <div className="sticky top-8 bg-white rounded-xl border border-slate-200 overflow-hidden">
+                  <div className="p-5 border-b border-slate-100">
+                    <h3 className="font-semibold text-slate-800">Resumo da OS</h3>
+                  </div>
+
+                  <div className="p-5 space-y-4">
+                    {/* Cliente selecionado */}
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-500">Cliente</span>
+                      <span className="font-medium text-slate-800">
+                        {clienteObj?.nome || "—"}
+                      </span>
+                    </div>
+
+                    {/* Veículo selecionado */}
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-500">Veículo</span>
+                      <span className="font-medium text-slate-800">
+                        {veiculoObj?.placa || "—"}
+                      </span>
+                    </div>
+
+                    {/* Serviços */}
+                    <div className="pt-3 border-t border-slate-100">
+                      <p className="text-sm text-slate-500 mb-2">Serviços</p>
+                      {servicosSelecionados.length > 0 ? (
+                        <div className="space-y-2">
+                          {servicos
+                            .filter((s) => servicosSelecionados.includes(s.id))
+                            .map((s) => (
+                              <div key={s.id} className="flex items-center justify-between text-sm">
+                                <span className="text-slate-700">{s.nome}</span>
+                                <span className="font-medium text-slate-800">
+                                  {new Intl.NumberFormat("pt-BR", {
+                                    style: "currency",
+                                    currency: "BRL",
+                                  }).format(s.preco)}
+                                </span>
+                              </div>
+                            ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-400">Nenhum serviço selecionado</p>
+                      )}
+                    </div>
+
+                    {/* Tempo */}
+                    {tempoTotal > 0 && (
+                      <div className="flex items-center justify-between text-sm pt-3 border-t border-slate-100">
+                        <span className="text-slate-500">Tempo estimado</span>
+                        <span className="font-medium text-slate-800">{tempoTotal} min</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Total */}
+                  <div className="p-5 bg-slate-50 border-t border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-slate-600 font-medium">Total</span>
+                      <span className="text-2xl font-bold text-slate-800">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(totalServicos)}
+                      </span>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting || !clienteSelecionado || !veiculoId || servicosSelecionados.length === 0}
+                      className={`
+                        w-full py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors
+                        ${clienteSelecionado && veiculoId && servicosSelecionados.length > 0 && !submitting
+                          ? "bg-slate-800 hover:bg-slate-700 text-white"
+                          : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                        }
+                      `}
+                    >
+                      {submitting ? (
+                        <>
+                          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Criando...
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5" />
+                          Criar Ordem de Serviço
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* Modal Novo Cliente */}
