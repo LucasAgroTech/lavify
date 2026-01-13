@@ -8,6 +8,7 @@ import {
   Droplets,
   Menu,
   Crown,
+  DollarSign,
 } from "lucide-react";
 
 interface MobileNavProps {
@@ -25,6 +26,9 @@ const mobileNavItems = [
 
 export function MobileNav({ onMenuClick, userRole, currentPlan }: MobileNavProps) {
   const pathname = usePathname();
+  
+  // Verifica se tem plano ativo (PRO ou PREMIUM)
+  const hasActivePlan = currentPlan === "PRO" || currentPlan === "PREMIUM";
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 lg:hidden safe-area-bottom">
@@ -75,25 +79,45 @@ export function MobileNav({ onMenuClick, userRole, currentPlan }: MobileNavProps
           );
         })}
 
-        {/* Planos (se admin) */}
+        {/* Financeiro (se admin e tem plano ativo) OU Planos (se admin e não tem plano ativo) */}
         {userRole === "ADMIN" && (
-          <Link
-            href="/planos"
-            className="flex flex-col items-center justify-center py-2 px-3 min-w-[64px]"
-          >
-            <Crown
-              className={`w-6 h-6 ${
-                pathname === "/planos" ? "text-amber-500" : "text-slate-400"
-              }`}
-            />
-            <span
-              className={`text-[10px] font-medium mt-1 ${
-                pathname === "/planos" ? "text-amber-600" : "text-slate-500"
-              }`}
+          hasActivePlan ? (
+            <Link
+              href="/financeiro"
+              className="flex flex-col items-center justify-center py-2 px-3 min-w-[64px]"
             >
-              Planos
-            </span>
-          </Link>
+              <DollarSign
+                className={`w-6 h-6 ${
+                  pathname === "/financeiro" ? "text-emerald-500" : "text-slate-400"
+                }`}
+              />
+              <span
+                className={`text-[10px] font-medium mt-1 ${
+                  pathname === "/financeiro" ? "text-emerald-600" : "text-slate-500"
+                }`}
+              >
+                Financeiro
+              </span>
+            </Link>
+          ) : (
+            <Link
+              href="/planos"
+              className="flex flex-col items-center justify-center py-2 px-3 min-w-[64px]"
+            >
+              <Crown
+                className={`w-6 h-6 ${
+                  pathname === "/planos" ? "text-amber-500" : "text-slate-400"
+                }`}
+              />
+              <span
+                className={`text-[10px] font-medium mt-1 ${
+                  pathname === "/planos" ? "text-amber-600" : "text-slate-500"
+                }`}
+              >
+                Planos
+              </span>
+            </Link>
+          )
         )}
 
         {/* Menu Hamburger */}
