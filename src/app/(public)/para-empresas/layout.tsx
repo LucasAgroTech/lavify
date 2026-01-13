@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Lavify - Sistema para Lava-Rápido Simples e Completo",
+  title: "Lavify - Sistema para Lava-Rápido Completo",
   description:
     "Transforme seu lava-rápido em um negócio profissional. Gestão de pátio, estoque inteligente, financeiro integrado e fidelidade automática. Comece grátis!",
   keywords: [

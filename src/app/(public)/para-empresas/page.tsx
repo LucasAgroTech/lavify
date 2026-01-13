@@ -125,6 +125,9 @@ export default function LandingPageEmpresas() {
     "/hero-1.png",
     "/hero-2.png",
     "/hero-3.png",
+    "/hero-4.png",
+    "/hero-5.png",
+    "/hero-6.png",
   ];
 
   // Auto-play do carrossel
@@ -303,10 +306,10 @@ export default function LandingPageEmpresas() {
           {/* Headline - Direto ao ponto */}
           <h1 className="text-[28px] sm:text-[32px] lg:text-[48px] font-bold text-white text-center leading-[1.2] mb-4 lg:mb-6">
             <span className="block">Sistema para{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 whitespace-nowrap">
               Lava-Rápido
             </span></span>
-            <span className="block">Simples e Completo</span>
+            <span className="block whitespace-nowrap">Completo e Simples</span>
           </h1>
 
           {/* Subheadline - Funcionalidades */}
