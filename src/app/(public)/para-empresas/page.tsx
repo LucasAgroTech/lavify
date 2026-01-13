@@ -122,12 +122,12 @@ export default function LandingPageEmpresas() {
   const [slideAtual, setSlideAtual] = useState(0);
 
   const imagensHero = [
-    "/hero-1.png",
-    "/hero-2.png",
-    "/hero-3.png",
-    "/hero-4.png",
-    "/hero-5.png",
-    "/hero-6.png",
+    "/hero-1.webp",
+    "/hero-2.webp",
+    "/hero-3.webp",
+    "/hero-4.webp",
+    "/hero-5.webp",
+    "/hero-6.webp",
   ];
 
   // Auto-play do carrossel
