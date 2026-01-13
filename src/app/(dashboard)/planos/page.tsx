@@ -597,302 +597,332 @@ export default function PlanosPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-6 space-y-6">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-cyan-50 text-cyan-600 text-sm font-medium px-4 py-2 rounded-full mb-4">
-            <Crown className="w-4 h-4" />
-            <span>Planos e Preços</span>
-          </div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">
-            Escolha o Plano Ideal Para Seu Negócio
-          </h1>
-          <p className="text-slate-500">
-            Comece com 7 dias grátis e faça upgrade quando precisar. Cancele a qualquer momento.
-          </p>
-        </div>
-
-        {/* Billing Toggle */}
-        <div className="flex justify-center">
-          <div className="bg-slate-100 p-1 rounded-xl inline-flex items-center gap-1">
-            <button
-              onClick={() => setBillingInterval("monthly")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                billingInterval === "monthly"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Mensal
-            </button>
-            <button
-              onClick={() => setBillingInterval("yearly")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                billingInterval === "yearly"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Anual
-              <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">
-                Economize até 42%
-              </span>
-            </button>
-          </div>
-        </div>
-
-        {/* Trial Banner */}
-        {isInTrial && (
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-4 max-w-3xl mx-auto">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
-              <Clock className="w-6 h-6 text-white" />
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1200px] mx-auto space-y-8">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">Planos e Preços</h1>
+              <p className="text-slate-500 text-sm mt-0.5">Escolha o plano ideal para seu negócio</p>
             </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-amber-900">Período de Teste Ativo</h3>
-              <p className="text-amber-700 text-sm">
-                Restam <strong>{trialDays} dias</strong> de acesso completo. Assine agora para garantir!
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Current Usage */}
-        {subscription && currentPlanId !== "STARTER" && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-3xl mx-auto">
-            <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-cyan-500" />
-              Seu Uso Este Mês
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="bg-slate-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">Ordens de Serviço</span>
-                  </div>
-                  <span className="text-sm text-slate-500">
-                    {subscription.usage.osThisMonth} / {subscription.usage.osLimit}
-                  </span>
-                </div>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      subscription.usage.osPercentage > 80
-                        ? "bg-red-500"
-                        : subscription.usage.osPercentage > 50
-                        ? "bg-amber-500"
-                        : "bg-cyan-500"
-                    }`}
-                    style={{ width: `${Math.min(subscription.usage.osPercentage, 100)}%` }}
-                  />
-                </div>
-              </div>
-              <div className="bg-slate-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">Usuários</span>
-                  </div>
-                  <span className="text-sm text-slate-500">
-                    {subscription.usage.usersCount} / {subscription.usage.userLimit}
-                  </span>
-                </div>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-cyan-500 rounded-full transition-all"
-                    style={{
-                      width:
-                        subscription.usage.userLimit === "Ilimitado"
-                          ? "10%"
-                          : `${Math.min(
-                              (subscription.usage.usersCount / (subscription.usage.userLimit as number)) * 100,
-                              100
-                            )}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Plans Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {/* Starter */}
-          <div className={`bg-white rounded-2xl border-2 overflow-hidden ${currentPlanId === "STARTER" ? "border-emerald-500" : "border-slate-200"}`}>
-            {currentPlanId === "STARTER" && (
-              <div className="bg-emerald-500 text-white text-xs font-bold text-center py-1">
-                ✓ Plano Atual
-              </div>
-            )}
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-slate-800">Starter</h3>
-              <p className="text-slate-500 text-sm mb-4">Para quem está começando</p>
-              <div className="mb-6">
-                <span className="text-3xl font-bold text-slate-900">Grátis</span>
-              </div>
-              <button disabled className="w-full py-3 bg-slate-100 text-slate-500 font-semibold rounded-xl cursor-not-allowed mb-6">
-                Plano Gratuito
+            
+            {/* Billing Toggle */}
+            <div className="bg-white border border-slate-200 p-1 rounded-lg inline-flex items-center gap-1">
+              <button
+                onClick={() => setBillingInterval("monthly")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  billingInterval === "monthly"
+                    ? "bg-slate-800 text-white"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Mensal
               </button>
-              <ul className="space-y-3">
-                {["Dashboard básico", "Kanban do pátio", "Cadastro de clientes", "Até 30 OSs/mês", "1 usuário"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-emerald-500" />
-                    <span className="text-slate-700">{f}</span>
-                  </li>
-                ))}
-                {["Agendamento online", "Controle de estoque", "Financeiro", "WhatsApp API"].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <X className="w-5 h-5 text-slate-300" />
-                    <span className="text-slate-400">{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <button
+                onClick={() => setBillingInterval("yearly")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 ${
+                  billingInterval === "yearly"
+                    ? "bg-slate-800 text-white"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Anual
+                <span className={`text-xs px-1.5 py-0.5 rounded ${billingInterval === "yearly" ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-700"}`}>
+                  -42%
+                </span>
+              </button>
             </div>
           </div>
 
-          {/* PRO - Destaque */}
-          <div className={`bg-white rounded-2xl border-2 overflow-hidden shadow-xl relative ${currentPlanId === "PRO" ? "border-emerald-500" : "border-cyan-500"} shadow-cyan-500/10`}>
-            <div className="bg-cyan-500 text-white text-xs font-bold text-center py-1">
-              {currentPlanId === "PRO" ? "✓ Plano Atual" : "⭐ MAIS POPULAR"}
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-slate-800">Profissional</h3>
-              <p className="text-slate-500 text-sm mb-4">Para lava-rápidos em crescimento</p>
-              <div className="mb-6">
-                {billingInterval === "yearly" ? (
-                  <>
-                    <span className="text-3xl font-bold text-slate-900">R$ 39,92</span>
-                    <span className="text-slate-500">/mês</span>
-                    <p className="text-xs text-slate-400 mt-1">R$ 479,00/ano</p>
-                    <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded-full">
-                      <Gift className="w-3 h-3" />
-                      2 meses grátis
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold text-slate-900">R$ 47,90</span>
-                    <span className="text-slate-500">/mês</span>
-                    <p className="text-xs text-emerald-600 mt-1">7 dias grátis para testar</p>
-                  </>
-                )}
+          {/* Trial Banner */}
+          {isInTrial && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 text-amber-600" />
               </div>
-              {currentPlanId === "PRO" ? (
-                subscription?.subscription.hasSubscription ? (
-                  <button
-                    onClick={handlePortal}
-                    disabled={portalLoading}
-                    className="w-full py-3 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl flex items-center justify-center gap-2 mb-6"
-                  >
-                    {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CreditCard className="w-4 h-4" /> Gerenciar</>}
-                  </button>
-                ) : (
-                  <div className="w-full py-3 bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-center mb-6 flex items-center justify-center gap-2">
-                    <Check className="w-4 h-4" /> Plano Ativo
+              <div className="flex-1">
+                <p className="font-semibold text-amber-900">Período de Teste Ativo</p>
+                <p className="text-amber-700 text-sm">
+                  Restam <strong>{trialDays} dias</strong> de acesso completo
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Current Usage */}
+          {subscription && currentPlanId !== "STARTER" && (
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="w-5 h-5 text-cyan-500" />
+                <h2 className="font-semibold text-slate-800">Seu Uso Este Mês</h2>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-slate-600">Ordens de Serviço</span>
+                    <span className="text-sm font-semibold text-slate-800">
+                      {subscription.usage.osThisMonth} / {subscription.usage.osLimit}
+                    </span>
                   </div>
-                )
-              ) : (
-                <button
-                  onClick={() => handleCheckout("PRO")}
-                  disabled={checkoutLoading !== null}
-                  className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 mb-6 hover:shadow-cyan-500/30 transition-all"
-                >
-                  {checkoutLoading === "PRO" ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Rocket className="w-4 h-4" /> Começar Agora</>}
-                </button>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        subscription.usage.osPercentage > 80 ? "bg-red-500" : "bg-cyan-500"
+                      }`}
+                      style={{ width: `${Math.min(subscription.usage.osPercentage, 100)}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-slate-600">Usuários</span>
+                    <span className="text-sm font-semibold text-slate-800">
+                      {subscription.usage.usersCount} / {subscription.usage.userLimit}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-cyan-500 rounded-full"
+                      style={{
+                        width: subscription.usage.userLimit === "Ilimitado" ? "10%" : `${Math.min((subscription.usage.usersCount / (subscription.usage.userLimit as number)) * 100, 100)}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Plans Grid */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Starter */}
+            <div className={`bg-white rounded-xl border-2 overflow-hidden ${currentPlanId === "STARTER" ? "border-emerald-500" : "border-slate-200"}`}>
+              {currentPlanId === "STARTER" && (
+                <div className="bg-emerald-500 text-white text-xs font-bold text-center py-1.5">
+                  ✓ Plano Atual
+                </div>
               )}
-              <ul className="space-y-3">
-                {["Tudo do Starter +", "Agendamento online 24h", "Controle de estoque", "Alertas de estoque baixo", "Até 150 OSs/mês", "3 usuários", "WhatsApp API"].map((f, i) => (
-                  <li key={i} className={`flex items-center gap-3 ${i === 0 ? "font-medium" : ""}`}>
-                    <Check className="w-5 h-5 text-emerald-500" />
-                    <span className="text-slate-700">{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-slate-800">Starter</h3>
+                <p className="text-slate-500 text-sm mb-4">Para quem está começando</p>
+                
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-slate-900">Grátis</span>
+                </div>
+
+                <button disabled className="w-full py-2.5 bg-slate-100 text-slate-500 font-medium rounded-lg cursor-not-allowed mb-6 text-sm">
+                  Plano Gratuito
+                </button>
+
+                <div className="space-y-3">
+                  {["Dashboard básico", "Kanban do pátio", "Cadastro de clientes", "Até 30 OSs/mês", "1 usuário"].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2.5 text-sm">
+                      <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-slate-700">{f}</span>
+                    </div>
+                  ))}
+                  {["Agendamento online", "Controle de estoque", "Financeiro", "WhatsApp API"].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2.5 text-sm">
+                      <X className="w-4 h-4 text-slate-300 flex-shrink-0" />
+                      <span className="text-slate-400">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* PRO - Destaque */}
+            <div className={`bg-white rounded-xl border-2 overflow-hidden shadow-lg relative ${currentPlanId === "PRO" ? "border-emerald-500" : "border-cyan-500"}`}>
+              <div className={`text-white text-xs font-bold text-center py-1.5 ${currentPlanId === "PRO" ? "bg-emerald-500" : "bg-cyan-500"}`}>
+                {currentPlanId === "PRO" ? "✓ Plano Atual" : "⭐ MAIS POPULAR"}
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-slate-800">Profissional</h3>
+                <p className="text-slate-500 text-sm mb-4">Tudo que seu lava-rápido precisa</p>
+                
+                <div className="mb-6">
+                  {billingInterval === "yearly" ? (
+                    <>
+                      <span className="text-3xl font-bold text-slate-900">R$ 39,92</span>
+                      <span className="text-slate-500 text-sm">/mês</span>
+                      <p className="text-xs text-slate-400 mt-1">R$ 479,00/ano</p>
+                      <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded">
+                        <Gift className="w-3 h-3" />
+                        2 meses grátis
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold text-slate-900">R$ 47,90</span>
+                      <span className="text-slate-500 text-sm">/mês</span>
+                      <p className="text-xs text-emerald-600 mt-1">7 dias grátis para testar</p>
+                    </>
+                  )}
+                </div>
+
+                {currentPlanId === "PRO" ? (
+                  subscription?.subscription.hasSubscription ? (
+                    <button
+                      onClick={handlePortal}
+                      disabled={portalLoading}
+                      className="w-full py-2.5 border border-slate-200 text-slate-700 font-medium rounded-lg flex items-center justify-center gap-2 mb-6 text-sm hover:bg-slate-50"
+                    >
+                      {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CreditCard className="w-4 h-4" /> Gerenciar</>}
+                    </button>
+                  ) : (
+                    <div className="w-full py-2.5 bg-emerald-100 text-emerald-700 font-medium rounded-lg text-center mb-6 flex items-center justify-center gap-2 text-sm">
+                      <Check className="w-4 h-4" /> Plano Ativo
+                    </div>
+                  )
+                ) : (
+                  <button
+                    onClick={() => handleCheckout("PRO")}
+                    disabled={checkoutLoading !== null}
+                    className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg flex items-center justify-center gap-2 mb-6 text-sm transition-colors"
+                  >
+                    {checkoutLoading === "PRO" ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Rocket className="w-4 h-4" /> Começar Agora</>}
+                  </button>
+                )}
+
+                <div className="space-y-3">
+                  {["Tudo do Starter +", "Agendamento online 24h", "Controle de estoque", "Alertas de estoque", "Até 150 OSs/mês", "3 usuários", "WhatsApp API"].map((f, i) => (
+                    <div key={i} className={`flex items-center gap-2.5 text-sm ${i === 0 ? "font-medium" : ""}`}>
+                      <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-slate-700">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Premium */}
+            <div className={`bg-white rounded-xl border-2 overflow-hidden ${currentPlanId === "PREMIUM" ? "border-emerald-500" : "border-amber-400"}`}>
+              <div className={`text-white text-xs font-bold text-center py-1.5 ${currentPlanId === "PREMIUM" ? "bg-emerald-500" : "bg-amber-500"}`}>
+                {currentPlanId === "PREMIUM" ? "✓ Plano Atual" : "👑 COMPLETO"}
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-slate-800">Premium</h3>
+                <p className="text-slate-500 text-sm mb-4">Operação profissional completa</p>
+                
+                <div className="mb-6">
+                  {billingInterval === "yearly" ? (
+                    <>
+                      <span className="text-3xl font-bold text-slate-900">R$ 56,58</span>
+                      <span className="text-slate-500 text-sm">/mês</span>
+                      <p className="text-xs text-slate-400 mt-1">R$ 679,00/ano</p>
+                      <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded">
+                        <Gift className="w-3 h-3" />
+                        5 meses grátis!
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold text-slate-900">R$ 97,90</span>
+                      <span className="text-slate-500 text-sm">/mês</span>
+                      <p className="text-xs text-emerald-600 mt-1">7 dias grátis para testar</p>
+                    </>
+                  )}
+                </div>
+
+                {currentPlanId === "PREMIUM" ? (
+                  subscription?.subscription.hasSubscription ? (
+                    <button
+                      onClick={handlePortal}
+                      disabled={portalLoading}
+                      className="w-full py-2.5 border border-slate-200 text-slate-700 font-medium rounded-lg flex items-center justify-center gap-2 mb-6 text-sm hover:bg-slate-50"
+                    >
+                      {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CreditCard className="w-4 h-4" /> Gerenciar</>}
+                    </button>
+                  ) : (
+                    <div className="w-full py-2.5 bg-emerald-100 text-emerald-700 font-medium rounded-lg text-center mb-6 flex items-center justify-center gap-2 text-sm">
+                      <Check className="w-4 h-4" /> Plano Ativo
+                    </div>
+                  )
+                ) : (
+                  <button
+                    onClick={() => handleCheckout("PREMIUM")}
+                    disabled={checkoutLoading !== null}
+                    className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg flex items-center justify-center gap-2 mb-6 text-sm transition-colors"
+                  >
+                    {checkoutLoading === "PREMIUM" ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Crown className="w-4 h-4" /> Assinar Premium</>}
+                  </button>
+                )}
+
+                <div className="space-y-3">
+                  {["Tudo do Pro +", "OSs ilimitadas", "Usuários ilimitados", "Financeiro completo", "Fidelidade e Cashback", "Multi-unidades", "Suporte prioritário"].map((f, i) => (
+                    <div key={i} className={`flex items-center gap-2.5 text-sm ${i === 0 ? "font-medium" : ""}`}>
+                      <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-slate-700">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Premium */}
-          <div className={`bg-white rounded-2xl border-2 overflow-hidden ${currentPlanId === "PREMIUM" ? "border-emerald-500" : "border-amber-300"}`}>
-            <div className={`text-white text-xs font-bold text-center py-1 ${currentPlanId === "PREMIUM" ? "bg-emerald-500" : "bg-amber-500"}`}>
-              {currentPlanId === "PREMIUM" ? "✓ Plano Atual" : "COMPLETO"}
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-slate-800">Premium</h3>
-              <p className="text-slate-500 text-sm mb-4">Para operações profissionais</p>
-              <div className="mb-6">
-                {billingInterval === "yearly" ? (
-                  <>
-                    <span className="text-3xl font-bold text-slate-900">R$ 56,58</span>
-                    <span className="text-slate-500">/mês</span>
-                    <p className="text-xs text-slate-400 mt-1">R$ 679,00/ano</p>
-                    <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-1 rounded-full">
-                      <Gift className="w-3 h-3" />
-                      5 meses grátis!
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold text-slate-900">R$ 97,90</span>
-                    <span className="text-slate-500">/mês</span>
-                    <p className="text-xs text-emerald-600 mt-1">7 dias grátis para testar</p>
-                  </>
-                )}
+          {/* Garantias */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="grid grid-cols-4 gap-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-slate-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 text-sm">Pagamento Seguro</p>
+                  <p className="text-xs text-slate-500">Via Stripe</p>
+                </div>
               </div>
-              {currentPlanId === "PREMIUM" ? (
-                subscription?.subscription.hasSubscription ? (
-                  <button
-                    onClick={handlePortal}
-                    disabled={portalLoading}
-                    className="w-full py-3 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl flex items-center justify-center gap-2 mb-6"
-                  >
-                    {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><CreditCard className="w-4 h-4" /> Gerenciar</>}
-                  </button>
-                ) : (
-                  <div className="w-full py-3 bg-emerald-100 text-emerald-700 font-semibold rounded-xl text-center mb-6 flex items-center justify-center gap-2">
-                    <Check className="w-4 h-4" /> Plano Ativo
-                  </div>
-                )
-              ) : (
-                <button
-                  onClick={() => handleCheckout("PREMIUM")}
-                  disabled={checkoutLoading !== null}
-                  className="w-full py-3 bg-amber-500 text-white font-semibold rounded-xl hover:bg-amber-600 flex items-center justify-center gap-2 mb-6 transition-all"
-                >
-                  {checkoutLoading === "PREMIUM" ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Fazer Upgrade</>}
-                </button>
-              )}
-              <ul className="space-y-3">
-                {["Tudo do Pro +", "OSs ilimitadas", "Usuários ilimitados", "Financeiro completo", "Programa de fidelidade", "Cashback automático", "Relatórios avançados", "Multi-unidades", "Suporte prioritário"].map((f, i) => (
-                  <li key={i} className={`flex items-center gap-3 ${i === 0 ? "font-medium" : ""}`}>
-                    <Check className="w-5 h-5 text-emerald-500" />
-                    <span className="text-slate-700">{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-slate-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 text-sm">Ativação Imediata</p>
+                  <p className="text-xs text-slate-500">Acesso instantâneo</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-slate-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 text-sm">7 Dias Grátis</p>
+                  <p className="text-xs text-slate-500">Teste sem compromisso</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <X className="w-5 h-5 text-slate-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 text-sm">Cancele Quando Quiser</p>
+                  <p className="text-xs text-slate-500">Sem multa</p>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Manage Subscription Link */}
+          {subscription?.subscription.hasSubscription && (
+            <div className="text-center">
+              <button
+                onClick={handlePortal}
+                disabled={portalLoading}
+                className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium text-sm"
+              >
+                {portalLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <ExternalLink className="w-4 h-4" />
+                    Gerenciar pagamentos, faturas e cancelamento
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
-
-        {/* Manage Subscription Link */}
-        {subscription?.subscription.hasSubscription && (
-          <div className="text-center">
-            <button
-              onClick={handlePortal}
-              disabled={portalLoading}
-              className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium"
-            >
-              {portalLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <>
-                  <ExternalLink className="w-4 h-4" />
-                  Gerenciar pagamentos, faturas e cancelamento
-                </>
-              )}
-            </button>
-          </div>
-        )}
       </div>
     </>
   );
