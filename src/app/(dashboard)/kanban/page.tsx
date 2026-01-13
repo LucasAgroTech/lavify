@@ -559,7 +559,7 @@ export default function KanbanPage() {
                   {/* Column Header */}
                   <div className={`flex items-center justify-between p-4 border-b border-slate-100 ${coluna.bgColor}`}>
                     <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${coluna.color}`} />
+                      <div className={`w-2 h-2 rounded-full ${coluna.dotColor}`} />
                       <h2 className="font-semibold text-slate-800">{coluna.tituloMobile}</h2>
                     </div>
                     <span className="text-sm font-bold text-slate-600 bg-white px-2.5 py-1 rounded-md">
