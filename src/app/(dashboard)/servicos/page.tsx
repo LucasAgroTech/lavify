@@ -298,160 +298,182 @@ export default function ServicosPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 xl:p-10 space-y-8 max-w-[1600px] mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25">
-            <Droplets className="w-7 h-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">Serviços</h1>
-            <p className="text-slate-500">
-              {servicos.length} serviços cadastrados
-            </p>
-          </div>
-        </div>
-        <Button onClick={abrirModalCriar} icon={<Plus className="w-5 h-5" />} className="px-6 py-3 text-base">
-          Novo Serviço
-        </Button>
-      </div>
-
-      {/* Stats rápidos */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
-              <Droplets className="w-6 h-6 text-cyan-600" />
-            </div>
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1400px] mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-slate-800">{servicos.length}</p>
-              <p className="text-sm text-slate-500">Serviços ativos</p>
+              <h1 className="text-2xl font-bold text-slate-800">Serviços</h1>
+              <p className="text-slate-500 text-sm mt-0.5">{servicos.length} serviços cadastrados</p>
             </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-800">
-                {formatCurrency(servicos.reduce((acc, s) => acc + s.preco, 0) / (servicos.length || 1))}
-              </p>
-              <p className="text-sm text-slate-500">Ticket médio</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-800">
-                {Math.round(servicos.reduce((acc, s) => acc + s.tempoEstimado, 0) / (servicos.length || 1))} min
-              </p>
-              <p className="text-sm text-slate-500">Tempo médio</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista */}
-        {servicos.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
-              <Droplets className="w-10 h-10 text-slate-300" />
-            </div>
-            <h3 className="text-slate-700 font-semibold text-lg">Nenhum serviço cadastrado</h3>
-            <p className="text-slate-500 text-sm mt-1 mb-6">
-              Cadastre os serviços oferecidos pelo seu lava-jato
-            </p>
-            <Button onClick={abrirModalCriar} icon={<Plus className="w-4 h-4" />}>
-              Cadastrar Serviço
-            </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-          {servicos.map((servico) => (
-            <div
-              key={servico.id}
-              className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-xl hover:border-slate-200 hover:-translate-y-1 transition-all duration-300 group relative"
+            <button
+              onClick={abrirModalCriar}
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
             >
-                {/* Botões de ação */}
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                  <button
-                    onClick={() => abrirModalEditar(servico)}
-                    className="p-2.5 bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 rounded-xl transition-all duration-200 shadow-sm"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setConfirmDelete(servico.id)}
-                    className="p-2.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 rounded-xl transition-all duration-200 shadow-sm"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+              <Plus className="w-4 h-4" />
+              Novo Serviço
+            </button>
+          </div>
 
-              <div className="space-y-5">
-                {/* Header */}
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25 group-hover:scale-110 transition-transform">
-                    <Droplets className="w-7 h-7" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg text-slate-800">
-                      {servico.nome}
-                    </h3>
-                    <div className="flex items-center gap-2 text-slate-500 mt-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{servico.tempoEstimado} minutos</span>
-                    </div>
-                  </div>
+          {/* Stats */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{servicos.length}</p>
+                  <p className="text-sm text-slate-500">Ativos</p>
                 </div>
-
-                {/* Preço */}
-                <div className="flex items-center justify-between py-4 border-y border-slate-100">
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <DollarSign className="w-5 h-5" />
-                    <span className="font-medium">Preço</span>
-                  </div>
-                  <span className="text-3xl font-bold text-emerald-600">
-                    {formatCurrency(servico.preco)}
-                  </span>
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Droplets className="w-5 h-5 text-slate-600" />
                 </div>
-
-                {/* Produtos consumidos */}
-                {servico.produtos.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Package className="w-4 h-4 text-slate-400" />
-                      <p className="text-sm font-medium text-slate-500">
-                        Produtos utilizados
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      {servico.produtos.map((p) => (
-                        <div
-                          key={p.id}
-                          className="flex justify-between items-center text-sm bg-slate-50 rounded-lg px-3 py-2"
-                        >
-                          <span className="text-slate-700 font-medium">{p.produto.nome}</span>
-                          <span className="text-slate-500">
-                            {p.quantidade}{p.produto.unidade}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
-          ))}
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-emerald-600">
+                    {formatCurrency(servicos.reduce((acc, s) => acc + s.preco, 0) / (servicos.length || 1))}
+                  </p>
+                  <p className="text-sm text-slate-500">Ticket Médio</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">
+                    {Math.round(servicos.reduce((acc, s) => acc + s.tempoEstimado, 0) / (servicos.length || 1))} min
+                  </p>
+                  <p className="text-sm text-slate-500">Tempo Médio</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-amber-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">
+                    {servicos.reduce((acc, s) => acc + s.produtos.length, 0)}
+                  </p>
+                  <p className="text-sm text-slate-500">Produtos Usados</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Package className="w-5 h-5 text-purple-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabela */}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            {servicos.length === 0 ? (
+              <div className="text-center py-16">
+                <Droplets className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-slate-700 font-medium">Nenhum serviço cadastrado</h3>
+                <p className="text-slate-500 text-sm mt-1">Cadastre os serviços oferecidos pelo seu lava-jato</p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Serviço</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Tempo</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Produtos</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Preço</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {servicos.map((servico) => (
+                    <tr key={servico.id} className="hover:bg-slate-50 transition-colors">
+                      {/* Serviço */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white">
+                            <Droplets className="w-5 h-5" />
+                          </div>
+                          <span className="font-semibold text-slate-800">{servico.nome}</span>
+                        </div>
+                      </td>
+
+                      {/* Tempo */}
+                      <td className="py-4 px-4 text-center">
+                        <div className="inline-flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg">
+                          <Clock className="w-3.5 h-3.5 text-slate-500" />
+                          <span className="text-sm font-medium text-slate-700">{servico.tempoEstimado} min</span>
+                        </div>
+                      </td>
+
+                      {/* Produtos */}
+                      <td className="py-4 px-4">
+                        {servico.produtos.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {servico.produtos.slice(0, 2).map((p) => (
+                              <span
+                                key={p.id}
+                                className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded"
+                              >
+                                {p.produto.nome}
+                              </span>
+                            ))}
+                            {servico.produtos.length > 2 && (
+                              <span className="text-xs text-slate-400 px-1 py-1">
+                                +{servico.produtos.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400">Nenhum produto</span>
+                        )}
+                      </td>
+
+                      {/* Preço */}
+                      <td className="py-4 px-4 text-right">
+                        <span className="text-lg font-bold text-emerald-600">
+                          {formatCurrency(servico.preco)}
+                        </span>
+                      </td>
+
+                      {/* Ações */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => abrirModalEditar(servico)}
+                            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete(servico.id)}
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {/* Footer */}
+            {servicos.length > 0 && (
+              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-sm text-slate-500">
+                <span>{servicos.length} serviços</span>
+                <span>Faturamento potencial: <strong className="text-emerald-600">{formatCurrency(servicos.reduce((acc, s) => acc + s.preco, 0))}</strong></span>
+              </div>
+            )}
+          </div>
         </div>
-      )}
       </div>
 
       {/* Modal de criar/editar */}
@@ -575,49 +597,119 @@ export default function ServicosPage() {
           </div>
 
           {/* Desktop Modal */}
-          <div className="hidden lg:block">
-      <Modal
-              isOpen={true}
-        onClose={() => setShowModal(false)}
-              title={editando ? "Editar Serviço" : "Novo Serviço"}
-      >
-              <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Nome do serviço"
-                  value={formNome}
-                  onChange={(e) => setFormNome(e.target.value)}
-            placeholder="Ex: Lavagem Completa"
-            required
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Preço (R$)"
-              type="number"
-              step="0.01"
-                    value={formPreco}
-                    onChange={(e) => setFormPreco(e.target.value)}
-              placeholder="50.00"
-              required
-            />
-            <Input
-              label="Tempo (minutos)"
-              type="number"
-                    value={formTempo}
-                    onChange={(e) => setFormTempo(e.target.value)}
-              placeholder="30"
-              required
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
-              Cancelar
-            </Button>
-                  <Button type="submit" disabled={salvando}>
-                    {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
-                  </Button>
-          </div>
-        </form>
-      </Modal>
+          <div className="hidden lg:flex fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-slate-800">
+                  {editando ? "Editar Serviço" : "Novo Serviço"}
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nome do serviço *
+                  </label>
+                  <input
+                    type="text"
+                    value={formNome}
+                    onChange={(e) => setFormNome(e.target.value)}
+                    required
+                    placeholder="Ex: Lavagem Completa"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      Preço (R$) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={formPreco}
+                      onChange={(e) => setFormPreco(e.target.value)}
+                      required
+                      placeholder="50.00"
+                      className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      Tempo (min) *
+                    </label>
+                    <input
+                      type="number"
+                      value={formTempo}
+                      onChange={(e) => setFormTempo(e.target.value)}
+                      required
+                      placeholder="30"
+                      className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Preview */}
+                {formNome && (
+                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                    <p className="text-xs text-slate-500 mb-2">Prévia:</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white">
+                          <Droplets className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-800 text-sm">{formNome}</p>
+                          <p className="text-xs text-slate-500">{formTempo ? `${formTempo} min` : "-- min"}</p>
+                        </div>
+                      </div>
+                      <p className="text-lg font-bold text-emerald-600">
+                        {formPreco ? formatCurrency(parseFloat(formPreco)) : "R$ --"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </form>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3 bg-slate-50">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium text-sm rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const form = document.querySelector('form') as HTMLFormElement;
+                    if (form) form.requestSubmit();
+                  }}
+                  disabled={salvando}
+                  className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {salvando ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    editando ? "Salvar" : "Cadastrar"
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </>
       )}
