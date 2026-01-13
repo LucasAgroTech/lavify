@@ -544,169 +544,191 @@ export default function EquipePage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-              <Users className="w-7 h-7 text-cyan-500" />
-              Equipe
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Gerencie os membros da sua equipe
-            </p>
-          </div>
-          <button
-            onClick={abrirModalCriar}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 active:scale-[0.98] transition-all"
-          >
-            <Plus className="w-5 h-5" />
-            Adicionar Membro
-          </button>
-        </div>
-
-        {/* Filtros */}
-        <div className="flex gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Buscar por nome ou email..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
-            />
-          </div>
-          <select
-            value={filtroRole}
-            onChange={(e) => setFiltroRole(e.target.value)}
-            className="px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
-          >
-            <option value="todos">Todos os cargos</option>
-            {Object.entries(ROLES_CONFIG).map(([key, config]) => (
-              <option key={key} value={key}>{config.label}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Lista de usuários agrupados */}
-        <div className="space-y-6">
-          {Object.entries(ROLES_CONFIG).map(([roleKey, config]) => {
-            const usuariosDoRole = usuariosPorRole[roleKey as RoleKey];
-            if (!usuariosDoRole || usuariosDoRole.length === 0) return null;
-
-            return (
-              <div key={roleKey}>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-8 h-8 rounded-lg ${config.bgCor} flex items-center justify-center`}>
-                    <config.icon className={`w-4 h-4 ${config.cor}`} />
-                  </div>
-                  <h2 className="font-semibold text-slate-700">{config.label}</h2>
-                  <span className="text-sm text-slate-400">({usuariosDoRole.length})</span>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {usuariosDoRole.map((usuario) => (
-                    <div
-                      key={usuario.id}
-                      className={`relative bg-white rounded-xl border p-4 transition-all ${
-                        usuario.ativo 
-                          ? "border-slate-200 hover:shadow-md" 
-                          : "border-slate-200 bg-slate-50 opacity-60"
-                      }`}
-                    >
-                      {!usuario.ativo && (
-                        <span className="absolute top-2 right-2 text-[10px] font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
-                          Inativo
-                        </span>
-                      )}
-
-                      <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-full ${config.bgCor} flex items-center justify-center flex-shrink-0`}>
-                          <span className={`font-semibold ${config.cor}`}>
-                            {usuario.nome.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-slate-800 truncate">
-                            {usuario.nome}
-                          </h3>
-                          <p className="text-sm text-slate-500 truncate">
-                            {usuario.email}
-                          </p>
-                          {usuario.telefone && (
-                            <p className="text-sm text-slate-400 truncate">
-                              {usuario.telefone}
-                            </p>
-                          )}
-                        </div>
-
-                        {roleKey !== "ADMIN" && (
-                          <div className="relative">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setMenuAberto(menuAberto === usuario.id ? null : usuario.id);
-                              }}
-                              className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
-                            >
-                              <Filter className="w-4 h-4 text-slate-400" />
-                            </button>
-
-                            {menuAberto === usuario.id && (
-                              <div className="absolute right-0 top-8 w-40 bg-white rounded-xl shadow-lg border border-slate-200 py-1 z-10">
-                                <button
-                                  onClick={() => abrirModalEditar(usuario)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                  Editar
-                                </button>
-                                <button
-                                  onClick={() => toggleAtivo(usuario)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                                >
-                                  {usuario.ativo ? (
-                                    <>
-                                      <EyeOff className="w-4 h-4" />
-                                      Desativar
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Eye className="w-4 h-4" />
-                                      Ativar
-                                    </>
-                                  )}
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setConfirmDelete(usuario.id);
-                                    setMenuAberto(null);
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                  Remover
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-          {usuariosFiltrados.length === 0 && (
-            <div className="text-center py-12 text-slate-500">
-              <Users className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p>Nenhum membro encontrado</p>
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1400px] mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">Equipe</h1>
+              <p className="text-slate-500 text-sm mt-0.5">{usuarios.length} membros cadastrados</p>
             </div>
-          )}
+            <button
+              onClick={abrirModalCriar}
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Adicionar Membro
+            </button>
+          </div>
+
+          {/* Stats por cargo */}
+          <div className="grid grid-cols-5 gap-4">
+            {Object.entries(ROLES_CONFIG).map(([key, config]) => {
+              const count = contagemPorRole[key] || 0;
+              return (
+                <div key={key} className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-2xl font-bold text-slate-800">{count}</p>
+                      <p className="text-sm text-slate-500">{config.label.split(' ')[0]}</p>
+                    </div>
+                    <div className={`w-10 h-10 rounded-lg ${config.bgCor} flex items-center justify-center`}>
+                      <config.icon className={`w-5 h-5 ${config.cor}`} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Busca e Tabela */}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            {/* Barra de busca e filtro */}
+            <div className="p-4 border-b border-slate-100 flex items-center gap-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nome ou email..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                />
+              </div>
+              <select
+                value={filtroRole}
+                onChange={(e) => setFiltroRole(e.target.value)}
+                className="px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+              >
+                <option value="todos">Todos os cargos</option>
+                {Object.entries(ROLES_CONFIG).map(([key, config]) => (
+                  <option key={key} value={key}>{config.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Tabela */}
+            {usuariosFiltrados.length === 0 ? (
+              <div className="text-center py-16">
+                <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-slate-700 font-medium">Nenhum membro encontrado</h3>
+                <p className="text-slate-500 text-sm mt-1">
+                  {busca ? "Tente outro termo de busca" : "Adicione membros à sua equipe"}
+                </p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Membro</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Email</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Telefone</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Cargo</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {usuariosFiltrados.map((usuario) => {
+                    const roleConfig = ROLES_CONFIG[usuario.role as RoleKey] || ROLES_CONFIG.LAVADOR_JUNIOR;
+                    const isAdmin = usuario.role === "ADMIN";
+                    
+                    return (
+                      <tr key={usuario.id} className={`hover:bg-slate-50 transition-colors ${!usuario.ativo ? 'opacity-60' : ''}`}>
+                        {/* Membro */}
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-9 h-9 rounded-lg ${roleConfig.bgCor} flex items-center justify-center`}>
+                              <span className={`font-semibold text-sm ${roleConfig.cor}`}>
+                                {usuario.nome.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <span className="font-medium text-slate-800">{usuario.nome}</span>
+                          </div>
+                        </td>
+
+                        {/* Email */}
+                        <td className="py-3 px-4">
+                          <span className="text-slate-600 text-sm">{usuario.email}</span>
+                        </td>
+
+                        {/* Telefone */}
+                        <td className="py-3 px-4">
+                          <span className="text-slate-600 text-sm">{usuario.telefone || '—'}</span>
+                        </td>
+
+                        {/* Cargo */}
+                        <td className="py-3 px-4">
+                          <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg ${roleConfig.bgCor} ${roleConfig.cor}`}>
+                            <roleConfig.icon className="w-3.5 h-3.5" />
+                            {roleConfig.label}
+                          </span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3 px-4 text-center">
+                          {usuario.ativo ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                              Ativo
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                              Inativo
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Ações */}
+                        <td className="py-3 px-4">
+                          {!isAdmin ? (
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                onClick={() => abrirModalEditar(usuario)}
+                                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                                title="Editar"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => toggleAtivo(usuario)}
+                                className={`p-2 rounded-lg transition-colors ${
+                                  usuario.ativo
+                                    ? 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'
+                                    : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'
+                                }`}
+                                title={usuario.ativo ? 'Desativar' : 'Ativar'}
+                              >
+                                {usuario.ativo ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
+                              <button
+                                onClick={() => setConfirmDelete(usuario.id)}
+                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remover"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-slate-400 text-right block pr-2">Admin</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+
+            {/* Footer */}
+            {usuariosFiltrados.length > 0 && (
+              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 text-sm text-slate-500">
+                Mostrando {usuariosFiltrados.length} de {usuarios.length} membros
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
