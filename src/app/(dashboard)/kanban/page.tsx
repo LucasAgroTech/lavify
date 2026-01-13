@@ -519,208 +519,171 @@ export default function KanbanPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 xl:p-10 space-y-8 max-w-[1800px] mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-amber-500/25">
-            <Car className="w-7 h-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">Fila do Pátio</h1>
-            <p className="text-slate-500">
-              Arraste os cards para atualizar o status • {ordens.length} veículos
-            </p>
-          </div>
-        </div>
-        <Button onClick={fetchOrdens} icon={<RefreshCw className="w-5 h-5" />} className="px-6 py-3 text-base">
-          Atualizar
-        </Button>
-      </div>
-
-      {/* Kanban Board */}
-      <div className="grid grid-cols-4 gap-6 min-h-[calc(100vh-250px)]">
-        {colunas.map((coluna) => {
-          const ordensColuna = getOrdensPorStatus(coluna.status);
-          const isDropTarget = dropTarget === coluna.status;
-
-          return (
-            <div
-              key={coluna.status}
-              className={`
-                ${coluna.bgColor} rounded-2xl p-5 transition-all duration-300
-                border-2 ${coluna.borderColor} shadow-sm
-                ${isDropTarget ? "ring-4 ring-cyan-400/50 ring-offset-2 scale-[1.02] shadow-xl" : ""}
-              `}
-              onDragOver={(e) => handleDragOver(e, coluna.status)}
-              onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDrop(e, coluna.status)}
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1600px] mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">Fila do Pátio</h1>
+              <p className="text-slate-500 text-sm mt-0.5">
+                Arraste os cards para mover entre etapas • {ordens.length} veículo{ordens.length !== 1 ? 's' : ''} no pátio
+              </p>
+            </div>
+            <button
+              onClick={fetchOrdens}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg font-medium transition-colors"
             >
-              {/* Column Header */}
-              <div
-                className={`flex items-center justify-between mb-5 pb-4 border-b-2 ${coluna.borderColor}`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{coluna.emoji}</span>
-                  <h2 className={`font-bold text-lg text-slate-700`}>
-                    {coluna.tituloMobile}
-                  </h2>
-                </div>
-                <span className={`text-lg font-bold text-slate-700 ${coluna.headerBg} w-10 h-10 rounded-xl flex items-center justify-center shadow-sm`}>
-                  {ordensColuna.length}
-                </span>
-              </div>
+              <RefreshCw className="w-4 h-4" />
+              Atualizar
+            </button>
+          </div>
 
-              {/* Cards */}
-              <div className="space-y-4">
-                {ordensColuna.map((ordem) => {
-                  const proximo = proximoStatus[ordem.status];
-                  const proximaColuna = colunas.find(c => c.status === proximo);
-                  
-                  return (
-                  <div
-                    key={ordem.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, ordem)}
-                    onDragEnd={handleDragEnd}
-                    className={`
-                      bg-white rounded-2xl p-5 shadow-md border-2 border-white
-                      cursor-grab active:cursor-grabbing group
-                      hover:shadow-xl hover:border-slate-200 hover:-translate-y-1
-                      transition-all duration-300
-                      ${dragging === ordem.id ? "opacity-50 scale-95 rotate-2" : ""}
-                    `}
-                  >
-                    {/* Card Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
-                        #{ordem.codigo}
-                      </span>
-                      <span className="text-lg font-bold text-emerald-600">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(ordem.total)}
-                      </span>
+          {/* Kanban Board */}
+          <div className="grid grid-cols-4 gap-4">
+            {colunas.map((coluna) => {
+              const ordensColuna = getOrdensPorStatus(coluna.status);
+              const isDropTarget = dropTarget === coluna.status;
+
+              return (
+                <div
+                  key={coluna.status}
+                  className={`
+                    bg-white rounded-xl border border-slate-200 flex flex-col min-h-[calc(100vh-180px)]
+                    ${isDropTarget ? "ring-2 ring-cyan-400 border-cyan-400" : ""}
+                  `}
+                  onDragOver={(e) => handleDragOver(e, coluna.status)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, coluna.status)}
+                >
+                  {/* Column Header */}
+                  <div className={`flex items-center justify-between p-4 border-b border-slate-100 ${coluna.bgColor}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${coluna.color}`} />
+                      <h2 className="font-semibold text-slate-800">{coluna.tituloMobile}</h2>
                     </div>
+                    <span className="text-sm font-bold text-slate-600 bg-white px-2.5 py-1 rounded-md">
+                      {ordensColuna.length}
+                    </span>
+                  </div>
 
-                    {/* Plate - Destacada */}
-                    <div className="bg-slate-800 text-white px-4 py-2.5 rounded-xl mb-4 inline-block">
-                      <span className="font-mono font-bold text-lg tracking-wider">
-                        {ordem.veiculo.placa}
-                      </span>
-                    </div>
-
-                    {/* Vehicle Info */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <Car className="w-5 h-5 text-slate-400" />
-                      <span className="font-semibold text-slate-800 text-lg">
-                        {ordem.veiculo.modelo}
-                      </span>
-                      {ordem.veiculo.cor && (
-                        <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                          {ordem.veiculo.cor}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Services */}
-                    <div className="text-sm text-slate-600 mb-4 bg-slate-50 rounded-xl p-3">
-                      {ordem.itens.map((item, i) => (
-                        <span key={item.id} className="font-medium">
-                          {item.servico.nome}
-                          {i < ordem.itens.length - 1 ? " • " : ""}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Client Info */}
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <User className="w-4 h-4 text-slate-400" />
-                        <span className="font-medium">{ordem.cliente.nome}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <Phone className="w-4 h-4 text-slate-400" />
-                        <span>{ordem.cliente.telefone}</span>
-                      </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                      <div className="flex items-center gap-2 text-sm text-slate-400">
-                        <Clock className="w-4 h-4" />
-                        <span>Entrada: {format(new Date(ordem.dataEntrada), "HH:mm", {
-                          locale: ptBR,
-                        })}</span>
-                      </div>
-                    </div>
-
-                    {/* Botão de ação - hover */}
-                    {proximo && (
-                      <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                        <button
-                          onClick={() => {
-                            setOrdens((prev) =>
-                              prev.map((o) => (o.id === ordem.id ? { ...o, status: proximo } : o))
-                            );
-                            atualizarStatus(ordem.id, proximo);
-                          }}
+                  {/* Cards Container */}
+                  <div className="flex-1 p-3 space-y-3 overflow-y-auto">
+                    {ordensColuna.map((ordem) => {
+                      const proximo = proximoStatus[ordem.status];
+                      
+                      return (
+                        <div
+                          key={ordem.id}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, ordem)}
+                          onDragEnd={handleDragEnd}
                           className={`
-                            w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold
-                            transition-all hover:shadow-lg active:scale-95
-                            ${proximo === "ENTREGUE" 
-                              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-emerald-500/30' 
-                              : `${proximaColuna?.headerBg} text-slate-700 border-2 ${proximaColuna?.borderColor}`
-                            }
+                            bg-white rounded-lg border border-slate-200 p-4
+                            cursor-grab active:cursor-grabbing
+                            hover:border-slate-300 hover:shadow-md
+                            transition-all duration-200
+                            ${dragging === ordem.id ? "opacity-50 scale-95" : ""}
                           `}
                         >
-                          {proximo === "ENTREGUE" ? (
-                            <>
-                              <CheckCircle2 className="w-5 h-5" />
-                              Entregar ao Cliente
-                            </>
-                          ) : (
-                            <>
-                              <ArrowRight className="w-5 h-5" />
-                              Mover para {proximaColuna?.emoji} {proximaColuna?.tituloMobile}
-                            </>
-                          )}
-                        </button>
+                          {/* Placa + Valor */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="bg-slate-800 text-white px-3 py-1.5 rounded-md">
+                              <span className="font-mono font-bold text-sm">{ordem.veiculo.placa}</span>
+                            </div>
+                            <span className="font-bold text-emerald-600">
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(ordem.total)}
+                            </span>
+                          </div>
+
+                          {/* Veículo */}
+                          <p className="font-semibold text-slate-800 mb-1">{ordem.veiculo.modelo}</p>
+                          
+                          {/* Serviços */}
+                          <p className="text-sm text-slate-500 mb-3">
+                            {ordem.itens.map((item) => item.servico.nome).join(", ")}
+                          </p>
+
+                          {/* Cliente */}
+                          <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
+                            <User className="w-3.5 h-3.5 text-slate-400" />
+                            <span>{ordem.cliente.nome}</span>
+                          </div>
+
+                          {/* Horário */}
+                          <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>Entrada: {format(new Date(ordem.dataEntrada), "HH:mm", { locale: ptBR })}</span>
+                          </div>
+
+                          {/* Botões de Ação */}
+                          <div className="flex gap-2 pt-3 border-t border-slate-100">
+                            {/* WhatsApp - quando pronto */}
+                            {ordem.status === "PRONTO" && (
+                              <button
+                                onClick={() => handleWhatsApp(
+                                  ordem.cliente.telefone, 
+                                  ordem.cliente.nome.split(" ")[0],
+                                  ordem.veiculo.placa
+                                )}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 hover:bg-green-600 text-white text-sm rounded-lg font-medium transition-colors"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                Avisar
+                              </button>
+                            )}
+
+                            {/* Botão Avançar */}
+                            {proximo && (
+                              <button
+                                onClick={() => {
+                                  setOrdens((prev) =>
+                                    prev.map((o) => (o.id === ordem.id ? { ...o, status: proximo } : o))
+                                  );
+                                  atualizarStatus(ordem.id, proximo);
+                                }}
+                                className={`
+                                  flex-1 flex items-center justify-center gap-2 py-2.5 text-sm rounded-lg font-medium transition-colors
+                                  ${proximo === "ENTREGUE" 
+                                    ? 'bg-slate-800 hover:bg-slate-700 text-white' 
+                                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                                  }
+                                `}
+                              >
+                                {proximo === "ENTREGUE" ? (
+                                  <>
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    Entregar
+                                  </>
+                                ) : (
+                                  <>
+                                    <ArrowRight className="w-4 h-4" />
+                                    Avançar
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {ordensColuna.length === 0 && (
+                      <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                        <Car className="w-8 h-8 mb-2 text-slate-300" />
+                        <p className="text-sm">Nenhum veículo</p>
                       </div>
                     )}
-
-                    {/* Botão WhatsApp quando pronto */}
-                    {ordem.status === "PRONTO" && (
-                      <button
-                        onClick={() => handleWhatsApp(
-                          ordem.cliente.telefone, 
-                          ordem.cliente.nome.split(" ")[0],
-                          ordem.veiculo.placa
-                        )}
-                        className="w-full mt-3 flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition-all hover:shadow-lg active:scale-95"
-                      >
-                        <MessageCircle className="w-5 h-5" />
-                        Avisar Cliente via WhatsApp
-                      </button>
-                    )}
                   </div>
-                  );
-                })}
-
-                {ordensColuna.length === 0 && (
-                  <div className="text-center py-12 bg-white/50 rounded-2xl border-2 border-dashed border-slate-200">
-                    <Car className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-                    <p className="text-slate-500 font-medium">Nenhum veículo</p>
-                    <p className="text-sm text-slate-400">nesta etapa</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </div>
     </>
   );
 }
