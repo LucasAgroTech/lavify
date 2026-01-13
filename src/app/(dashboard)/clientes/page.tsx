@@ -356,201 +356,209 @@ export default function ClientesPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-8 xl:p-10 space-y-8 max-w-[1600px] mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25">
-              <Users className="w-7 h-7" />
-            </div>
+      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
+        <div className="max-w-[1400px] mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">Clientes</h1>
-              <p className="text-slate-500">
-                {clientes.length} clientes cadastrados
-              </p>
+              <p className="text-slate-500 text-sm mt-0.5">{clientes.length} clientes cadastrados</p>
             </div>
-          </div>
-          <Button onClick={abrirModalCriar} icon={<Plus className="w-5 h-5" />} className="px-6 py-3 text-base">
-            Novo Cliente
-          </Button>
-        </div>
-
-        {/* Stats rápidos */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
-                <Users className="w-6 h-6 text-cyan-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-800">{clientes.length}</p>
-                <p className="text-sm text-slate-500">Total</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                <Crown className="w-6 h-6 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-800">{clientes.filter(c => c.planoMensal).length}</p>
-                <p className="text-sm text-slate-500">Mensalistas</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <Car className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-800">{clientes.reduce((acc, c) => acc + c.veiculos.length, 0)}</p>
-                <p className="text-sm text-slate-500">Veículos</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                <Award className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-800">{clientes.reduce((acc, c) => acc + c.pontosFidelidade, 0)}</p>
-                <p className="text-sm text-slate-500">Pontos Total</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Search */}
-        <div className="relative max-w-lg">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Buscar por nome, telefone ou placa..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 text-base shadow-sm"
-          />
-          {busca && (
             <button
-              onClick={() => setBusca("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              onClick={abrirModalCriar}
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
             >
-              <X className="w-4 h-4 text-slate-500" />
+              <Plus className="w-4 h-4" />
+              Novo Cliente
             </button>
-          )}
-        </div>
+          </div>
 
-        {/* Lista */}
-        {clientesFiltrados.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
-              <Users className="w-10 h-10 text-slate-300" />
+          {/* Stats */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{clientes.length}</p>
+                  <p className="text-sm text-slate-500">Total</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-slate-600" />
+                </div>
+              </div>
             </div>
-            <h3 className="text-slate-700 font-semibold text-lg">Nenhum cliente encontrado</h3>
-            <p className="text-slate-500 text-sm mt-1 mb-6">
-              {busca ? "Tente outro termo de busca" : "Cadastre seu primeiro cliente"}
-            </p>
-            {!busca && (
-              <Button onClick={abrirModalCriar} icon={<Plus className="w-4 h-4" />}>
-                Cadastrar Cliente
-              </Button>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{clientes.filter(c => c.planoMensal).length}</p>
+                  <p className="text-sm text-slate-500">Mensalistas</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Crown className="w-5 h-5 text-amber-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{clientes.reduce((acc, c) => acc + c.veiculos.length, 0)}</p>
+                  <p className="text-sm text-slate-500">Veículos</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <Car className="w-5 h-5 text-emerald-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{clientes.reduce((acc, c) => acc + c._count.ordens, 0)}</p>
+                  <p className="text-sm text-slate-500">Total de OS</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                  <Award className="w-5 h-5 text-cyan-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Busca e Tabela */}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            {/* Barra de busca */}
+            <div className="p-4 border-b border-slate-100">
+              <div className="relative max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nome, telefone ou placa..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                />
+                {busca && (
+                  <button
+                    onClick={() => setBusca("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                  >
+                    <X className="w-3 h-3 text-slate-500" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Tabela */}
+            {clientesFiltrados.length === 0 ? (
+              <div className="text-center py-16">
+                <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-slate-700 font-medium">Nenhum cliente encontrado</h3>
+                <p className="text-slate-500 text-sm mt-1">
+                  {busca ? "Tente outro termo de busca" : "Cadastre seu primeiro cliente"}
+                </p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Cliente</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Telefone</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Veículos</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">OS</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Pontos</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {clientesFiltrados.map((cliente) => (
+                    <tr key={cliente.id} className="hover:bg-slate-50 transition-colors">
+                      {/* Cliente */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white font-semibold text-sm">
+                            {cliente.nome.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-slate-800">{cliente.nome}</span>
+                              {cliente.planoMensal && (
+                                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase">
+                                  Mensal
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Telefone */}
+                      <td className="py-3 px-4">
+                        <span className="text-slate-600">{cliente.telefone}</span>
+                      </td>
+
+                      {/* Veículos */}
+                      <td className="py-3 px-4">
+                        <div className="flex flex-wrap gap-1">
+                          {cliente.veiculos.slice(0, 2).map((v) => (
+                            <span
+                              key={v.id}
+                              className="text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded font-mono"
+                            >
+                              {v.placa}
+                            </span>
+                          ))}
+                          {cliente.veiculos.length > 2 && (
+                            <span className="text-xs text-slate-400 px-1 py-1">
+                              +{cliente.veiculos.length - 2}
+                            </span>
+                          )}
+                          {cliente.veiculos.length === 0 && (
+                            <span className="text-xs text-slate-400">—</span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* OS */}
+                      <td className="py-3 px-4 text-center">
+                        <span className="font-semibold text-slate-800">{cliente._count.ordens}</span>
+                      </td>
+
+                      {/* Pontos */}
+                      <td className="py-3 px-4 text-center">
+                        <span className="font-semibold text-amber-600">{cliente.pontosFidelidade}</span>
+                      </td>
+
+                      {/* Ações */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleWhatsApp(cliente.telefone, cliente.nome)}
+                            className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            title="WhatsApp"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => abrirModalEditar(cliente)}
+                            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {/* Footer com contagem */}
+            {clientesFiltrados.length > 0 && (
+              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 text-sm text-slate-500">
+                Mostrando {clientesFiltrados.length} de {clientes.length} clientes
+              </div>
             )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {clientesFiltrados.map((cliente) => (
-              <div 
-                key={cliente.id} 
-                className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-xl hover:border-slate-200 hover:-translate-y-1 transition-all duration-300 group relative"
-              >
-                {/* Botões de ação */}
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                  <button
-                    onClick={() => handleWhatsApp(cliente.telefone, cliente.nome)}
-                    className="p-2.5 bg-green-100 hover:bg-green-500 hover:text-white text-green-600 rounded-xl transition-all duration-200 shadow-sm"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => abrirModalEditar(cliente)}
-                    className="p-2.5 bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 rounded-xl transition-all duration-200 shadow-sm"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="space-y-5">
-                  {/* Header */}
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-cyan-500/25">
-                      {cliente.nome.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-lg text-slate-800 truncate">
-                          {cliente.nome}
-                        </h3>
-                        {cliente.planoMensal && (
-                          <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-500 mt-1">
-                        <Phone className="w-4 h-4" />
-                        <span>{cliente.telefone}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-3 py-4 border-y border-slate-100">
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 text-amber-600">
-                        <Award className="w-5 h-5" />
-                        <span className="font-bold text-lg">{cliente.pontosFidelidade}</span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1">Pontos</p>
-                    </div>
-                    <div className="text-center border-x border-slate-100">
-                      <div className="flex items-center justify-center gap-1.5 text-emerald-600">
-                        <Car className="w-5 h-5" />
-                        <span className="font-bold text-lg">{cliente.veiculos.length}</span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1">Veículos</p>
-                    </div>
-                    <div className="text-center">
-                      <span className="font-bold text-lg text-slate-700">
-                        {cliente._count.ordens}
-                      </span>
-                      <p className="text-xs text-slate-500 mt-1">Ordens</p>
-                    </div>
-                  </div>
-
-                  {/* Veículos */}
-                  {cliente.veiculos.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {cliente.veiculos.slice(0, 3).map((v) => (
-                        <span
-                          key={v.id}
-                          className="text-sm bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg font-mono font-medium"
-                        >
-                          {v.placa}
-                        </span>
-                      ))}
-                      {cliente.veiculos.length > 3 && (
-                        <span className="text-sm text-slate-400 px-2 py-1.5">
-                          +{cliente.veiculos.length - 3} mais
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Modal de criar/editar */}
@@ -662,48 +670,110 @@ export default function ClientesPage() {
           </div>
 
           {/* Desktop Modal */}
-          <div className="hidden lg:block">
-            <Modal
-              isOpen={true}
-              onClose={() => setShowModal(false)}
-              title={editando ? "Editar Cliente" : "Novo Cliente"}
-            >
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input 
-                  label="Nome completo" 
-                  value={formNome}
-                  onChange={(e) => setFormNome(e.target.value)}
-                  required 
-                />
-                <Input
-                  label="Telefone (WhatsApp)"
-                  value={formTelefone}
-                  onChange={(e) => setFormTelefone(e.target.value)}
-                  placeholder="(11) 99999-9999"
-                  required
-                />
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="planoMensal"
-                    checked={formPlanoMensal}
-                    onChange={(e) => setFormPlanoMensal(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500"
-                  />
-                  <label htmlFor="planoMensal" className="text-sm text-slate-700">
-                    Cliente com plano mensal
+          <div className="hidden lg:flex fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-slate-800">
+                  {editando ? "Editar Cliente" : "Novo Cliente"}
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nome completo
                   </label>
+                  <input
+                    type="text"
+                    value={formNome}
+                    onChange={(e) => setFormNome(e.target.value)}
+                    required
+                    placeholder="João da Silva"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                  />
                 </div>
-                <div className="flex justify-end gap-3 pt-4">
-                  <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>
-                    Cancelar
-                  </Button>
-                  <Button type="submit" disabled={salvando}>
-                    {salvando ? "Salvando..." : editando ? "Salvar" : "Cadastrar"}
-                  </Button>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Telefone (WhatsApp)
+                  </label>
+                  <input
+                    type="tel"
+                    value={formTelefone}
+                    onChange={(e) => setFormTelefone(e.target.value)}
+                    required
+                    placeholder="(11) 99999-9999"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500"
+                  />
+                </div>
+
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setFormPlanoMensal(!formPlanoMensal)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                      formPlanoMensal
+                        ? "border-amber-400 bg-amber-50"
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      formPlanoMensal ? "bg-amber-400" : "bg-slate-100"
+                    }`}>
+                      <Crown className={`w-4 h-4 ${formPlanoMensal ? "text-white" : "text-slate-400"}`} />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className="font-medium text-slate-800 text-sm">Plano Mensal</p>
+                      <p className="text-xs text-slate-500">Cliente com assinatura</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      formPlanoMensal ? "border-amber-400 bg-amber-400" : "border-slate-300"
+                    }`}>
+                      {formPlanoMensal && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                  </button>
                 </div>
               </form>
-            </Modal>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3 bg-slate-50">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium text-sm rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  form="desktop-cliente-form"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const form = document.querySelector('form') as HTMLFormElement;
+                    if (form) form.requestSubmit();
+                  }}
+                  disabled={salvando}
+                  className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {salvando ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    editando ? "Salvar" : "Cadastrar"
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </>
       )}
