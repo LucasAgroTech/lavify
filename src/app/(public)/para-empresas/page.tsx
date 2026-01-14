@@ -332,7 +332,7 @@ export default function LandingPageEmpresas() {
                       alt={`Sistema Lavify em ação ${index + 1}`}
                       className={`w-full object-cover ${
                         index === 2 
-                          ? "scale-[1.6] lg:scale-[1.8] origin-center" 
+                          ? "scale-[1.6] lg:scale-[1.8] origin-top" 
                           : ""
                       }`}
                     />
