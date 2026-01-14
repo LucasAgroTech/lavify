@@ -128,6 +128,7 @@ export default function LandingPageEmpresas() {
     "/hero-4.webp",
     "/hero-5.webp",
     "/hero-6.webp",
+    "/hero-7.webp",
   ];
 
   // Auto-play do carrossel
