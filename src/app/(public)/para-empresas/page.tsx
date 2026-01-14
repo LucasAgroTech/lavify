@@ -318,21 +318,27 @@ export default function LandingPageEmpresas() {
           </p>
 
           {/* Carrossel de Imagens */}
-          <div className="relative mb-8 max-w-3xl mx-auto">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 bg-slate-900">
+          <div className="relative mb-8 max-w-4xl mx-auto">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
               <div 
                 className="flex transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${slideAtual * 100}%)` }}
               >
                 {imagensHero.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`Sistema Lavify em ação ${index + 1}`}
-                    className={`w-full flex-shrink-0 aspect-[4/3] lg:aspect-[21/9] ${
-                      index === 0 ? "object-contain bg-slate-900" : "object-cover"
-                    }`}
-                  />
+                  <div key={index} className="w-full flex-shrink-0 relative overflow-hidden">
+                    <img
+                      src={img}
+                      alt={`Sistema Lavify em ação ${index + 1}`}
+                      className={`w-full object-cover ${
+                        index === 0 
+                          ? "scale-[1.15] origin-center" 
+                          : ""
+                      }`}
+                      style={{ 
+                        aspectRatio: index === 0 ? '16/9' : 'auto'
+                      }}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
