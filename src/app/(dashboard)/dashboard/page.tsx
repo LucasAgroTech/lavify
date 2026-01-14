@@ -384,7 +384,9 @@ export default function Dashboard() {
                 </div>
                 <div className="p-3 bg-slate-50 rounded-xl">
                   <p className="text-xs text-slate-500">Novos este mês</p>
-                  <p className="text-xl font-bold text-cyan-600">+{data?.clientesNovosMes || 0}</p>
+                  <p className="text-xl font-bold text-cyan-600">
+                    {(data?.clientesNovosMes || 0) > 0 ? `+${data?.clientesNovosMes}` : "—"}
+                  </p>
                 </div>
               </div>
             </div>
