@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import GoogleAds from "@/components/GoogleAds";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -140,6 +141,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <GoogleAnalytics />
+        <GoogleAds />
         {children}
       </body>
     </html>
