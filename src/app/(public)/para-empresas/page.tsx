@@ -319,7 +319,7 @@ export default function LandingPageEmpresas() {
           </p>
 
           {/* Carrossel de Imagens */}
-          <div className="relative mb-8 max-w-4xl mx-auto">
+          <div className="relative mb-8 max-w-3xl mx-auto">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
               <div 
                 className="flex transition-transform duration-500 ease-out"
@@ -331,13 +331,10 @@ export default function LandingPageEmpresas() {
                       src={img}
                       alt={`Sistema Lavify em ação ${index + 1}`}
                       className={`w-full object-cover ${
-                        index === 0 
+                        index === 2 
                           ? "scale-[1.15] origin-center" 
                           : ""
                       }`}
-                      style={{ 
-                        aspectRatio: index === 0 ? '16/9' : 'auto'
-                      }}
                     />
                   </div>
                 ))}
