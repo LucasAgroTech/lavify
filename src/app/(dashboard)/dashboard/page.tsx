@@ -254,7 +254,7 @@ export default function Dashboard() {
 
         <div className="px-4 py-4 space-y-4 pb-24">
           {/* Alertas Compactos */}
-          {data?.agendamentosPendentes && data.agendamentosPendentes > 0 && (
+          {(data?.agendamentosPendentes ?? 0) > 0 && (
             <Link
               href="/agendamentos"
               className="flex items-center gap-3 bg-cyan-50 border border-cyan-200 rounded-xl p-3 animate-slide-in"
@@ -264,7 +264,7 @@ export default function Dashboard() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-cyan-800 text-sm">
-                  {data.agendamentosPendentes} agendamento{data.agendamentosPendentes > 1 ? 's' : ''} pendente{data.agendamentosPendentes > 1 ? 's' : ''}
+                  {data?.agendamentosPendentes} agendamento{(data?.agendamentosPendentes ?? 0) > 1 ? 's' : ''} pendente{(data?.agendamentosPendentes ?? 0) > 1 ? 's' : ''}
                 </p>
                 <p className="text-xs text-cyan-600">Toque para confirmar</p>
               </div>
@@ -272,7 +272,7 @@ export default function Dashboard() {
             </Link>
           )}
 
-          {data?.produtosEstoqueBaixo && data.produtosEstoqueBaixo.length > 0 && (
+          {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 && (
             <Link
               href="/estoque"
               className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl p-3 animate-slide-in"
@@ -282,10 +282,10 @@ export default function Dashboard() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-red-800 text-sm">
-                  {data.produtosEstoqueBaixo.length} produto{data.produtosEstoqueBaixo.length > 1 ? 's' : ''} com estoque baixo
+                  {data?.produtosEstoqueBaixo?.length} produto{(data?.produtosEstoqueBaixo?.length ?? 0) > 1 ? 's' : ''} com estoque baixo
                 </p>
                 <p className="text-xs text-red-600 truncate">
-                  {data.produtosEstoqueBaixo.slice(0, 2).map(p => p.nome).join(", ")}
+                  {data?.produtosEstoqueBaixo?.slice(0, 2).map(p => p.nome).join(", ")}
                 </p>
               </div>
               <ChevronRight className="w-5 h-5 text-red-400" />
@@ -431,15 +431,15 @@ export default function Dashboard() {
         <div className="max-w-[1400px] mx-auto space-y-6">
           
           {/* Header Simples */}
-          <div className="flex items-center justify-between">
-            <div>
+      <div className="flex items-center justify-between">
+        <div>
               <h1 className="text-2xl font-bold text-slate-800">
                 {getGreeting()}, {usuario?.nome?.split(" ")[0] || "Usuário"}
               </h1>
               <p className="text-slate-500 text-sm mt-0.5">
                 {usuario?.lavaJato?.nome} • {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
-              </p>
-            </div>
+          </p>
+        </div>
             <Link 
               href="/nova-os"
               className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
@@ -450,24 +450,24 @@ export default function Dashboard() {
           </div>
 
           {/* Alertas */}
-          {(data?.agendamentosPendentes && data.agendamentosPendentes > 0) || (data?.produtosEstoqueBaixo && data.produtosEstoqueBaixo.length > 0) ? (
+          {((data?.agendamentosPendentes ?? 0) > 0 || (data?.produtosEstoqueBaixo?.length ?? 0) > 0) && (
             <div className="flex gap-4">
-              {data?.agendamentosPendentes && data.agendamentosPendentes > 0 && (
+              {(data?.agendamentosPendentes ?? 0) > 0 && (
                 <Link href="/agendamentos" className="flex-1 flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 hover:bg-blue-100 transition-colors">
                   <Bell className="w-5 h-5 text-blue-600" />
-                  <span className="text-blue-800 font-medium text-sm">{data.agendamentosPendentes} agendamento(s) pendente(s)</span>
+                  <span className="text-blue-800 font-medium text-sm">{data?.agendamentosPendentes} agendamento(s) pendente(s)</span>
                   <ChevronRight className="w-4 h-4 text-blue-400 ml-auto" />
                 </Link>
               )}
-              {data?.produtosEstoqueBaixo && data.produtosEstoqueBaixo.length > 0 && (
+              {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 && (
                 <Link href="/estoque" className="flex-1 flex items-center gap-3 bg-red-50 border border-red-200 rounded-lg px-4 py-3 hover:bg-red-100 transition-colors">
                   <AlertTriangle className="w-5 h-5 text-red-600" />
-                  <span className="text-red-800 font-medium text-sm">{data.produtosEstoqueBaixo.length} produto(s) com estoque baixo</span>
+                  <span className="text-red-800 font-medium text-sm">{data?.produtosEstoqueBaixo?.length} produto(s) com estoque baixo</span>
                   <ChevronRight className="w-4 h-4 text-red-400 ml-auto" />
                 </Link>
               )}
             </div>
-          ) : null}
+          )}
 
           {/* Grid Principal - Métricas do Dia */}
           <div className="grid grid-cols-4 gap-4">
@@ -477,11 +477,11 @@ export default function Dashboard() {
                 <span className="text-slate-500 text-sm font-medium">OS Hoje</span>
                 <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
                   <Car className="w-4 h-4 text-cyan-600" />
-                </div>
+        </div>
               </div>
               <p className="text-3xl font-bold text-slate-800">{data?.osHoje || 0}</p>
               <p className="text-xs text-slate-400 mt-1">ordens de serviço</p>
-            </div>
+      </div>
 
             {/* Em Andamento */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
@@ -529,7 +529,7 @@ export default function Dashboard() {
                 <Link href="/kanban" className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1">
                   Ver fila completa
                   <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
+        </Link>
               </div>
               
               <div className="grid grid-cols-4 gap-3">
@@ -595,35 +595,35 @@ export default function Dashboard() {
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="font-semibold text-slate-800 mb-4">Distribuição de Status</h3>
               <div className="space-y-3">
-                {[
-                  { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
-                  { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
+            {[
+              { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
+              { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
                   { key: "FINALIZANDO", label: "Finalizando", color: "bg-blue-500" },
-                  { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
-                  { key: "ENTREGUE", label: "Entregue", color: "bg-slate-400" },
-                ].map((status) => {
-                  const count = data?.ordensPorStatus?.[status.key] || 0;
+              { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
+              { key: "ENTREGUE", label: "Entregue", color: "bg-slate-400" },
+            ].map((status) => {
+              const count = data?.ordensPorStatus?.[status.key] || 0;
                   const total = Object.values(data?.ordensPorStatus || {}).reduce((a, b) => a + b, 0);
-                  const percent = total > 0 ? (count / total) * 100 : 0;
+              const percent = total > 0 ? (count / total) * 100 : 0;
 
-                  return (
+              return (
                     <div key={status.key} className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${status.color} flex-shrink-0`} />
                       <span className="text-sm text-slate-600 w-24">{status.label}</span>
                       <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div className={`h-full ${status.color} rounded-full`} style={{ width: `${percent}%` }} />
-                      </div>
+                  </div>
                       <span className="text-sm font-medium text-slate-800 w-8 text-right">{count}</span>
-                    </div>
-                  );
-                })}
-              </div>
+                </div>
+              );
+            })}
+          </div>
             </div>
 
             {/* Top Serviços */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="font-semibold text-slate-800 mb-4">Top Serviços do Mês</h3>
-              {chartData && chartData.length > 0 ? (
+          {chartData && chartData.length > 0 ? (
                 <div className="space-y-3">
                   {data?.servicosMaisVendidos?.slice(0, 5).map((servico, index) => (
                     <div key={servico.servicoId} className="flex items-center gap-3">
@@ -672,7 +672,7 @@ export default function Dashboard() {
           </div>
 
         </div>
-      </div>
+    </div>
     </>
   );
 }
