@@ -26,10 +26,13 @@ import {
 } from "lucide-react";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
+
+// Importante: apenas aceita slugs pré-gerados
+export const dynamicParams = false;
 
 // Gera as páginas estaticamente no build
 export async function generateStaticParams() {
@@ -39,7 +42,8 @@ export async function generateStaticParams() {
 
 // Gera metadados dinâmicos
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const pagina = getPaginaSEOBySlug(params.slug);
+  const { slug } = await params;
+  const pagina = getPaginaSEOBySlug(slug);
 
   if (!pagina) {
     return {};
@@ -190,8 +194,9 @@ function getConteudoPorTipo(pagina: PaginaSEO) {
   return conteudos[pagina.slug] || conteudoPadrao;
 }
 
-export default function PaginaSEO({ params }: PageProps) {
-  const pagina = getPaginaSEOBySlug(params.slug);
+export default async function PaginaSEO({ params }: PageProps) {
+  const { slug } = await params;
+  const pagina = getPaginaSEOBySlug(slug);
 
   if (!pagina) {
     notFound();
