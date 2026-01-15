@@ -14,12 +14,12 @@ export default function PublicLayoutClient({
   // Função para verificar se o link está ativo
   const isActive = (path: string) => pathname === path;
 
-  // Páginas que usam layout próprio (landing pages B2B)
-  const isLandingPage = pathname === "/para-empresas";
+  // Páginas que usam layout próprio (landing pages B2B e SEO programático)
+  const isLandingPage = pathname === "/para-empresas" || pathname?.startsWith("/sistema-lava-rapido");
 
   // Se for landing page, renderiza só o conteúdo sem headers/footers
   if (isLandingPage) {
-    return <div className="min-h-screen">{children}</div>;
+    return <>{children}</>;
   }
 
   return (
