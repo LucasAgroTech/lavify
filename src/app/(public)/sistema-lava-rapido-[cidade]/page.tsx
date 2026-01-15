@@ -19,6 +19,7 @@ import {
   Smartphone
 } from "lucide-react";
 import { getCidadeBySlug, getAllCidadeSlugs, CidadeSEO } from "@/lib/seo-cities";
+import { getConteudoCidade, ConteudoSEO } from "@/data/seo-content";
 
 interface PageProps {
   params: Promise<{ cidade: string }>;
@@ -71,60 +72,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// Conteúdo gerado (em produção, pode vir de cache/banco de dados)
-function getConteudo(cidade: CidadeSEO) {
-  return {
-    titulo: `Sistema para Lava Rápido em ${cidade.nome}`,
-    subtitulo: `Gerencie seu lava jato em ${cidade.nome} de forma simples e profissional`,
-    introducao: `Se você tem um lava rápido em ${cidade.nome}, sabe como é desafiador manter tudo organizado. Clientes aguardando, carros no pátio, equipe para coordenar e as contas para fechar no final do mês. O Lavify foi criado para resolver exatamente esses problemas.`,
-    secoes: [
-      {
-        titulo: `Por que Lava Jatos em ${cidade.nome} Precisam de um Sistema`,
-        conteudo: `${cidade.nome} é uma cidade com grande frota de veículos e, consequentemente, uma demanda crescente por serviços de lava rápido. Com uma população de aproximadamente ${(cidade.populacao / 1000000).toFixed(1)} milhões de habitantes, a concorrência no setor é alta.\n\nPara se destacar, não basta oferecer um bom serviço de lavagem. É preciso ter controle total das operações, atender os clientes com agilidade e manter as finanças organizadas. Um sistema de gestão especializado é o diferencial que separa os lava jatos que crescem dos que ficam para trás.`
-      },
-      {
-        titulo: "Funcionalidades Pensadas para Seu Dia a Dia",
-        conteudo: `O Lavify oferece tudo que você precisa para profissionalizar seu lava jato: Kanban visual para acompanhar cada carro no pátio, agendamento online que funciona 24 horas por dia, envio automático de mensagens no WhatsApp quando o serviço fica pronto, controle de estoque inteligente que avisa antes de acabar, e relatórios financeiros completos.\n\nTudo isso acessível do seu celular, de qualquer lugar. Você pode sair do estabelecimento sabendo exatamente o que está acontecendo em tempo real.`
-      },
-      {
-        titulo: `Transforme Seu Lava Jato em ${cidade.nome}`,
-        conteudo: `Lava rápidos em ${cidade.nome} e região ${cidade.regiao} já descobriram como o Lavify pode transformar suas operações. O sistema é intuitivo, não precisa de treinamento complexo e começa a dar resultados desde o primeiro dia de uso.\n\nAlém disso, oferecemos suporte em português, preços acessíveis para todos os tamanhos de negócio e uma equipe que entende as particularidades do mercado brasileiro de estética automotiva.`
-      }
-    ],
-    beneficios: [
-      { titulo: "Pátio Visual", descricao: "Veja onde cada carro está no kanban", icon: LayoutDashboard },
-      { titulo: "Agendamento 24h", descricao: "Clientes agendam sozinhos", icon: Calendar },
-      { titulo: "WhatsApp Automático", descricao: "Avise quando ficar pronto", icon: MessageCircle },
-      { titulo: "Estoque Inteligente", descricao: "Alertas antes de acabar", icon: Package },
-      { titulo: "Equipe Organizada", descricao: "Controle quem faz o quê", icon: Users },
-      { titulo: "Financeiro Completo", descricao: "Fluxo de caixa em tempo real", icon: TrendingUp },
-    ],
-    faq: [
-      {
-        pergunta: `O Lavify funciona para lava jatos pequenos em ${cidade.nome}?`,
-        resposta: `Sim! O Lavify foi pensado para atender desde lava rápidos com um funcionário até grandes operações com múltiplas equipes. Temos planos que cabem no bolso de qualquer empreendedor em ${cidade.nome}.`
-      },
-      {
-        pergunta: "Preciso instalar algum programa no computador?",
-        resposta: "Não! O Lavify funciona 100% online, direto no navegador ou no celular. Você só precisa de internet para acessar de qualquer lugar, inclusive fora do seu lava jato."
-      },
-      {
-        pergunta: "Como funciona o período de teste gratuito?",
-        resposta: "Você pode testar todas as funcionalidades do Lavify gratuitamente por 7 dias, sem precisar cadastrar cartão de crédito. É só criar sua conta e começar a usar imediatamente."
-      },
-      {
-        pergunta: `Quantos lava jatos em ${cidade.nome} já usam o Lavify?`,
-        resposta: `O Lavify atende lava rápidos em todo o Brasil, incluindo ${cidade.nome} e outras cidades do ${cidade.estado}. Nossa base de clientes cresce a cada dia com empreendedores que buscam profissionalizar suas operações.`
-      }
-    ],
-    estatisticas: [
-      { valor: "-50%", label: "Tempo em gestão" },
-      { valor: "+30%", label: "Aumento no faturamento" },
-      { valor: "24h", label: "Agendamentos online" },
-      { valor: "100%", label: "Controle pelo celular" },
-    ]
-  };
-}
+// Ícones para os benefícios
+const iconsBeneficios = [LayoutDashboard, Calendar, MessageCircle, Package, Users, TrendingUp];
+
+// Estatísticas fixas
+const estatisticas = [
+  { valor: "-50%", label: "Tempo em gestão" },
+  { valor: "+30%", label: "Aumento no faturamento" },
+  { valor: "24h", label: "Agendamentos online" },
+  { valor: "100%", label: "Controle pelo celular" },
+];
 
 export default async function CidadePage({ params }: PageProps) {
   const { cidade: cidadeSlug } = await params;
@@ -134,7 +91,11 @@ export default async function CidadePage({ params }: PageProps) {
     notFound();
   }
 
-  const conteudo = getConteudo(cidade);
+  const conteudo = getConteudoCidade(cidadeSlug);
+  
+  if (!conteudo) {
+    notFound();
+  }
 
   // JSON-LD para SEO Local
   const jsonLd = {
@@ -290,7 +251,7 @@ export default async function CidadePage({ params }: PageProps) {
         <section className="py-12 bg-white/5">
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {conteudo.estatisticas.map((stat, index) => (
+              {estatisticas.map((stat, index) => (
                 <div key={index} className="text-center">
                   <p className="text-3xl md:text-4xl font-bold text-cyan-400 mb-1">
                     {stat.valor}
@@ -313,22 +274,22 @@ export default async function CidadePage({ params }: PageProps) {
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {conteudo.beneficios.map((beneficio, index) => (
-                <div
-                  key={index}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4">
-                    <beneficio.icon className="w-6 h-6 text-white" />
+              {conteudo.beneficios.map((beneficio, index) => {
+                const Icon = iconsBeneficios[index] || CheckCircle;
+                return (
+                  <div
+                    key={index}
+                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      {beneficio}
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {beneficio.titulo}
-                  </h3>
-                  <p className="text-white/60 text-sm">
-                    {beneficio.descricao}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
