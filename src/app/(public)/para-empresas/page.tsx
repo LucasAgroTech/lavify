@@ -430,107 +430,209 @@ export default function LandingPageEmpresas() {
             </p>
           </div>
 
-          {/* Grid de Funcionalidades Principais */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          {/* Cards de Funcionalidades Principais - Full Width */}
+          <div className="space-y-4 lg:space-y-5">
             {/* 1. WhatsApp Automático */}
-            <div className="group bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:scale-[1.02] transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-5">
-                  <MessageCircle className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
+            <div className="group bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">WhatsApp Automático</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>API oficial do WhatsApp</span>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-[18px] lg:text-[22px] font-bold mb-2">WhatsApp Automático</h3>
-                <p className="text-green-100 text-[14px] lg:text-[15px] leading-relaxed mb-4">
-                  Cliente recebe notificação automática quando o carro fica pronto. Sem você precisar ligar ou mandar mensagem.
-                </p>
-                <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
-                  <Check className="w-4 h-4" />
-                  <span>API oficial do WhatsApp</span>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">WhatsApp Automático</h3>
+                  <p className="text-green-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Cliente recebe notificação automática quando o carro fica pronto. Sem você precisar ligar ou mandar mensagem.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>API oficial do WhatsApp</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* 2. Agendamento Online 24h */}
-            <div className="group bg-gradient-to-br from-cyan-500 to-blue-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:scale-[1.02] transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-5">
-                  <CalendarClock className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
+            <div className="group bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <CalendarClock className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">Agendamento Online 24h</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Venda enquanto dorme</span>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-[18px] lg:text-[22px] font-bold mb-2">Agendamento Online 24h</h3>
-                <p className="text-cyan-100 text-[14px] lg:text-[15px] leading-relaxed mb-4">
-                  Seu cliente agenda pelo celular, a qualquer hora. Você acorda com a agenda cheia — e sem fila de manhã.
-                </p>
-                <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
-                  <Check className="w-4 h-4" />
-                  <span>Venda enquanto dorme</span>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">Agendamento Online 24h</h3>
+                  <p className="text-cyan-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Seu cliente agenda pelo celular, a qualquer hora. Você acorda com a agenda cheia — e sem fila de manhã.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Venda enquanto dorme</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* 3. Kanban do Pátio */}
-            <div className="group bg-gradient-to-br from-violet-500 to-purple-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:scale-[1.02] transition-transform md:col-span-2 lg:col-span-1">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-5">
-                  <Kanban className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
+            <div className="group bg-gradient-to-r from-violet-500 to-purple-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Kanban className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">Kanban Visual do Pátio</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Simples de usar</span>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-[18px] lg:text-[22px] font-bold mb-2">Kanban Visual do Pátio</h3>
-                <p className="text-violet-100 text-[14px] lg:text-[15px] leading-relaxed mb-4">
-                  Arraste cada carro entre as etapas: Aguardando → Lavando → Pronto. Veja seu pátio de qualquer lugar.
-                </p>
-                <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
-                  <Check className="w-4 h-4" />
-                  <span>Simples de usar</span>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">Kanban Visual do Pátio</h3>
+                  <p className="text-violet-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Arraste cada carro entre as etapas: Aguardando → Lavando → Pronto. Veja seu pátio de qualquer lugar.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Simples de usar</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Segunda linha - Cards menores com mais features */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 mt-5 lg:mt-6">
-            {/* Estoque */}
-            <div className="bg-slate-50 rounded-2xl p-5 lg:p-6 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Package className="w-6 h-6 text-white" />
+            {/* 4. Estoque Inteligente */}
+            <div className="group bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Package className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">Estoque Inteligente</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Alertas automáticos</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">Estoque Inteligente</h3>
+                  <p className="text-amber-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Alerta antes de acabar. Saiba o custo de cada gota de produto em cada lavagem.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Alertas automáticos de reposição</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="font-bold text-slate-900 text-[15px] lg:text-[16px] mb-1">Estoque Inteligente</h4>
-              <p className="text-slate-500 text-[13px] lg:text-[14px] leading-relaxed">
-                Alerta antes de acabar. Saiba o custo de cada gota.
-              </p>
             </div>
 
-            {/* Financeiro */}
-            <div className="bg-slate-50 rounded-2xl p-5 lg:p-6 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Wallet className="w-6 h-6 text-white" />
+            {/* 5. Financeiro Integrado */}
+            <div className="group bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Wallet className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">Financeiro Integrado</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Lucro real calculado</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">Financeiro Integrado</h3>
+                  <p className="text-emerald-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Cada OS já entra no caixa. Veja receitas, despesas e lucro real calculado automaticamente.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Lucro real calculado</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="font-bold text-slate-900 text-[15px] lg:text-[16px] mb-1">Financeiro Integrado</h4>
-              <p className="text-slate-500 text-[13px] lg:text-[14px] leading-relaxed">
-                Cada OS já entra no caixa. Lucro real calculado.
-              </p>
             </div>
 
-            {/* Dashboard */}
-            <div className="bg-slate-50 rounded-2xl p-5 lg:p-6 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <LayoutDashboard className="w-6 h-6 text-white" />
+            {/* 6. Dashboard em Tempo Real */}
+            <div className="group bg-gradient-to-r from-slate-700 to-slate-800 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-cyan-500/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <LayoutDashboard className="w-7 h-7 lg:w-10 lg:h-10 text-cyan-400" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">Dashboard em Tempo Real</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Dados ao vivo</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">Dashboard em Tempo Real</h3>
+                  <p className="text-slate-300 text-[14px] lg:text-[16px] leading-relaxed">
+                    Faturamento do dia, ticket médio, OSs abertas e status do pátio — tudo ao vivo, de qualquer lugar.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Dados atualizados em tempo real</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="font-bold text-slate-900 text-[15px] lg:text-[16px] mb-1">Dashboard em Tempo Real</h4>
-              <p className="text-slate-500 text-[13px] lg:text-[14px] leading-relaxed">
-                Faturamento, ticket médio e OSs ao vivo.
-              </p>
             </div>
 
-            {/* CRM */}
-            <div className="bg-slate-50 rounded-2xl p-5 lg:p-6 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Users className="w-6 h-6 text-white" />
+            {/* 7. CRM de Clientes */}
+            <div className="group bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden hover:shadow-xl transition-all">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-0">
+                  <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <Users className="w-7 h-7 lg:w-10 lg:h-10 text-white" />
+                  </div>
+                  <div className="lg:hidden">
+                    <h3 className="text-[18px] font-bold">CRM de Clientes</h3>
+                    <div className="flex items-center gap-2 text-[13px] font-medium text-white/80">
+                      <Check className="w-4 h-4" />
+                      <span>Histórico completo</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="hidden lg:block text-[24px] font-bold mb-2">CRM de Clientes</h3>
+                  <p className="text-sky-100 text-[14px] lg:text-[16px] leading-relaxed">
+                    Histórico completo de cada cliente: veículos, serviços realizados, gastos totais e preferências.
+                  </p>
+                  <div className="hidden lg:flex items-center gap-2 text-[14px] font-medium text-white/80 mt-3">
+                    <Check className="w-4 h-4" />
+                    <span>Histórico completo de cada cliente</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="font-bold text-slate-900 text-[15px] lg:text-[16px] mb-1">CRM de Clientes</h4>
-              <p className="text-slate-500 text-[13px] lg:text-[14px] leading-relaxed">
-                Histórico completo: veículos, serviços e gastos.
-              </p>
             </div>
           </div>
 
