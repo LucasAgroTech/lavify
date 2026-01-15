@@ -4,8 +4,8 @@ import Link from "next/link";
 import {
   getPaginaSEOBySlug,
   getAllPaginaSEOSlugs,
-  PaginaSEO,
 } from "@/lib/seo-keywords";
+import type { PaginaSEO } from "@/lib/seo-keywords";
 import {
   CheckCircle,
   ArrowRight,
