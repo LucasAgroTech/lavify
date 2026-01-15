@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getAllCidadeSlugs } from "@/lib/seo-cities";
+import { getAllPaginaSEOSlugs } from "@/lib/seo-keywords";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
@@ -48,6 +49,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Páginas SEO programático - keywords estratégicas
+  const keywordSlugs = getAllPaginaSEOSlugs();
+  const keywordPages: MetadataRoute.Sitemap = keywordSlugs.map((slug) => ({
+    url: `${baseUrl}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
+
   // Páginas dinâmicas dos lava jatos
   let lavaJatoPages: MetadataRoute.Sitemap = [];
   
@@ -67,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Erro ao gerar sitemap de lava jatos:", error);
   }
 
-  return [...staticPages, ...cidadePages, ...lavaJatoPages];
+  return [...staticPages, ...keywordPages, ...cidadePages, ...lavaJatoPages];
 }
 
 
