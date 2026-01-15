@@ -42,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Páginas SEO programático - cidades
   const cidadeSlugs = getAllCidadeSlugs();
   const cidadePages: MetadataRoute.Sitemap = cidadeSlugs.map((slug) => ({
-    url: `${baseUrl}/sistema-lava-rapido-${slug}`,
+    url: `${baseUrl}/sistema-lava-rapido/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.8,

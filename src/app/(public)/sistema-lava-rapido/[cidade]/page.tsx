@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
     },
     alternates: {
-      canonical: `/sistema-lava-rapido-${cidade.slug}`,
+      canonical: `/sistema-lava-rapido/${cidade.slug}`,
     },
   };
 }
