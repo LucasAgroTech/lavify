@@ -342,17 +342,15 @@ export default function LandingPageEmpresas() {
 
           {/* Headline - Direto ao ponto */}
           <h1 className="text-[28px] sm:text-[32px] lg:text-[48px] font-bold text-white text-center leading-[1.2] mb-4 lg:mb-6">
-            <span className="block">Sistema para{" "}
+            <span className="block">Sistema Completo para{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 whitespace-nowrap">
               Lava-Rápido
             </span></span>
-            <span className="block whitespace-nowrap">Completo e Simples</span>
           </h1>
 
-          {/* Subheadline - Funcionalidades */}
+          {/* Subheadline - Direto e estratégico */}
           <p className="text-slate-300 text-center text-[15px] lg:text-[18px] leading-relaxed mb-6 max-w-sm lg:max-w-2xl mx-auto">
-            <span className="text-white font-bold">O app mais moderno e completo do Brasil para lava-rápidos.</span>{" "}
-            Controle <span className="text-white font-semibold">pátio</span>, <span className="text-white font-semibold">agendamentos</span>, <span className="text-white font-semibold">estoque</span>, <span className="text-white font-semibold">equipe</span> e <span className="text-white font-semibold">financeiro</span> — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
+            O app <span className="text-white font-bold">mais moderno do Brasil</span> para gerenciar seu lava-rápido. Controle total do seu negócio <span className="text-cyan-400 font-semibold">na palma da mão</span>.
           </p>
 
           {/* Carrossel Mobile - Imagens Verticais */}
