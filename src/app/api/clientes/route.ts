@@ -76,9 +76,9 @@ export async function GET() {
           ? differenceInDays(new Date(), new Date(dataUltimaLavagem))
           : null;
 
-        // Carimbos (lavagens completadas) - usa a meta configurada
-        const carimbos = cliente._count.ordens % metaFidelidade;
-        const lavagensGratis = Math.floor(cliente._count.ordens / metaFidelidade);
+        // Carimbos baseados nos pontos de fidelidade - usa a meta configurada
+        const carimbos = cliente.pontosFidelidade % metaFidelidade;
+        const lavagensGratis = Math.floor(cliente.pontosFidelidade / metaFidelidade);
 
         return {
           id: cliente.id,
