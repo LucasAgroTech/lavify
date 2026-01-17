@@ -1475,13 +1475,14 @@ export default function LandingPageEmpresas() {
       {/* ═══════════════════════════════════════════════════════════════════════
           STICKY CTA MOBILE
       ═══════════════════════════════════════════════════════════════════════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-lg border-t border-slate-200 lg:hidden safe-area-pb">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-6 bg-slate-900 border-t border-slate-700 lg:hidden safe-area-pb">
         <Link
           href="/registro"
-          className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-[15px] rounded-xl shadow-lg active:scale-[0.98] transition-transform"
+          className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-emerald-400 to-green-500 text-slate-900 font-extrabold text-[17px] rounded-2xl shadow-xl shadow-emerald-500/40 active:scale-[0.97] transition-all animate-pulse"
         >
-          Começar Grátis
-          <ArrowRight className="w-4 h-4" />
+          <Zap className="w-5 h-5" />
+          COMEÇAR GRÁTIS AGORA
+          <ArrowRight className="w-5 h-5" />
         </Link>
       </div>
 
