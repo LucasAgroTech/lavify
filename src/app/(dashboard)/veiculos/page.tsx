@@ -100,7 +100,8 @@ export default function VeiculosPage() {
         fetch("/api/clientes"),
       ]);
       setVeiculos(await veiculosRes.json());
-      setClientes(await clientesRes.json());
+      const clientesData = await clientesRes.json();
+      setClientes(clientesData.clientes || []);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
     } finally {

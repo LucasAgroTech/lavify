@@ -78,7 +78,7 @@ export default function NovaOSPage() {
   async function fetchClientes() {
     const res = await fetch("/api/clientes");
     const data = await res.json();
-    setClientes(data);
+    setClientes(data.clientes || []);
   }
 
   async function fetchServicos() {
