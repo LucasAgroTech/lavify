@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   getPaginaSEOBySlug,
   getAllPaginaSEOSlugs,
+  getPaginasRelacionadas,
 } from "@/lib/seo-keywords";
 import type { PaginaSEO } from "@/lib/seo-keywords";
 import {
@@ -203,8 +204,10 @@ export default async function PaginaSEO({ params }: PageProps) {
   }
 
   const conteudo = getConteudoPorTipo(pagina);
+  const paginasRelacionadas = getPaginasRelacionadas(slug, 4);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
-  // JSON-LD Schema
+  // JSON-LD Schema - SoftwareApplication
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -213,8 +216,9 @@ export default async function PaginaSEO({ params }: PageProps) {
     operatingSystem: "Web, iOS, Android",
     description: pagina.descricaoMeta,
     offers: {
-      "@type": "Offer",
-      price: "0",
+      "@type": "AggregateOffer",
+      lowPrice: "0",
+      highPrice: "199.90",
       priceCurrency: "BRL",
       description: "Teste grátis por 7 dias"
     },
@@ -222,8 +226,87 @@ export default async function PaginaSEO({ params }: PageProps) {
       "@type": "AggregateRating",
       ratingValue: "4.9",
       ratingCount: "1847",
+      bestRating: "5",
+      worstRating: "1"
     },
   };
+
+  // Breadcrumb Schema - Navegação estruturada
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Início",
+        item: baseUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Para Empresas",
+        item: `${baseUrl}/para-empresas`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: pagina.h1.split(":")[0],
+        item: `${baseUrl}/${pagina.slug}`
+      }
+    ]
+  };
+
+  // Article Schema - Para páginas de conteúdo/guias
+  const articleLd = pagina.tipo === "guia" ? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: pagina.h1,
+    description: pagina.descricaoMeta,
+    author: {
+      "@type": "Organization",
+      name: "Lavify"
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Lavify",
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/icon.svg`
+      }
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/${pagina.slug}`
+    },
+    datePublished: "2026-01-01",
+    dateModified: new Date().toISOString().split("T")[0]
+  } : null;
+
+  // HowTo Schema - Para páginas do tipo "problema" (como fazer)
+  const howToLd = pagina.tipo === "problema" && pagina.slug.startsWith("como-") ? {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: pagina.h1,
+    description: pagina.descricaoMeta,
+    totalTime: "PT10M",
+    tool: [
+      {
+        "@type": "HowToTool",
+        name: "Sistema Lavify"
+      },
+      {
+        "@type": "HowToTool",
+        name: "Navegador de internet"
+      }
+    ],
+    step: conteudo.secoes.map((secao, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: secao.titulo,
+      text: secao.texto
+    }))
+  } : null;
 
   // FAQ Schema
   const faqLd = {
@@ -253,6 +336,22 @@ export default async function PaginaSEO({ params }: PageProps) {
           "@type": "Answer",
           text: "Sim! O Lavify funciona em qualquer celular com acesso à internet, seja Android ou iPhone. Basta abrir o navegador e acessar."
         }
+      },
+      {
+        "@type": "Question",
+        name: "Quanto custa o sistema para lava jato?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "O Lavify tem plano gratuito para sempre e planos pagos a partir de R$49,90/mês. Você pode testar grátis por 7 dias antes de escolher."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "O sistema funciona para lava jato pequeno?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Sim! O Lavify foi pensado para atender desde lava rápidos com 1 funcionário até grandes operações com múltiplas unidades."
+        }
       }
     ]
   };
@@ -281,8 +380,24 @@ export default async function PaginaSEO({ params }: PageProps) {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
+      {articleLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+        />
+      )}
+      {howToLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToLd) }}
+        />
+      )}
 
       {/* Header */}
       <header className="bg-slate-900/95 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
@@ -510,6 +625,43 @@ export default async function PaginaSEO({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {/* Páginas Relacionadas - Internal Linking */}
+      {paginasRelacionadas.length > 0 && (
+        <section className="py-16 bg-slate-800/30">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
+              Conteúdo Relacionado
+            </h2>
+            <p className="text-white/60 text-center mb-10 max-w-2xl mx-auto">
+              Explore mais artigos sobre gestão de lava rápido
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {paginasRelacionadas.map((paginaRel) => (
+                <Link
+                  key={paginaRel.slug}
+                  href={`/${paginaRel.slug}`}
+                  className="group p-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-cyan-500/30 transition-all"
+                >
+                  <span className="inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded bg-cyan-500/20 text-cyan-400 mb-3">
+                    {paginaRel.tipo}
+                  </span>
+                  <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-2 mb-2">
+                    {paginaRel.h1.split(":")[0]}
+                  </h3>
+                  <p className="text-white/50 text-sm line-clamp-2">
+                    {paginaRel.descricaoMeta.substring(0, 80)}...
+                  </p>
+                  <div className="flex items-center gap-1 mt-3 text-cyan-400 text-sm font-medium">
+                    Ler mais
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Final */}
       <section className="py-16 bg-gradient-to-br from-emerald-600 to-green-700">

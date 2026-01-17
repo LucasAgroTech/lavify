@@ -44,6 +44,10 @@ import {
   Headphones,
   Briefcase,
   Medal,
+  Search,
+  Globe,
+  TrendingUp as TrendUp,
+  Brain,
 } from "lucide-react";
 
 // FAQ Accordion Component
@@ -807,6 +811,132 @@ export default function LandingPageEmpresas() {
               <p className="text-pink-100 text-[13px] lg:text-[14px]">
                 Clientes fidelizados voltam mais e gastam mais.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SEO INTELIGENTE - Marketing Digital Automático
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-violet-50 to-indigo-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <Brain className="w-5 h-5 text-violet-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-violet-600 uppercase tracking-wide">
+              Marketing Inteligente
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Seu Lava Jato no{" "}
+            <span className="text-violet-600">Google Automaticamente</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+            Inteligência artificial trabalhando 24h para trazer clientes novos para você.
+          </p>
+
+          <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
+            {/* Página Própria */}
+            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-violet-100 hover:shadow-md hover:border-violet-200 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Página Própria Indexada</h4>
+                  <p className="text-slate-500 text-[13px] lg:text-[14px]">Seu lava jato aparece no Google</p>
+                </div>
+              </div>
+              <div className="bg-violet-50 rounded-xl p-4 mb-4">
+                <div className="flex items-center gap-2 text-violet-700 text-[13px] font-mono mb-2">
+                  <Search className="w-4 h-4" />
+                  <span>lavify.com.br/<strong>seulava</strong></span>
+                </div>
+                <p className="text-violet-800 text-[14px]">
+                  Cada lava jato ganha uma <span className="font-bold">página exclusiva</span> que é automaticamente indexada no Google. Clientes encontram você quando buscam "lava jato perto de mim".
+                </p>
+              </div>
+              <div className="space-y-2">
+                {[
+                  "URL personalizada com seu nome",
+                  "Serviços e preços visíveis",
+                  "Botão de agendamento direto",
+                  "Avaliações dos clientes",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-[13px] text-slate-600">
+                    <Check className="w-4 h-4 text-violet-500" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SEO Automático */}
+            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-violet-100 hover:shadow-md hover:border-violet-200 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">SEO Otimizado por IA</h4>
+                  <p className="text-slate-500 text-[13px] lg:text-[14px]">Inteligência que atrai clientes</p>
+                </div>
+              </div>
+              <div className="bg-indigo-50 rounded-xl p-4 mb-4">
+                <p className="text-indigo-800 text-[14px]">
+                  Nossa <span className="font-bold">inteligência artificial</span> otimiza automaticamente sua página para aparecer nas buscas locais. Você não precisa entender de marketing digital.
+                </p>
+              </div>
+              <div className="space-y-2">
+                {[
+                  "Otimização automática para Google",
+                  "Palavras-chave da sua região",
+                  "Schema estruturado para buscas",
+                  "Sitemap atualizado em tempo real",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-[13px] text-slate-600">
+                    <Check className="w-4 h-4 text-indigo-500" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Benefício Principal */}
+          <div className="mt-6 lg:mt-10 p-5 lg:p-6 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-2xl max-w-3xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6">
+              <div className="w-16 h-16 lg:w-20 lg:h-20 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <Brain className="w-8 h-8 lg:w-10 lg:h-10 text-white" />
+              </div>
+              <div className="text-center lg:text-left">
+                <p className="text-white font-bold text-[17px] lg:text-[20px] mb-1">
+                  Marketing que trabalha enquanto você descansa
+                </p>
+                <p className="text-violet-100 text-[14px] lg:text-[15px]">
+                  Sua página está 24h no ar, sendo encontrada por clientes da sua cidade. <span className="font-semibold text-white">Zero esforço, clientes novos todo mês.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Comparativo rápido */}
+          <div className="mt-8 grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+              <p className="text-red-600 text-[12px] font-bold uppercase mb-2">❌ Sem Lavify</p>
+              <ul className="space-y-1 text-[13px] text-red-700">
+                <li>• Depende de indicação</li>
+                <li>• Paga anúncio no Google</li>
+                <li>• Não aparece nas buscas</li>
+              </ul>
+            </div>
+            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+              <p className="text-emerald-600 text-[12px] font-bold uppercase mb-2">✓ Com Lavify</p>
+              <ul className="space-y-1 text-[13px] text-emerald-700">
+                <li>• Aparece no Google grátis</li>
+                <li>• IA otimiza automaticamente</li>
+                <li>• Clientes chegam sozinhos</li>
+              </ul>
             </div>
           </div>
         </div>

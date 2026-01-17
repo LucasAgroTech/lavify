@@ -97,25 +97,84 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-// JSON-LD Structured Data
-const jsonLd = {
+// JSON-LD Structured Data - Software Application
+const softwareJsonLd = {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
+  "@type": "SoftwareApplication",
   name: "Lavify",
   description:
-    "Plataforma para encontrar e agendar serviços de lava jato. Compare preços, veja avaliações e agende online.",
+    "Sistema de gestão completo para lava rápido e lava jato. Controle pátio, agendamentos, estoque, equipe e financeiro pelo celular.",
   url: siteUrl,
   applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
+  applicationSubCategory: "Gestão Empresarial",
+  operatingSystem: "Web, iOS, Android",
+  softwareVersion: "2.0",
   offers: {
-    "@type": "Offer",
-    price: "0",
+    "@type": "AggregateOffer",
+    lowPrice: "0",
+    highPrice: "199.90",
     priceCurrency: "BRL",
+    offerCount: "4",
   },
   aggregateRating: {
     "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1250",
+    ratingValue: "4.9",
+    ratingCount: "1847",
+    bestRating: "5",
+    worstRating: "1",
+  },
+  featureList: [
+    "Kanban visual do pátio",
+    "Agendamento online 24h",
+    "WhatsApp automático",
+    "Controle de estoque",
+    "Gestão financeira",
+    "Controle de equipe",
+    "Programas de fidelidade",
+  ],
+};
+
+// JSON-LD Organization Schema - Autoridade da Marca
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Lavify",
+  alternateName: "Lavify - Sistema para Lava Rápido",
+  url: siteUrl,
+  logo: `${siteUrl}/icon.svg`,
+  description: "Empresa brasileira especializada em software de gestão para lava rápidos e lava jatos.",
+  foundingDate: "2024",
+  sameAs: [
+    "https://www.instagram.com/lavifyapp",
+    "https://www.facebook.com/lavifyapp",
+    "https://www.linkedin.com/company/lavify",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    availableLanguage: ["Portuguese"],
+    areaServed: "BR",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "BR",
+  },
+};
+
+// JSON-LD WebSite Schema - Busca no Site
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Lavify",
+  url: siteUrl,
+  description: "Sistema de gestão para lava rápido e lava jato",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${siteUrl}/encontrar?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
   },
 };
 
@@ -130,10 +189,23 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        {/* Software Application Schema */}
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+        />
+        {/* Organization Schema - Autoridade da Marca */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {/* WebSite Schema - Search Action */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
       <body

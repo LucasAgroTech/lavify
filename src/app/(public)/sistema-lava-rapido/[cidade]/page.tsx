@@ -18,8 +18,9 @@ import {
   MapPin,
   Smartphone
 } from "lucide-react";
-import { getCidadeBySlug, getAllCidadeSlugs, CidadeSEO } from "@/lib/seo-cities";
+import { getCidadeBySlug, getAllCidadeSlugs, CidadeSEO, cidadesBrasil } from "@/lib/seo-cities";
 import { getConteudoCidade, ConteudoSEO } from "@/data/seo-content";
+import { getPaginasDestaque } from "@/lib/seo-keywords";
 
 interface PageProps {
   params: Promise<{ cidade: string }>;
@@ -97,17 +98,28 @@ export default async function CidadePage({ params }: PageProps) {
     notFound();
   }
 
+  // Páginas de conteúdo relacionadas
+  const paginasRelacionadas = getPaginasDestaque(4);
+
+  // Cidades da mesma região para internal linking
+  const cidadesProximas = cidadesBrasil
+    .filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug)
+    .slice(0, 6);
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+
   // JSON-LD para SEO Local
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Lavify",
     applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
+    operatingSystem: "Web, iOS, Android",
     description: `Sistema de gestão para lava rápido em ${cidade.nome}, ${cidade.estado}`,
     offers: {
-      "@type": "Offer",
-      price: "0",
+      "@type": "AggregateOffer",
+      lowPrice: "0",
+      highPrice: "199.90",
       priceCurrency: "BRL",
       description: "Teste grátis por 7 dias"
     },
@@ -122,9 +134,36 @@ export default async function CidadePage({ params }: PageProps) {
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.9",
-      ratingCount: "127",
-      bestRating: "5"
+      ratingCount: "1847",
+      bestRating: "5",
+      worstRating: "1"
     }
+  };
+
+  // Breadcrumb Schema - Importante para navegação estruturada
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Início",
+        item: baseUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Para Empresas",
+        item: `${baseUrl}/para-empresas`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `Sistema para Lava Rápido em ${cidade.nome}`,
+        item: `${baseUrl}/sistema-lava-rapido/${cidade.slug}`
+      }
+    ]
   };
 
   const faqJsonLd = {
@@ -140,6 +179,55 @@ export default async function CidadePage({ params }: PageProps) {
     }))
   };
 
+  // Service Schema - Serviços oferecidos pelo software
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: "Software as a Service (SaaS)",
+    name: `Sistema de Gestão para Lava Rápido em ${cidade.nome}`,
+    description: `Software completo para gestão de lava jato em ${cidade.nome}, ${cidade.uf}. Controle pátio, agendamentos, estoque e financeiro.`,
+    provider: {
+      "@type": "Organization",
+      name: "Lavify"
+    },
+    areaServed: {
+      "@type": "City",
+      name: cidade.nome,
+      containedInPlace: {
+        "@type": "State",
+        name: cidade.estado,
+        containedInPlace: {
+          "@type": "Country",
+          name: "Brasil"
+        }
+      }
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Planos Lavify",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Plano Grátis"
+          },
+          price: "0",
+          priceCurrency: "BRL"
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Plano Profissional"
+          },
+          price: "99.90",
+          priceCurrency: "BRL"
+        }
+      ]
+    }
+  };
+
   return (
     <>
       <script
@@ -148,7 +236,15 @@ export default async function CidadePage({ params }: PageProps) {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
 
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
@@ -340,6 +436,56 @@ export default async function CidadePage({ params }: PageProps) {
             </div>
           </div>
         </section>
+
+        {/* Internal Linking - Guias Relacionados */}
+        <section className="py-16 bg-slate-800/50">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-4">
+              Guias para Lava Rápido
+            </h2>
+            <p className="text-white/60 text-center mb-10">
+              Conteúdo exclusivo para donos de lava jato
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {paginasRelacionadas.map((paginaRel) => (
+                <Link
+                  key={paginaRel.slug}
+                  href={`/${paginaRel.slug}`}
+                  className="group p-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-cyan-500/30 transition-all"
+                >
+                  <span className="inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded bg-cyan-500/20 text-cyan-400 mb-3">
+                    {paginaRel.tipo}
+                  </span>
+                  <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
+                    {paginaRel.h1.split(":")[0]}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Internal Linking - Cidades Próximas */}
+        {cidadesProximas.length > 0 && (
+          <section className="py-12 bg-white/5">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-xl font-bold text-white text-center mb-6">
+                Sistema para Lava Rápido em Outras Cidades da Região {cidade.regiao}
+              </h2>
+              <div className="flex flex-wrap justify-center gap-3">
+                {cidadesProximas.map((cidadeProx) => (
+                  <Link
+                    key={cidadeProx.slug}
+                    href={`/sistema-lava-rapido/${cidadeProx.slug}`}
+                    className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-white/70 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-all text-sm"
+                  >
+                    {cidadeProx.nome}, {cidadeProx.uf}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* CTA Section */}
         <section className="py-16 md:py-24 bg-gradient-to-r from-cyan-600 to-blue-700">
