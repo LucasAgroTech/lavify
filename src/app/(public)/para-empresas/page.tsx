@@ -346,18 +346,18 @@ export default function LandingPageEmpresas() {
           </p>
 
           {/* Carrossel Mobile - Imagens Verticais */}
-          <div className="lg:hidden relative mb-8 max-w-[280px] mx-auto">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 aspect-[9/16]">
+          <div className="lg:hidden relative mb-8 max-w-[300px] mx-auto">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
               <div 
-                className="flex transition-transform duration-500 ease-out h-full"
+                className="flex transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${slideMobileAtual * 100}%)` }}
               >
                 {imagensHeroMobile.map((img, index) => (
-                  <div key={index} className="w-full flex-shrink-0 h-full">
+                  <div key={index} className="w-full flex-shrink-0">
                     <img
                       src={img}
                       alt={`Sistema Lavify mobile ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto"
                     />
                   </div>
                 ))}
