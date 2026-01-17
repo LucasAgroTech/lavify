@@ -75,6 +75,8 @@ export default function ClientesPage() {
   const [editando, setEditando] = useState<Cliente | null>(null);
   const [salvando, setSalvando] = useState(false);
   const [clienteExpandido, setClienteExpandido] = useState<string | null>(null);
+  const [processandoFidelidade, setProcessandoFidelidade] = useState<string | null>(null);
+  const [mensagemFidelidade, setMensagemFidelidade] = useState<string | null>(null);
 
   // Form states
   const [formNome, setFormNome] = useState("");
@@ -164,6 +166,36 @@ export default function ClientesPage() {
     const message = encodeURIComponent(mensagem);
     window.open(`https://wa.me/55${phone}?text=${message}`, "_blank");
     setShowWhatsAppModal(false);
+  }
+
+  async function gerenciarFidelidade(clienteId: string, acao: "adicionar" | "resgatar") {
+    setProcessandoFidelidade(clienteId);
+    setMensagemFidelidade(null);
+
+    try {
+      const res = await fetch(`/api/clientes/${clienteId}/fidelidade`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ acao }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMensagemFidelidade(data.mensagem);
+        // Atualizar lista de clientes
+        await fetchClientes();
+        // Limpar mensagem após 3 segundos
+        setTimeout(() => setMensagemFidelidade(null), 3000);
+      } else {
+        alert(data.error || "Erro ao processar");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      alert("Erro ao processar");
+    } finally {
+      setProcessandoFidelidade(null);
+    }
   }
 
   function getMensagensMarketing(cliente: Cliente) {
@@ -449,9 +481,9 @@ export default function ClientesPage() {
                               <Stamp className="w-4 h-4" />
                               <span className="font-semibold text-xs">Fidelidade</span>
                             </div>
-                            {cliente.carimbos >= meta - 1 && (
-                              <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] text-white font-bold">
-                                QUASE LÁ! 🎉
+                            {cliente.lavagensGratis > 0 && (
+                              <span className="px-2 py-0.5 bg-amber-400 rounded-full text-[10px] text-amber-900 font-bold">
+                                🎁 {cliente.lavagensGratis} grátis
                               </span>
                             )}
                           </div>
@@ -468,8 +500,34 @@ export default function ClientesPage() {
                             ))}
                           </div>
                           <p className="text-white/80 text-[10px] text-center mt-2">
-                            {meta - cliente.carimbos} para 1 GRÁTIS! {cliente.lavagensGratis > 0 && `• 🎁 ${cliente.lavagensGratis} prêmio${cliente.lavagensGratis > 1 ? 's' : ''}`}
+                            {cliente.carimbos}/{meta} carimbos
                           </p>
+                          
+                          {/* Botões de Fidelidade */}
+                          <div className="flex gap-2 mt-3">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); gerenciarFidelidade(cliente.id, "adicionar"); }}
+                              disabled={processandoFidelidade === cliente.id}
+                              className="flex-1 flex items-center justify-center gap-1 py-2 bg-white text-emerald-600 rounded-lg font-bold text-xs disabled:opacity-50 active:scale-95 transition-transform"
+                            >
+                              {processandoFidelidade === cliente.id ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <>
+                                  <Plus className="w-3 h-3" /> Carimbo
+                                </>
+                              )}
+                            </button>
+                            {cliente.lavagensGratis > 0 && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); gerenciarFidelidade(cliente.id, "resgatar"); }}
+                                disabled={processandoFidelidade === cliente.id}
+                                className="flex-1 flex items-center justify-center gap-1 py-2 bg-amber-400 text-amber-900 rounded-lg font-bold text-xs disabled:opacity-50 active:scale-95 transition-transform"
+                              >
+                                <Gift className="w-3 h-3" /> Resgatar
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
 
@@ -526,6 +584,14 @@ export default function ClientesPage() {
               <Plus className="w-4 h-4" /> Novo Cliente
             </button>
           </div>
+
+          {/* Mensagem de Fidelidade */}
+          {mensagemFidelidade && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3 animate-pulse">
+              <Gift className="w-6 h-6 text-emerald-600" />
+              <p className="font-medium text-emerald-800">{mensagemFidelidade}</p>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-5 gap-4">
@@ -678,13 +744,35 @@ export default function ClientesPage() {
                         {fidelidadeConfig.ativa && (
                           <td className="py-3 px-4">
                             {mostrarFidelidade ? (
-                              <div className="flex items-center justify-center gap-1">
-                                <div className="flex gap-0.5">
-                                  {[...Array(meta)].map((_, i) => (
-                                    <div key={i} className={`w-2 h-2 rounded-full ${i < cliente.carimbos ? "bg-emerald-500" : "bg-slate-200"}`} />
-                                  ))}
+                              <div className="flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-1">
+                                  <div className="flex gap-0.5">
+                                    {[...Array(meta)].map((_, i) => (
+                                      <div key={i} className={`w-2 h-2 rounded-full ${i < cliente.carimbos ? "bg-emerald-500" : "bg-slate-200"}`} />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs text-slate-500 ml-1">{cliente.carimbos}/{meta}</span>
                                 </div>
-                                <span className="text-xs text-slate-500 ml-1">{cliente.carimbos}/{meta}</span>
+                                <div className="flex gap-1">
+                                  <button
+                                    onClick={() => gerenciarFidelidade(cliente.id, "adicionar")}
+                                    disabled={processandoFidelidade === cliente.id}
+                                    className="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded text-[10px] font-bold disabled:opacity-50 flex items-center gap-0.5"
+                                    title="Dar carimbo"
+                                  >
+                                    {processandoFidelidade === cliente.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3" /> Carimbo</>}
+                                  </button>
+                                  {cliente.lavagensGratis > 0 && (
+                                    <button
+                                      onClick={() => gerenciarFidelidade(cliente.id, "resgatar")}
+                                      disabled={processandoFidelidade === cliente.id}
+                                      className="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded text-[10px] font-bold disabled:opacity-50 flex items-center gap-0.5"
+                                      title="Resgatar prêmio"
+                                    >
+                                      <Gift className="w-3 h-3" /> {cliente.lavagensGratis}
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                             ) : (
                               <span className="text-xs text-slate-400">—</span>

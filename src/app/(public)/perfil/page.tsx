@@ -13,13 +13,28 @@ import {
   HelpCircle,
   Loader2,
   CircleUser,
+  Gift,
+  Stamp,
+  Check,
+  Sparkles,
 } from "lucide-react";
+
+interface Fidelidade {
+  ativa: boolean;
+  participa: boolean;
+  meta: number;
+  pontosTotais: number;
+  carimbos: number;
+  premiosDisponiveis: number;
+  lavaJatoNome: string | null;
+}
 
 interface Cliente {
   id: string;
   nome: string;
   email: string;
   telefone: string | null;
+  fidelidade: Fidelidade;
 }
 
 interface Veiculo {
@@ -122,6 +137,8 @@ export default function PerfilPage() {
     );
   }
 
+  const fid = cliente.fidelidade;
+
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-6 lg:max-w-2xl lg:mx-auto">
       {/* Header */}
@@ -148,6 +165,81 @@ export default function PerfilPage() {
           </div>
         </div>
       </div>
+
+      {/* Cartão de Fidelidade */}
+      {fid.ativa && (
+        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg p-5 mb-4 text-white overflow-hidden relative">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+          
+          <div className="relative">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Stamp className="w-5 h-5" />
+                <span className="font-bold">Cartão Fidelidade</span>
+              </div>
+              {fid.lavaJatoNome && (
+                <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                  {fid.lavaJatoNome}
+                </span>
+              )}
+            </div>
+
+            {/* Carimbos Grid */}
+            <div className="flex gap-2 justify-center mb-4">
+              {[...Array(fid.meta)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                    i < fid.carimbos 
+                      ? "bg-white shadow-lg" 
+                      : "bg-white/20 border border-white/30"
+                  }`}
+                >
+                  {i < fid.carimbos && (
+                    <Check className="w-5 h-5 text-emerald-600" />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Progress Text */}
+            <div className="text-center mb-4">
+              <p className="text-white/80 text-sm">
+                {fid.carimbos === 0 
+                  ? `Faltam ${fid.meta} lavagens para ganhar 1 grátis!`
+                  : fid.carimbos >= fid.meta - 1
+                    ? "🎉 Quase lá! Falta apenas 1 lavagem!"
+                    : `${fid.carimbos}/${fid.meta} - Faltam ${fid.meta - fid.carimbos} lavagens`
+                }
+              </p>
+            </div>
+
+            {/* Prêmios Disponíveis */}
+            {fid.premiosDisponiveis > 0 && (
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 flex items-center gap-3">
+                <div className="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg">
+                  <Gift className="w-6 h-6 text-amber-900" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-lg">
+                    {fid.premiosDisponiveis} lavagem{fid.premiosDisponiveis > 1 ? 's' : ''} grátis!
+                  </p>
+                  <p className="text-white/70 text-sm">Disponível para resgate</p>
+                </div>
+                <Sparkles className="w-6 h-6 text-amber-300 animate-pulse" />
+              </div>
+            )}
+
+            {/* Info */}
+            <p className="text-center text-white/60 text-xs mt-4">
+              A cada lavagem você ganha 1 carimbo. Complete {fid.meta} e ganhe 1 lavagem grátis!
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Veículos */}
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden mb-4">
