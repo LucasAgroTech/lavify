@@ -288,30 +288,30 @@ export default function FinanceiroPage() {
               </div>
             </div>
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={chartData} barGap={2}>
-                  <XAxis 
-                    dataKey="dia" 
-                    stroke="#94a3b8" 
-                    fontSize={10} 
-                    axisLine={false} 
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: "#1e293b",
-                      border: "none",
-                      borderRadius: "8px",
-                      color: "#fff",
-                      fontSize: "12px",
-                      padding: "8px 12px",
-                    }}
-                    formatter={(value) => formatCurrency(value as number)}
-                  />
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={chartData} barGap={2}>
+                <XAxis 
+                  dataKey="dia" 
+                  stroke="#94a3b8" 
+                  fontSize={10} 
+                  axisLine={false} 
+                  tickLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#1e293b",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                    fontSize: "12px",
+                    padding: "8px 12px",
+                  }}
+                  formatter={(value) => formatCurrency(value as number)}
+                />
                   <Bar dataKey="receita" fill="#10b981" radius={[4, 4, 0, 0]} name="Receita" />
                   <Bar dataKey="despesa" fill="#ef4444" radius={[4, 4, 0, 0]} name="Despesa" />
-                </BarChart>
-              </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
             ) : (
               <div className="h-40 flex items-center justify-center text-slate-400 text-sm">
                 Sem dados para exibir
@@ -336,14 +336,14 @@ export default function FinanceiroPage() {
               {receitasRecentes.length > 0 ? (
                 receitasRecentes.slice(0, 3).map((item) => (
                   <div key={item.id} className="px-4 py-3 flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
-                      <p className="text-xs text-slate-400">{item.hora}</p>
-                    </div>
-                    <span className="font-semibold text-emerald-600 text-sm ml-2">
-                      +{formatCurrency(item.valor)}
-                    </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
+                    <p className="text-xs text-slate-400">{item.hora}</p>
                   </div>
+                  <span className="font-semibold text-emerald-600 text-sm ml-2">
+                    +{formatCurrency(item.valor)}
+                  </span>
+                </div>
                 ))
               ) : (
                 <div className="px-4 py-6 text-center text-slate-400 text-sm">
@@ -370,14 +370,14 @@ export default function FinanceiroPage() {
               {despesasRecentes.length > 0 ? (
                 despesasRecentes.slice(0, 3).map((item) => (
                   <div key={item.id} className="px-4 py-3 flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
-                      <p className="text-xs text-slate-400">{item.hora}</p>
-                    </div>
-                    <span className="font-semibold text-red-600 text-sm ml-2">
-                      -{formatCurrency(item.valor)}
-                    </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
+                    <p className="text-xs text-slate-400">{item.hora}</p>
                   </div>
+                  <span className="font-semibold text-red-600 text-sm ml-2">
+                    -{formatCurrency(item.valor)}
+                  </span>
+                </div>
                 ))
               ) : (
                 <div className="px-4 py-6 text-center text-slate-400 text-sm">
@@ -504,57 +504,57 @@ export default function FinanceiroPage() {
               </div>
             </div>
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={chartData}>
-                  <defs>
-                    <linearGradient id="colorReceita" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorDespesa" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="dia" stroke="#94a3b8" fontSize={12} axisLine={false} tickLine={false} />
-                  <YAxis
-                    stroke="#94a3b8"
-                    fontSize={12}
-                    tickFormatter={(v) => `R$${v}`}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: "#1e293b",
-                      border: "none",
-                      borderRadius: "8px",
-                      color: "#fff",
-                      fontSize: "13px",
-                    }}
-                    formatter={(value) => formatCurrency(value as number)}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="receita"
-                    stroke="#10b981"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorReceita)"
-                    name="Receita"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="despesa"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorDespesa)"
-                    name="Despesa"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={chartData}>
+                <defs>
+                  <linearGradient id="colorReceita" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorDespesa" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                <XAxis dataKey="dia" stroke="#94a3b8" fontSize={12} axisLine={false} tickLine={false} />
+                <YAxis
+                  stroke="#94a3b8"
+                  fontSize={12}
+                  tickFormatter={(v) => `R$${v}`}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#1e293b",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                    fontSize: "13px",
+                  }}
+                  formatter={(value) => formatCurrency(value as number)}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="receita"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorReceita)"
+                  name="Receita"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="despesa"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorDespesa)"
+                  name="Despesa"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
             ) : (
               <div className="h-80 flex items-center justify-center text-slate-400">
                 <div className="text-center">
@@ -584,14 +584,14 @@ export default function FinanceiroPage() {
                 {receitasRecentes.length > 0 ? (
                   receitasRecentes.map((item) => (
                     <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                      <div>
-                        <p className="font-medium text-slate-700 text-sm">{item.desc}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{item.hora}</p>
-                      </div>
-                      <span className="font-semibold text-emerald-600">
-                        +{formatCurrency(item.valor)}
-                      </span>
+                    <div>
+                      <p className="font-medium text-slate-700 text-sm">{item.desc}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{item.hora}</p>
                     </div>
+                    <span className="font-semibold text-emerald-600">
+                      +{formatCurrency(item.valor)}
+                    </span>
+                  </div>
                   ))
                 ) : (
                   <div className="px-5 py-8 text-center text-slate-400">
@@ -619,14 +619,14 @@ export default function FinanceiroPage() {
                 {despesasRecentes.length > 0 ? (
                   despesasRecentes.map((item) => (
                     <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                      <div>
-                        <p className="font-medium text-slate-700 text-sm">{item.desc}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{item.hora}</p>
-                      </div>
-                      <span className="font-semibold text-red-600">
-                        -{formatCurrency(item.valor)}
-                      </span>
+                    <div>
+                      <p className="font-medium text-slate-700 text-sm">{item.desc}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{item.hora}</p>
                     </div>
+                    <span className="font-semibold text-red-600">
+                      -{formatCurrency(item.valor)}
+                    </span>
+                  </div>
                   ))
                 ) : (
                   <div className="px-5 py-8 text-center text-slate-400">

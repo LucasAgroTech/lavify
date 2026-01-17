@@ -24,6 +24,9 @@ export async function GET() {
         ativo: true,
         plano: true,
         createdAt: true,
+        // Campos de fidelidade
+        fidelidadeAtiva: true,
+        metaFidelidade: true,
       },
     });
 
@@ -52,7 +55,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { nome, slug, cnpj, telefone, endereco, corPrimaria } = body;
+    const { nome, slug, cnpj, telefone, endereco, corPrimaria, fidelidadeAtiva, metaFidelidade } = body;
 
     // Validações básicas
     if (nome !== undefined && nome.trim().length < 3) {
@@ -95,6 +98,11 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // Validar meta de fidelidade
+    if (metaFidelidade !== undefined && ![5, 10, 15].includes(metaFidelidade)) {
+      return NextResponse.json({ error: "Meta de fidelidade deve ser 5, 10 ou 15" }, { status: 400 });
+    }
+
     // Montar objeto de atualização
     const updateData: Record<string, unknown> = {};
 
@@ -104,6 +112,8 @@ export async function PATCH(request: NextRequest) {
     if (telefone !== undefined) updateData.telefone = telefone || null;
     if (endereco !== undefined) updateData.endereco = endereco || null;
     if (corPrimaria !== undefined) updateData.corPrimaria = corPrimaria;
+    if (fidelidadeAtiva !== undefined) updateData.fidelidadeAtiva = fidelidadeAtiva;
+    if (metaFidelidade !== undefined) updateData.metaFidelidade = metaFidelidade;
 
     const lavaJatoAtualizado = await prisma.lavaJato.update({
       where: { id: session.lavaJatoId },
@@ -119,6 +129,8 @@ export async function PATCH(request: NextRequest) {
         corPrimaria: true,
         ativo: true,
         plano: true,
+        fidelidadeAtiva: true,
+        metaFidelidade: true,
       },
     });
 
@@ -128,4 +140,3 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }
-

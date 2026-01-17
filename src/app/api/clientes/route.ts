@@ -11,6 +11,18 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
+    // Buscar configurações de fidelidade do lava jato
+    const lavaJato = await prisma.lavaJato.findUnique({
+      where: { id: session.lavaJatoId },
+      select: {
+        fidelidadeAtiva: true,
+        metaFidelidade: true,
+      },
+    });
+
+    const fidelidadeAtiva = lavaJato?.fidelidadeAtiva ?? false;
+    const metaFidelidade = lavaJato?.metaFidelidade ?? 10;
+
     const clientes = await prisma.cliente.findMany({
       where: { lavaJatoId: session.lavaJatoId },
       include: {
@@ -64,9 +76,9 @@ export async function GET() {
           ? differenceInDays(new Date(), new Date(dataUltimaLavagem))
           : null;
 
-        // Carimbos (lavagens completadas) - a cada 10 = 1 lavagem grátis
-        const carimbos = cliente._count.ordens % 10; // Resto da divisão por 10
-        const lavágensPremio = Math.floor(cliente._count.ordens / 10); // Quantas lavagens grátis já ganhou
+        // Carimbos (lavagens completadas) - usa a meta configurada
+        const carimbos = cliente._count.ordens % metaFidelidade;
+        const lavagensGratis = Math.floor(cliente._count.ordens / metaFidelidade);
 
         return {
           id: cliente.id,
@@ -76,6 +88,7 @@ export async function GET() {
           pontosFidelidade: cliente.pontosFidelidade,
           saldoCashback: cliente.saldoCashback,
           planoMensal: cliente.planoMensal,
+          participaFidelidade: cliente.participaFidelidade,
           createdAt: cliente.createdAt,
           veiculos: cliente.veiculos,
           _count: cliente._count,
@@ -89,8 +102,8 @@ export async function GET() {
             servico: ultimaLavagem.itens[0]?.servico.nome || "Lavagem",
           } : null,
           diasSemVir,
-          carimbos, // 0-9, quando chega em 10 zera e ganha premio
-          lavágensPremio, // Quantas lavagens grátis já ganhou
+          carimbos,
+          lavagensGratis,
           status: diasSemVir === null 
             ? "novo" 
             : diasSemVir <= 7 
@@ -104,7 +117,14 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json(clientesComDados);
+    // Retornar também as configurações de fidelidade
+    return NextResponse.json({
+      clientes: clientesComDados,
+      fidelidadeConfig: {
+        ativa: fidelidadeAtiva,
+        meta: metaFidelidade,
+      },
+    });
   } catch (error) {
     console.error("Erro ao buscar clientes:", error);
     return NextResponse.json(
@@ -123,7 +143,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { nome, telefone, email, planoMensal } = body;
+    const { nome, telefone, email, planoMensal, participaFidelidade } = body;
 
     const cliente = await prisma.cliente.create({
       data: {
@@ -131,6 +151,7 @@ export async function POST(request: NextRequest) {
         telefone,
         email,
         planoMensal: planoMensal || false,
+        participaFidelidade: participaFidelidade !== false, // default true
         lavaJatoId: session.lavaJatoId,
       },
     });

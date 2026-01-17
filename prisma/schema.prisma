@@ -25,6 +25,10 @@ model LavaJato {
   ativo         Boolean   @default(true)
   createdAt     DateTime  @default(now())
   
+  // ========== FIDELIDADE ==========
+  fidelidadeAtiva       Boolean   @default(false)
+  metaFidelidade        Int       @default(10)  // 5, 10 ou 15 lavagens
+  
   // ========== ASSINATURA E PLANO ==========
   plano                 String    @default("STARTER")  // STARTER, PRO, PREMIUM
   stripeCustomerId      String?   @unique
@@ -150,6 +154,7 @@ model Cliente {
   pontosFidelidade Int       @default(0)
   saldoCashback    Float     @default(0.0)
   planoMensal      Boolean   @default(false)
+  participaFidelidade Boolean @default(true)
   createdAt        DateTime  @default(now())
   
   lavaJatoId       String?

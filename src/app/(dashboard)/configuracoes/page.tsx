@@ -18,6 +18,8 @@ import {
   Droplets,
   Crown,
   ArrowLeft,
+  Gift,
+  Stamp,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,6 +36,8 @@ interface LavaJatoConfig {
   ativo: boolean;
   plano: string;
   createdAt: string;
+  fidelidadeAtiva: boolean;
+  metaFidelidade: number;
 }
 
 const coresPredefinidas = [
@@ -71,6 +75,8 @@ export default function ConfiguracoesPage() {
   const [telefone, setTelefone] = useState("");
   const [endereco, setEndereco] = useState("");
   const [corPrimaria, setCorPrimaria] = useState("#06b6d4");
+  const [fidelidadeAtiva, setFidelidadeAtiva] = useState(false);
+  const [metaFidelidade, setMetaFidelidade] = useState(10);
 
   const fetchConfig = useCallback(async () => {
     try {
@@ -84,6 +90,8 @@ export default function ConfiguracoesPage() {
         setTelefone(formatTelefone(data.telefone || ""));
         setEndereco(data.endereco || "");
         setCorPrimaria(data.corPrimaria || "#06b6d4");
+        setFidelidadeAtiva(data.fidelidadeAtiva || false);
+        setMetaFidelidade(data.metaFidelidade || 10);
       }
     } catch (error) {
       console.error("Erro ao buscar configurações:", error);
@@ -156,6 +164,8 @@ export default function ConfiguracoesPage() {
           telefone: telefone.replace(/\D/g, ""),
           endereco,
           corPrimaria,
+          fidelidadeAtiva,
+          metaFidelidade,
         }),
       });
 
@@ -418,6 +428,76 @@ export default function ConfiguracoesPage() {
                 />
                 <span className="text-sm text-slate-500 font-mono">{corPrimaria}</span>
               </div>
+            </div>
+          </div>
+
+          {/* Programa de Fidelidade */}
+          <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="p-4 border-b border-slate-100">
+              <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                <Gift className="w-5 h-5 text-emerald-500" />
+                Programa de Fidelidade
+              </h3>
+            </div>
+            <div className="p-4 space-y-4">
+              {/* Toggle Ativar */}
+              <button
+                type="button"
+                onClick={() => setFidelidadeAtiva(!fidelidadeAtiva)}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                  fidelidadeAtiva
+                    ? "border-emerald-500 bg-emerald-50"
+                    : "border-slate-200 bg-white"
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  fidelidadeAtiva ? "bg-emerald-500" : "bg-slate-100"
+                }`}>
+                  <Stamp className={`w-6 h-6 ${fidelidadeAtiva ? "text-white" : "text-slate-400"}`} />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-semibold text-slate-800">Cartão Fidelidade Digital</p>
+                  <p className="text-sm text-slate-500">Clientes acumulam carimbos e ganham lavagem grátis</p>
+                </div>
+                {fidelidadeAtiva && (
+                  <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                )}
+              </button>
+
+              {/* Meta de lavagens */}
+              {fidelidadeAtiva && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-3">
+                    Lavagens para ganhar 1 grátis:
+                  </label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[5, 10, 15].map((valor) => (
+                      <button
+                        key={valor}
+                        type="button"
+                        onClick={() => setMetaFidelidade(valor)}
+                        className={`p-4 rounded-xl border-2 transition-all ${
+                          metaFidelidade === valor
+                            ? "border-emerald-500 bg-emerald-50"
+                            : "border-slate-200 hover:border-slate-300"
+                        }`}
+                      >
+                        <p className={`text-2xl font-bold ${
+                          metaFidelidade === valor ? "text-emerald-600" : "text-slate-800"
+                        }`}>
+                          {valor}
+                        </p>
+                        <p className="text-xs text-slate-500">lavagens</p>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-3">
+                    A cada {metaFidelidade} lavagens, o cliente ganha 1 lavagem grátis.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -756,6 +836,72 @@ export default function ConfiguracoesPage() {
                   {config?.plano === "STARTER" ? "Fazer Upgrade" : "Gerenciar Plano"}
                   <ExternalLink className="w-4 h-4" />
                 </Link>
+              </div>
+            </div>
+
+            {/* Programa de Fidelidade */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+                  <Gift className="w-5 h-5 text-emerald-500" />
+                  Programa de Fidelidade
+                </h4>
+              </div>
+              <div className="p-6 space-y-4">
+                {/* Toggle Ativar */}
+                <button
+                  type="button"
+                  onClick={() => setFidelidadeAtiva(!fidelidadeAtiva)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                    fidelidadeAtiva
+                      ? "border-emerald-400 bg-emerald-50"
+                      : "border-slate-200 hover:border-slate-300"
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    fidelidadeAtiva ? "bg-emerald-500" : "bg-slate-100"
+                  }`}>
+                    <Stamp className={`w-5 h-5 ${fidelidadeAtiva ? "text-white" : "text-slate-400"}`} />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <p className="font-medium text-slate-800 text-sm">Cartão Fidelidade</p>
+                    <p className="text-xs text-slate-500">Ativar para clientes</p>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    fidelidadeAtiva ? "border-emerald-400 bg-emerald-400" : "border-slate-300"
+                  }`}>
+                    {fidelidadeAtiva && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                </button>
+
+                {/* Meta de lavagens */}
+                {fidelidadeAtiva && (
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-2">
+                      Lavagens para 1 grátis:
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[5, 10, 15].map((valor) => (
+                        <button
+                          key={valor}
+                          type="button"
+                          onClick={() => setMetaFidelidade(valor)}
+                          className={`p-2 rounded-lg border-2 transition-all ${
+                            metaFidelidade === valor
+                              ? "border-emerald-400 bg-emerald-50"
+                              : "border-slate-200 hover:border-slate-300"
+                          }`}
+                        >
+                          <p className={`text-lg font-bold ${
+                            metaFidelidade === valor ? "text-emerald-600" : "text-slate-700"
+                          }`}>
+                            {valor}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

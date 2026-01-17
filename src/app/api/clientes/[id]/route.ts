@@ -58,7 +58,7 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-    const { nome, telefone, email, planoMensal } = body;
+    const { nome, telefone, email, planoMensal, participaFidelidade } = body;
 
     // Verifica se o cliente pertence ao lava jato
     const clienteExistente = await prisma.cliente.findFirst({
@@ -82,6 +82,7 @@ export async function PATCH(
         ...(telefone && { telefone }),
         ...(email !== undefined && { email }),
         ...(planoMensal !== undefined && { planoMensal }),
+        ...(participaFidelidade !== undefined && { participaFidelidade }),
       },
       include: {
         veiculos: true,
