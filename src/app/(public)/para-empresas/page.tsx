@@ -126,6 +126,15 @@ export default function LandingPageEmpresas() {
   const [videoAberto, setVideoAberto] = useState(false);
   const [slideAtual, setSlideAtual] = useState(0);
   const [slideMobileAtual, setSlideMobileAtual] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar se é mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Imagens para desktop (horizontal)
   const imagensHero = [
@@ -1486,31 +1495,34 @@ export default function LandingPageEmpresas() {
             <X className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
           </button>
           
-          {/* Mobile: Vídeo vertical (9:16) */}
-          <div 
-            className="lg:hidden relative w-full max-w-[320px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <iframe
-              src="https://player.vimeo.com/video/1155531716?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
-              className="absolute inset-0 w-full h-full"
-              allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-              allowFullScreen
-            />
-          </div>
-
-          {/* Desktop: Vídeo horizontal (16:9) */}
-          <div 
-            className="hidden lg:block relative w-full max-w-[900px] aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <iframe
-              src="https://player.vimeo.com/video/1154178109?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
-              className="absolute inset-0 w-full h-full"
-              allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-              allowFullScreen
-            />
-          </div>
+          {/* Renderiza apenas o vídeo correto baseado no tamanho da tela */}
+          {isMobile ? (
+            // Mobile: Vídeo vertical (9:16)
+            <div 
+              className="relative w-full max-w-[320px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe
+                src="https://player.vimeo.com/video/1155531716?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
+                className="absolute inset-0 w-full h-full"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            // Desktop: Vídeo horizontal (16:9)
+            <div 
+              className="relative w-full max-w-[900px] aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe
+                src="https://player.vimeo.com/video/1154178109?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
+                className="absolute inset-0 w-full h-full"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
