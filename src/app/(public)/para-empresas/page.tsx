@@ -48,6 +48,7 @@ import {
   Globe,
   TrendingUp as TrendUp,
   Brain,
+  Send,
 } from "lucide-react";
 
 // FAQ Accordion Component
@@ -663,12 +664,67 @@ export default function LandingPageEmpresas() {
             Equipe Que Funciona{" "}
             <span className="text-cyan-600">Sem Você</span>
           </h3>
-          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-6 lg:mb-12">
             Cada membro sabe exatamente o que fazer — e você controla tudo pelo celular.
           </p>
 
-          {/* Níveis de Equipe - Grid compacto */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {/* Mobile: Scroll horizontal com cards compactos */}
+          <div className="lg:hidden">
+            {/* Cards scrolláveis */}
+            <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 snap-x snap-mandatory scrollbar-hide">
+              {niveisEquipe.map((item) => (
+                <div
+                  key={item.nivel}
+                  className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm flex-shrink-0 w-[260px] snap-center"
+                >
+                  {/* Header do card */}
+                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
+                    <div
+                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0 shadow-lg`}
+                    >
+                      <item.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-slate-900 text-[15px]">{item.nivel}</h4>
+                        {item.badge && (
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-500 text-[12px]">{item.descricao}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Permissões */}
+                  <div className="space-y-2">
+                    {item.permissoes.slice(0, 4).map((perm) => (
+                      <div key={perm} className="flex items-center gap-2 text-[12px]">
+                        <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-2.5 h-2.5 text-emerald-600" />
+                        </div>
+                        <span className="text-slate-700">{perm}</span>
+                      </div>
+                    ))}
+                    {item.permissoes.length > 4 && (
+                      <p className="text-[11px] text-cyan-600 font-medium pl-6">+{item.permissoes.length - 4} mais recursos</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Indicador de scroll */}
+            <div className="flex justify-center gap-1.5 mt-2">
+              {niveisEquipe.map((_, i) => (
+                <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Grid original */}
+          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {niveisEquipe.map((item) => (
               <div
                 key={item.nivel}
@@ -712,7 +768,7 @@ export default function LandingPageEmpresas() {
           {/* Destaque */}
           <div className="mt-6 lg:mt-10 p-4 lg:p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl max-w-2xl mx-auto">
             <div className="flex items-center gap-3 lg:gap-4">
-              <ShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-white/90" />
+              <ShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-white/90 flex-shrink-0" />
               <div>
                 <p className="text-white font-bold text-[15px] lg:text-[17px]">
                   Cada um vê só o que precisa
@@ -720,6 +776,95 @@ export default function LandingPageEmpresas() {
                 <p className="text-emerald-100 text-[13px] lg:text-[14px]">
                   Lavador não vê financeiro. Gerente não altera configurações.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          REMARKETING - WhatsApp Marketing
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-green-50 to-emerald-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageCircle className="w-5 h-5 text-green-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-green-600 uppercase tracking-wide">
+              Remarketing
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Marketing Direto via{" "}
+            <span className="text-green-600">WhatsApp</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+            Envie mensagens estratégicas para seus clientes na hora certa e traga eles de volta.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Card principal */}
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30">
+                  <Send className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[18px]">Mensagens Estratégicas</h4>
+                  <p className="text-slate-500 text-[13px]">Templates prontos para cada situação</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { emoji: "😢", titulo: "Cliente sumido", desc: "Detectamos que faz tempo que não vem, enviamos mensagem de saudade" },
+                  { emoji: "🎁", titulo: "Cartão fidelidade", desc: "Avise quando está perto de ganhar uma lavagem grátis" },
+                  { emoji: "🔥", titulo: "Promoções especiais", desc: "Dispare ofertas exclusivas para clientes selecionados" },
+                  { emoji: "💚", titulo: "Agradecimento", desc: "Agradeça após cada lavagem e peça avaliação" },
+                ].map((item) => (
+                  <div key={item.titulo} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
+                    <span className="text-2xl">{item.emoji}</span>
+                    <div>
+                      <p className="font-semibold text-slate-800 text-[14px]">{item.titulo}</p>
+                      <p className="text-slate-500 text-[12px]">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Benefícios */}
+            <div className="space-y-4">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+                <h4 className="font-bold text-[18px] mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  Por que funciona?
+                </h4>
+                <ul className="space-y-3">
+                  {[
+                    "WhatsApp tem 98% de taxa de abertura",
+                    "Clientes preferem receber ofertas por lá",
+                    "Mensagem personalizada com nome do cliente",
+                    "Você escolhe quando e para quem enviar",
+                    "Sem spam: só mensagens relevantes",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-[14px]">
+                      <Check className="w-4 h-4 text-green-200 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 text-[16px]">Aumente seu faturamento</p>
+                    <p className="text-slate-500 text-[13px]">Clientes que recebem remarketing voltam 3x mais</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
