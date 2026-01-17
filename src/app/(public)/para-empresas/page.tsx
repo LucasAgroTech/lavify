@@ -364,7 +364,7 @@ export default function LandingPageEmpresas() {
               </div>
               
               {/* Badge flutuante */}
-              <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5">
+              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 <span className="text-white text-[11px] font-medium">Visão do App</span>
               </div>
