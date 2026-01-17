@@ -1128,25 +1128,6 @@ export default function LandingPageEmpresas() {
             </div>
           </div>
 
-          {/* Comparativo rápido */}
-          <div className="mt-8 grid grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-              <p className="text-red-600 text-[12px] font-bold uppercase mb-2">❌ Sem Lavify</p>
-              <ul className="space-y-1 text-[13px] text-red-700">
-                <li>• Depende de indicação</li>
-                <li>• Paga anúncio no Google</li>
-                <li>• Não aparece nas buscas</li>
-              </ul>
-            </div>
-            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-              <p className="text-emerald-600 text-[12px] font-bold uppercase mb-2">✓ Com Lavify</p>
-              <ul className="space-y-1 text-[13px] text-emerald-700">
-                <li>• Aparece no Google grátis</li>
-                <li>• IA otimiza automaticamente</li>
-                <li>• Clientes chegam sozinhos</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 
