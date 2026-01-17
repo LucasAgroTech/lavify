@@ -125,7 +125,9 @@ function FeatureCard({
 export default function LandingPageEmpresas() {
   const [videoAberto, setVideoAberto] = useState(false);
   const [slideAtual, setSlideAtual] = useState(0);
+  const [slideMobileAtual, setSlideMobileAtual] = useState(0);
 
+  // Imagens para desktop (horizontal)
   const imagensHero = [
     "/hero-1.webp",
     "/hero-2.webp",
@@ -136,13 +138,33 @@ export default function LandingPageEmpresas() {
     "/hero-7.webp",
   ];
 
-  // Auto-play do carrossel
+  // Imagens para mobile (vertical/retrato)
+  const imagensHeroMobile = [
+    "/hero-mobile-1.webp",
+    "/hero-mobile-2.webp",
+    "/hero-mobile-3.webp",
+    "/hero-mobile-4.webp",
+    "/hero-mobile-5.webp",
+    "/hero-mobile-6.webp",
+    "/hero-mobile-7.webp",
+    "/hero-mobile-8.webp",
+  ];
+
+  // Auto-play do carrossel desktop
   useEffect(() => {
     const timer = setInterval(() => {
       setSlideAtual((prev) => (prev + 1) % imagensHero.length);
     }, 4000);
     return () => clearInterval(timer);
   }, [imagensHero.length]);
+
+  // Auto-play do carrossel mobile
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlideMobileAtual((prev) => (prev + 1) % imagensHeroMobile.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [imagensHeroMobile.length]);
 
   const funcionalidades = [
     {
@@ -323,8 +345,49 @@ export default function LandingPageEmpresas() {
             Controle o <span className="text-white font-semibold">pátio</span>, <span className="text-white font-semibold">agendamentos</span>, <span className="text-white font-semibold">estoque</span>, <span className="text-white font-semibold">equipe</span> e <span className="text-white font-semibold">financeiro</span> — tudo pelo celular, <span className="text-cyan-400 font-semibold">de qualquer lugar</span>.
           </p>
 
-          {/* Carrossel de Imagens */}
-          <div className="relative mb-8 max-w-3xl mx-auto">
+          {/* Carrossel Mobile - Imagens Verticais */}
+          <div className="lg:hidden relative mb-8 max-w-[280px] mx-auto">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 aspect-[9/16]">
+              <div 
+                className="flex transition-transform duration-500 ease-out h-full"
+                style={{ transform: `translateX(-${slideMobileAtual * 100}%)` }}
+              >
+                {imagensHeroMobile.map((img, index) => (
+                  <div key={index} className="w-full flex-shrink-0 h-full">
+                    <img
+                      src={img}
+                      alt={`Sistema Lavify mobile ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {/* Badge flutuante */}
+              <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-white text-[11px] font-medium">Visão do App</span>
+              </div>
+            </div>
+            
+            {/* Indicadores mobile */}
+            <div className="flex justify-center gap-1.5 mt-4">
+              {imagensHeroMobile.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSlideMobileAtual(index)}
+                  className={`h-1.5 rounded-full transition-all ${
+                    slideMobileAtual === index 
+                      ? "bg-cyan-400 w-4" 
+                      : "bg-white/30 w-1.5"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Carrossel Desktop - Imagens Horizontais */}
+          <div className="hidden lg:block relative mb-8 max-w-3xl mx-auto">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
               <div 
                 className="flex transition-transform duration-500 ease-out"
@@ -337,7 +400,7 @@ export default function LandingPageEmpresas() {
                       alt={`Sistema Lavify em ação ${index + 1}`}
                       className={`w-full object-cover ${
                         index === 2 
-                          ? "scale-[1.6] lg:scale-[1.8] origin-top" 
+                          ? "scale-[1.8] origin-top" 
                           : ""
                       }`}
                     />
@@ -346,7 +409,7 @@ export default function LandingPageEmpresas() {
               </div>
             </div>
             
-            {/* Indicadores do carrossel */}
+            {/* Indicadores desktop */}
             <div className="flex justify-center gap-2 mt-4">
               {imagensHero.map((_, index) => (
                 <button
