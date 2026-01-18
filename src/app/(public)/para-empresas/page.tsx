@@ -497,13 +497,13 @@ export default function LandingPageEmpresas() {
               <span>Tudo que você precisa em um só lugar</span>
             </div>
             <h2 className="text-[24px] lg:text-[40px] font-bold text-slate-900 leading-tight mb-3">
-              3 Pilares para{" "}
+              O que faz seu{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
-                Escalar seu Negócio
+                Lava-Rápido Crescer
               </span>
             </h2>
             <p className="text-slate-600 text-[15px] lg:text-[18px] max-w-2xl mx-auto">
-              Gestão profissional, relacionamento com cliente e presença digital — <strong>integrados em um único sistema</strong>.
+              Controle do dia a dia, cliente voltando sempre e gente nova te achando — <strong>tudo em um app só</strong>.
             </p>
           </div>
 
