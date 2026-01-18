@@ -350,7 +350,7 @@ export default function LandingPageEmpresas() {
 
           {/* Subheadline - Direto e estratégico */}
           <p className="text-slate-300 text-center text-[15px] lg:text-[18px] leading-relaxed mb-6 max-w-sm lg:max-w-2xl mx-auto">
-            O app <span className="text-white font-bold">mais moderno do Brasil</span> para gerenciar seu lava-rápido. Controle total do seu negócio <span className="text-cyan-400 font-semibold">na palma da mão</span>.
+            <span className="text-white font-semibold">Gestão inteligente</span> + <span className="text-white font-semibold">presença digital</span> + <span className="text-white font-semibold">remarketing automático</span>. Profissionalize sua operação e <span className="text-cyan-400 font-semibold">escale seu negócio</span>.
           </p>
 
           {/* Carrossel Mobile - Imagens Verticais */}
