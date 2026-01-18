@@ -420,17 +420,14 @@ export default function LandingPageEmpresas() {
                   style={{ transform: `translateX(-${slideAtual * 100}%)` }}
                 >
                   {imagensHero.map((img, index) => (
-                    <div key={index} className="w-full flex-shrink-0 relative aspect-video overflow-hidden">
+                    <div key={index} className="w-full flex-shrink-0">
                       <Image
                         src={img}
                         alt={`Sistema Lavify em ação ${index + 1}`}
-                        fill
+                        width={1600}
+                        height={900}
                         sizes="(max-width: 768px) 100vw, 768px"
-                        className={`object-cover ${
-                          index === 2 
-                            ? "scale-[1.8] origin-top" 
-                            : ""
-                        }`}
+                        className="w-full h-auto"
                         priority={index === 0}
                         loading={index === 0 ? "eager" : "lazy"}
                       />
