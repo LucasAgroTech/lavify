@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getProblemaBySlug, problemasLavaJato, ProblemaSEO } from "@/lib/seo-problems";
+import { getConteudoRico } from "@/data/seo-guias-content";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -111,106 +112,10 @@ const iconesPorTipo: Record<string, React.ComponentType<{ className?: string }>>
   modelo: FileText,
 };
 
-// Conteúdo fallback por problema
+// Buscar conteúdo rico do arquivo de dados
 function getConteudoFallback(problema: ProblemaSEO, cidade: { nome: string; uf: string; regiao: string; slug?: string; estado?: string; populacao?: number; keywords?: string[] } | null) {
-  const localidade = cidade ? ` em ${cidade.nome}` : "";
-  const locUF = cidade ? `, ${cidade.uf}` : "";
-  
-  // Tabela de preços de lavagem
-  if (problema.slug.includes("tabela-precos-lavagem")) {
-    const regiao = cidade?.regiao || "Brasil";
-    const mult: Record<string, number> = { "Sudeste": 1.2, "Sul": 1.1, "Centro-Oeste": 1.0, "Nordeste": 0.85, "Norte": 0.9, "Brasil": 1.0 };
-    const m = mult[regiao] || 1.0;
-    const p = (v: number) => `R$ ${Math.round(v * m)},00`;
-    const f = (min: number, max: number) => `${p(min)} - ${p(max)}`;
-    
-    return {
-      titulo: `Tabela de Preços de Lavagem${localidade}`,
-      subtitulo: `Preços atualizados para ${new Date().getFullYear()}`,
-      introducao: `Conhecer os preços praticados no mercado${localidade} é essencial para precificar seus serviços de forma competitiva.`,
-      secoes: [
-        {
-          titulo: "Como usar esta tabela",
-          conteudo: `Os valores são médias do mercado${localidade}. Preços podem variar conforme localização e qualidade dos produtos.`
-        },
-        {
-          titulo: "Fatores que influenciam o preço",
-          conteudo: "Localização, tamanho do veículo, qualidade dos produtos, tempo de execução e serviços adicionais.",
-          lista: ["Localização do estabelecimento", "Tamanho do veículo", "Qualidade dos produtos", "Tempo de execução", "Serviços adicionais"]
-        }
-      ],
-      tabela: {
-        titulo: `Preços de Lavagem${localidade}`,
-        colunas: ["Serviço", "Carro Popular", "SUV/Pickup", "Tempo"],
-        linhas: [
-          ["Lavagem Simples", f(25, 40), f(35, 55), "20-30 min"],
-          ["Lavagem Completa", f(45, 70), f(60, 90), "40-60 min"],
-          ["Lavagem + Cera", f(60, 90), f(80, 120), "50-70 min"],
-          ["Higienização Interna", f(80, 150), f(100, 180), "60-90 min"],
-          ["Motor", f(50, 80), f(60, 100), "30-45 min"],
-          ["Polimento", f(150, 250), f(200, 350), "2-3h"],
-        ]
-      },
-      faq: [
-        { pergunta: `Qual o preço médio de lavagem${localidade}?`, resposta: `Uma lavagem simples custa em média ${f(25, 40)} para carros populares.` },
-        { pergunta: "Devo cobrar mais de SUVs?", resposta: "Sim, veículos maiores exigem mais tempo e produtos. A diferença costuma ser de 30% a 50%." },
-      ]
-    };
-  }
-  
-  // Checklist de entrada
-  if (problema.slug.includes("checklist-entrada")) {
-    return {
-      titulo: `Checklist de Entrada de Veículo`,
-      subtitulo: "Proteja seu negócio com uma vistoria completa",
-      introducao: "Um bom checklist de entrada evita problemas com clientes e protege seu lava jato de reclamações infundadas.",
-      secoes: [
-        {
-          titulo: "Por que usar checklist",
-          conteudo: "Checklists garantem que nenhum detalhe seja esquecido. Profissionalizam o atendimento e servem como prova em caso de disputas."
-        }
-      ],
-      checklist: [
-        { item: "Quilometragem", descricao: "Anote a quilometragem atual" },
-        { item: "Nível de combustível", descricao: "Registre o nível aproximado" },
-        { item: "Pertences no interior", descricao: "Pergunte sobre objetos de valor" },
-        { item: "Arranhões e amassados", descricao: "Fotografe danos existentes" },
-        { item: "Estado dos pneus", descricao: "Verifique condições" },
-        { item: "Retrovisores", descricao: "Anote posição" },
-        { item: "Assinatura do cliente", descricao: "Colha assinatura confirmando" },
-      ],
-      faq: [
-        { pergunta: "Preciso fazer em todos os carros?", resposta: "Sim, recomendamos 100% dos veículos para sua proteção." },
-        { pergunta: "Cliente precisa assinar?", resposta: "É altamente recomendado para sua segurança jurídica." },
-      ]
-    };
-  }
-  
-  // Fallback genérico
-  return {
-    titulo: `${problema.titulo}${localidade}`,
-    subtitulo: problema.descricao,
-    introducao: `Guia completo sobre ${problema.titulo.toLowerCase()}${localidade} para donos de lava jato.`,
-    secoes: [
-      {
-        titulo: "Por que isso é importante",
-        conteudo: `Entender sobre ${problema.titulo.toLowerCase()} é essencial para qualquer empreendedor do setor.`
-      },
-      {
-        titulo: "Como aplicar na prática",
-        conteudo: "Implementar boas práticas não precisa ser complicado. Comece com o básico e evolua.",
-        lista: ["Documente processos", "Treine a equipe", "Use ferramentas de gestão", "Acompanhe métricas"]
-      },
-      {
-        titulo: "Próximos passos",
-        conteudo: "Agora é hora de colocar em prática. Um sistema de gestão como o Lavify pode ajudar muito."
-      }
-    ],
-    faq: [
-      { pergunta: `Como começar com ${problema.titulo.toLowerCase()}?`, resposta: "Comece organizando as informações que você já tem e identificando pontos de melhoria." },
-      { pergunta: "Quanto tempo para ver resultados?", resposta: "Resultados podem aparecer em poucas semanas se você for consistente." },
-    ]
-  };
+  // Usar o conteúdo rico do arquivo de dados
+  return getConteudoRico(problema.slug, cidade);
 }
 
 export default async function GuiaPage({ params }: PageProps) {
