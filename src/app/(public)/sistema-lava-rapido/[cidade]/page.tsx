@@ -22,6 +22,18 @@ import { getCidadeBySlug, getAllCidadeSlugs, CidadeSEO, cidadesBrasil } from "@/
 import { getConteudoCidade, ConteudoSEO } from "@/data/seo-content";
 import { getPaginasDestaque } from "@/lib/seo-keywords";
 
+// Função para converter markdown simples em HTML
+function processarMarkdown(texto: string): string {
+  if (!texto) return "";
+  return texto
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/_([^_]+)_/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br/><br/>')
+    .replace(/\n/g, '<br/>');
+}
+
 interface PageProps {
   params: Promise<{ cidade: string }>;
 }
@@ -303,9 +315,10 @@ export default async function CidadePage({ params }: PageProps) {
             </p>
 
             {/* Intro */}
-            <p className="text-lg text-white/60 mb-10 max-w-3xl leading-relaxed">
-              {conteudo.introducao}
-            </p>
+            <p 
+              className="text-lg text-white/60 mb-10 max-w-3xl leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: processarMarkdown(conteudo.introducao) }}
+            />
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -398,11 +411,10 @@ export default async function CidadePage({ params }: PageProps) {
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
                   {secao.titulo}
                 </h2>
-                {secao.conteudo.split('\n\n').map((paragrafo, pIndex) => (
-                  <p key={pIndex} className="text-white/70 leading-relaxed mb-4">
-                    {paragrafo}
-                  </p>
-                ))}
+                <div 
+                  className="text-white/70 leading-relaxed space-y-4"
+                  dangerouslySetInnerHTML={{ __html: processarMarkdown(secao.conteudo) }}
+                />
               </div>
             ))}
           </div>
@@ -428,8 +440,9 @@ export default async function CidadePage({ params }: PageProps) {
                     <span className="font-medium text-white pr-4">{item.pergunta}</span>
                     <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
                   </summary>
-                  <div className="px-6 pb-6 text-white/70">
-                    {item.resposta}
+                  <div 
+                    className="px-6 pb-6 text-white/70"
+                    dangerouslySetInnerHTML={{ __html: processarMarkdown(item.resposta) }}
                   </div>
                 </details>
               ))}

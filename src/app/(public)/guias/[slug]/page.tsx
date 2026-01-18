@@ -17,6 +17,21 @@ import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getProblemaBySlug, problemasLavaJato, ProblemaSEO } from "@/lib/seo-problems";
 import { getConteudoRico } from "@/data/seo-guias-content";
 
+// Função para converter markdown simples em HTML
+function processarMarkdown(texto: string): string {
+  if (!texto) return "";
+  return texto
+    // Negrito: **texto** ou __texto__
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>')
+    // Itálico: *texto* ou _texto_
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/_([^_]+)_/g, '<em>$1</em>')
+    // Quebras de linha: \n\n para <br/><br/>
+    .replace(/\n\n/g, '<br/><br/>')
+    .replace(/\n/g, '<br/>');
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -243,9 +258,10 @@ export default async function GuiaPage({ params }: PageProps) {
         <article className="py-12 md:py-16">
           <div className="max-w-4xl mx-auto px-4">
             {/* Introdução */}
-            <p className="text-lg text-slate-600 leading-relaxed mb-12">
-              {conteudo.introducao}
-            </p>
+            <p 
+              className="text-lg text-slate-600 leading-relaxed mb-12"
+              dangerouslySetInnerHTML={{ __html: processarMarkdown(conteudo.introducao) }}
+            />
 
             {/* Tabela (se houver) */}
             {conteudo.tabela && (
@@ -305,13 +321,16 @@ export default async function GuiaPage({ params }: PageProps) {
               return (
                 <div key={index} className="mb-10">
                   <h2 className="text-2xl font-bold text-slate-900 mb-4">{secao.titulo}</h2>
-                  <p className="text-slate-600 leading-relaxed mb-4">{secao.conteudo}</p>
+                  <div 
+                    className="text-slate-600 leading-relaxed mb-4"
+                    dangerouslySetInnerHTML={{ __html: processarMarkdown(secao.conteudo) }}
+                  />
                   {secaoComLista.lista && secaoComLista.lista.length > 0 && (
                     <ul className="list-none space-y-2">
                       {secaoComLista.lista.map((item, i) => (
                         <li key={i} className="flex items-center gap-3 text-slate-600">
                           <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                          {item}
+                          <span dangerouslySetInnerHTML={{ __html: processarMarkdown(item) }} />
                         </li>
                       ))}
                     </ul>
@@ -334,7 +353,10 @@ export default async function GuiaPage({ params }: PageProps) {
                         <span className="font-medium text-slate-900 pr-4">{item.pergunta}</span>
                         <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" />
                       </summary>
-                      <div className="px-5 pb-5 text-slate-600">{item.resposta}</div>
+                      <div 
+                        className="px-5 pb-5 text-slate-600"
+                        dangerouslySetInnerHTML={{ __html: processarMarkdown(item.resposta) }}
+                      />
                     </details>
                   ))}
                 </div>
