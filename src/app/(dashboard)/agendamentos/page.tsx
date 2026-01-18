@@ -23,6 +23,10 @@ import {
   ChevronRight,
   Users,
   DollarSign,
+  Link as LinkIcon,
+  Copy,
+  ExternalLink,
+  Share2,
 } from "lucide-react";
 import { format, isToday, isTomorrow, isPast, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -75,10 +79,37 @@ export default function AgendamentosPage() {
   const [activeTab, setActiveTab] = useState("PENDENTE");
   const [atualizando, setAtualizando] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
+  const [lavaJatoSlug, setLavaJatoSlug] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
     fetchAgendamentos();
+    fetchLavaJato();
   }, [activeTab]);
+
+  async function fetchLavaJato() {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const data = await res.json();
+        setLavaJatoSlug(data.lavaJato?.slug || null);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar dados do lava-jato:", error);
+    }
+  }
+
+  const linkAgendamento = lavaJatoSlug 
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/agendar/${lavaJatoSlug}`
+    : null;
+
+  function copiarLink() {
+    if (linkAgendamento) {
+      navigator.clipboard.writeText(linkAgendamento);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    }
+  }
 
   async function fetchAgendamentos() {
     setLoading(true);
@@ -170,6 +201,36 @@ export default function AgendamentosPage() {
             </button>
           </div>
         </div>
+
+        {/* Link de Agendamento Mobile */}
+        {linkAgendamento && (
+          <div className="px-4 py-3">
+            <div className="bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Share2 className="w-4 h-4 text-cyan-600" />
+                <span className="text-sm font-semibold text-cyan-800">Link para Clientes Agendarem</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={linkAgendamento}
+                  className="flex-1 text-xs bg-white border border-cyan-200 rounded-lg px-3 py-2 text-slate-600 truncate"
+                />
+                <button
+                  onClick={copiarLink}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    copiado 
+                      ? 'bg-emerald-500 text-white' 
+                      : 'bg-cyan-500 text-white hover:bg-cyan-600'
+                  }`}
+                >
+                  {copiado ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs Mobile */}
         <div className="px-4 py-3 overflow-x-auto scrollbar-hide">
@@ -324,6 +385,62 @@ export default function AgendamentosPage() {
               Atualizar
             </button>
           </div>
+
+          {/* Link de Agendamento Desktop */}
+          {linkAgendamento && (
+            <div className="bg-gradient-to-r from-cyan-50 via-blue-50 to-purple-50 border border-cyan-200 rounded-xl p-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <Share2 className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-800">Link de Agendamento Online</h3>
+                    <p className="text-sm text-slate-500">Compartilhe com seus clientes para agendarem pelo celular</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden">
+                    <input
+                      type="text"
+                      readOnly
+                      value={linkAgendamento}
+                      className="px-4 py-2.5 text-sm text-slate-600 w-80 bg-transparent border-none focus:outline-none"
+                    />
+                    <button
+                      onClick={copiarLink}
+                      className={`px-4 py-2.5 font-medium text-sm transition-all flex items-center gap-2 ${
+                        copiado 
+                          ? 'bg-emerald-500 text-white' 
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {copiado ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Copiado!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          Copiar
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <a
+                    href={linkAgendamento}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-medium flex items-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-cyan-500/20"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Abrir
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-4 gap-4">

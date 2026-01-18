@@ -26,6 +26,7 @@ export async function GET() {
           select: {
             id: true,
             nome: true,
+            slug: true,
             logoUrl: true,
             corPrimaria: true,
             plano: true,
