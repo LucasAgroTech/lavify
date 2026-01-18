@@ -586,23 +586,23 @@ export default function KanbanPage() {
                             ${dragging === ordem.id ? "opacity-50 scale-95" : ""}
                           `}
                         >
-                          {/* Header do Card - Placa + Valor + Hora */}
-                          <div className="flex items-center justify-between gap-3 p-3 bg-slate-50 border-b border-slate-100">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="bg-slate-800 text-white px-2.5 py-1 rounded-md flex-shrink-0">
+                          {/* Header do Card - Placa + Hora + Valor */}
+                          <div className="p-3 bg-slate-50 border-b border-slate-100">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="bg-slate-800 text-white px-2.5 py-1 rounded-md">
                                 <span className="font-mono font-bold text-xs tracking-wider">{ordem.veiculo.placa}</span>
                               </div>
-                              <div className="flex items-center gap-1.5 text-xs text-slate-500 flex-shrink-0">
-                                <Clock className="w-3 h-3" />
-                                <span>{format(new Date(ordem.dataEntrada), "HH:mm")}</span>
-                              </div>
+                              <span className="font-bold text-emerald-600 text-sm whitespace-nowrap">
+                                {new Intl.NumberFormat("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                }).format(ordem.total)}
+                              </span>
                             </div>
-                            <span className="font-bold text-emerald-600 text-sm flex-shrink-0">
-                              {new Intl.NumberFormat("pt-BR", {
-                                style: "currency",
-                                currency: "BRL",
-                              }).format(ordem.total)}
-                            </span>
+                            <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-2">
+                              <Clock className="w-3 h-3" />
+                              <span>Entrada: {format(new Date(ordem.dataEntrada), "HH:mm")}</span>
+                            </div>
                           </div>
 
                           {/* Body do Card */}
