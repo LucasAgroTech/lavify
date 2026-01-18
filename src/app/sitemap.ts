@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
-import { getAllCidadeSlugs } from "@/lib/seo-cities";
+import { getAllCidadeSlugs, cidadesBrasil } from "@/lib/seo-cities";
 import { getAllPaginaSEOSlugs } from "@/lib/seo-keywords";
+import { servicosAutomotivos } from "@/lib/seo-services";
+import { problemasLavaJato } from "@/lib/seo-problems";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
@@ -64,6 +66,60 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
+  // ═══════════════════════════════════════════════════════════════════
+  // NOVAS PÁGINAS DE SEO PROGRAMÁTICO
+  // ═══════════════════════════════════════════════════════════════════
+
+  // Páginas de Soluções (Serviço + Cidade)
+  const cidadesTop30 = cidadesBrasil.slice(0, 30);
+  const solucoesPages: MetadataRoute.Sitemap = [];
+  
+  for (const servico of servicosAutomotivos) {
+    for (const cidade of cidadesTop30) {
+      solucoesPages.push({
+        url: `${baseUrl}/solucoes/${servico.slug}-${cidade.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.75,
+      });
+    }
+  }
+
+  // Páginas de Guias (Problemas)
+  const guiasPages: MetadataRoute.Sitemap = [];
+  
+  // Guias sem cidade
+  for (const problema of problemasLavaJato) {
+    guiasPages.push({
+      url: `${baseUrl}/guias/${problema.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    });
+  }
+  
+  // Guias com cidade (apenas alguns problemas que fazem sentido)
+  const problemasComCidade = [
+    "tabela-precos-lavagem",
+    "tabela-precos-estetica-automotiva",
+    "como-abrir-lava-jato",
+  ];
+  
+  const cidadesTop20 = cidadesBrasil.slice(0, 20);
+  
+  for (const problemaSlug of problemasComCidade) {
+    for (const cidade of cidadesTop20) {
+      guiasPages.push({
+        url: `${baseUrl}/guias/${problemaSlug}-${cidade.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+
   // Páginas dinâmicas dos lava jatos
   let lavaJatoPages: MetadataRoute.Sitemap = [];
   
@@ -83,10 +139,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Erro ao gerar sitemap de lava jatos:", error);
   }
 
-  return [...staticPages, ...keywordPages, ...cidadePages, ...lavaJatoPages];
+  return [
+    ...staticPages, 
+    ...keywordPages, 
+    ...cidadePages, 
+    ...solucoesPages,
+    ...guiasPages,
+    ...lavaJatoPages
+  ];
 }
-
-
-
-
-
