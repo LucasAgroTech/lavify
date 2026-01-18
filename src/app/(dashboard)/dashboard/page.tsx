@@ -460,67 +460,116 @@ _${usuario?.lavaJato?.nome || "Lava Jato"}_
             </div>
           </div>
 
-          {/* Últimas OS do Dia - Mobile */}
+          {/* Comprovante Automático - Mobile */}
           {data?.ultimasOS && data.ultimasOS.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-slate-600" />
-                  <h3 className="font-semibold text-slate-800">OS de Hoje</h3>
-                </div>
-                <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-1 rounded-full font-semibold">
-                  {data.ultimasOS.length} OS
-                </span>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-600 p-1 shadow-xl shadow-green-500/20">
+              {/* Background decorativo */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                  backgroundSize: '16px 16px'
+                }} />
               </div>
               
-              <div className="divide-y divide-slate-100">
-                {data.ultimasOS.map((ordem) => (
-                  <div key={ordem.id} className="p-4">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="bg-slate-800 text-white text-xs font-mono px-2 py-0.5 rounded">
-                            #{ordem.codigo}
-                          </span>
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                            ordem.status === "PRONTO" ? "bg-emerald-100 text-emerald-700" :
-                            ordem.status === "ENTREGUE" ? "bg-slate-100 text-slate-600" :
-                            ordem.status === "LAVANDO" ? "bg-cyan-100 text-cyan-700" :
-                            "bg-amber-100 text-amber-700"
-                          }`}>
-                            {ordem.status === "AGUARDANDO" ? "Aguardando" :
-                             ordem.status === "LAVANDO" ? "Lavando" :
-                             ordem.status === "FINALIZANDO" ? "Finalizando" :
-                             ordem.status === "PRONTO" ? "Pronto" : "Entregue"}
-                          </span>
-                        </div>
-                        <p className="font-semibold text-slate-800 text-sm truncate">{ordem.cliente.nome}</p>
-                        <p className="text-xs text-slate-500">{ordem.veiculo.modelo} • {ordem.veiculo.placa}</p>
+              <div className="relative bg-white rounded-xl overflow-hidden">
+                {/* Header com efeito */}
+                <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <Send className="w-6 h-6 text-white" />
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
-                        <p className="text-xs text-slate-400">
-                          {format(new Date(ordem.dataEntrada), "HH:mm")}
-                        </p>
+                      <div>
+                        <h3 className="font-bold text-white text-lg">Comprovante Automático</h3>
+                        <p className="text-green-100 text-xs">Envie a OS direto pro WhatsApp</p>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-2 mt-3">
-                      <div className="flex-1 text-xs text-slate-500 truncate">
-                        {ordem.itens.map(i => i.servico.nome).join(", ")}
-                      </div>
-                      {ordem.cliente.telefone && (
-                        <button
-                          onClick={() => enviarOSWhatsApp(ordem)}
-                          className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded-lg active:scale-95 transition-all"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                          Enviar OS
-                        </button>
-                      )}
+                    <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5">
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      <span className="text-white text-xs font-semibold">{data.ultimasOS.length} OS</span>
                     </div>
                   </div>
-                ))}
+                </div>
+                
+                {/* Lista de OS */}
+                <div className="divide-y divide-slate-100">
+                  {data.ultimasOS.map((ordem, index) => (
+                    <div key={ordem.id} className="p-4 hover:bg-slate-50 transition-colors">
+                      {/* Mini comprovante visual */}
+                      <div className="flex gap-4">
+                        {/* Ícone lateral com linha pontilhada */}
+                        <div className="flex flex-col items-center">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                            ordem.status === "PRONTO" ? "bg-emerald-100" :
+                            ordem.status === "ENTREGUE" ? "bg-slate-100" :
+                            ordem.status === "LAVANDO" ? "bg-cyan-100" :
+                            "bg-amber-100"
+                          }`}>
+                            <FileText className={`w-5 h-5 ${
+                              ordem.status === "PRONTO" ? "text-emerald-600" :
+                              ordem.status === "ENTREGUE" ? "text-slate-500" :
+                              ordem.status === "LAVANDO" ? "text-cyan-600" :
+                              "text-amber-600"
+                            }`} />
+                          </div>
+                          {index < data.ultimasOS.length - 1 && (
+                            <div className="w-0.5 flex-1 bg-slate-200 mt-2 rounded-full" style={{backgroundImage: 'repeating-linear-gradient(to bottom, #e2e8f0 0px, #e2e8f0 4px, transparent 4px, transparent 8px)'}} />
+                          )}
+                        </div>
+
+                        {/* Conteúdo */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="bg-slate-900 text-white text-xs font-mono px-2 py-1 rounded-md">
+                                  OS #{ordem.codigo}
+                                </span>
+                                <span className="text-xs text-slate-400">
+                                  {format(new Date(ordem.dataEntrada), "HH:mm")}
+                                </span>
+                              </div>
+                              <p className="font-bold text-slate-800">{ordem.cliente.nome}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xl font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
+                            <Car className="w-4 h-4 text-slate-400" />
+                            <span className="font-medium">{ordem.veiculo.placa}</span>
+                            <span className="text-slate-400">•</span>
+                            <span>{ordem.veiculo.modelo}</span>
+                          </div>
+
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {ordem.itens.map((item, i) => (
+                              <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md">
+                                {item.servico.nome}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Botão WhatsApp destacado */}
+                          {ordem.cliente.telefone ? (
+                            <button
+                              onClick={() => enviarOSWhatsApp(ordem)}
+                              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold py-3 rounded-xl active:scale-[0.98] transition-all shadow-lg shadow-green-500/20"
+                            >
+                              <MessageCircle className="w-5 h-5" />
+                              Enviar Comprovante via WhatsApp
+                            </button>
+                          ) : (
+                            <div className="text-center py-2 text-xs text-slate-400 italic">
+                              Cliente sem telefone cadastrado
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -761,74 +810,149 @@ _${usuario?.lavaJato?.nome || "Lava Jato"}_
                 )}
               </div>
 
-              {/* Últimas OS do Dia - Desktop */}
+              {/* Comprovante Automático - Desktop */}
               {data?.ultimasOS && data.ultimasOS.length > 0 && (
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between p-5 border-b border-slate-100">
-                    <h3 className="font-bold text-slate-800 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                        <MessageCircle className="w-4 h-4 text-green-600" />
-                      </div>
-                      OS de Hoje - Enviar via WhatsApp
-                    </h3>
-                    <span className="text-xs bg-cyan-100 text-cyan-700 px-3 py-1.5 rounded-full font-semibold">
-                      {data.ultimasOS.length} OS
-                    </span>
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-600 p-1 shadow-xl shadow-green-500/20">
+                  {/* Background decorativo */}
+                  <div className="absolute inset-0 opacity-10">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                      backgroundSize: '20px 20px'
+                    }} />
                   </div>
                   
-                  <div className="divide-y divide-slate-100">
-                    {data.ultimasOS.map((ordem) => (
-                      <div key={ordem.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors">
-                        {/* Código e Status */}
-                        <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
-                          <span className="bg-slate-800 text-white text-xs font-mono px-2.5 py-1 rounded-md">
-                            #{ordem.codigo}
-                          </span>
-                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                            ordem.status === "PRONTO" ? "bg-emerald-100 text-emerald-700" :
-                            ordem.status === "ENTREGUE" ? "bg-slate-100 text-slate-600" :
-                            ordem.status === "LAVANDO" ? "bg-cyan-100 text-cyan-700" :
-                            "bg-amber-100 text-amber-700"
-                          }`}>
-                            {ordem.status === "AGUARDANDO" ? "Aguardando" :
-                             ordem.status === "LAVANDO" ? "Lavando" :
-                             ordem.status === "FINALIZANDO" ? "Finalizando" :
-                             ordem.status === "PRONTO" ? "Pronto" : "Entregue"}
-                          </span>
+                  <div className="relative bg-white rounded-xl overflow-hidden">
+                    {/* Header impressionante */}
+                    <div className="relative overflow-hidden bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-6">
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
+                      
+                      <div className="relative flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                            <Send className="w-8 h-8 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-white text-2xl">Comprovante Automático</h3>
+                            <p className="text-green-100 text-sm flex items-center gap-2">
+                              <MessageCircle className="w-4 h-4" />
+                              Envie a OS direto pro WhatsApp do cliente
+                            </p>
+                          </div>
                         </div>
-
-                        {/* Cliente e Veículo */}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-slate-800 text-sm truncate">{ordem.cliente.nome}</p>
-                          <p className="text-xs text-slate-500 truncate">
-                            {ordem.veiculo.modelo} • {ordem.veiculo.placa} • {ordem.itens.map(i => i.servico.nome).join(", ")}
-                          </p>
+                        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+                          <span className="text-white font-bold">{data.ultimasOS.length} OS hoje</span>
                         </div>
-
-                        {/* Hora e Valor */}
-                        <div className="text-right flex-shrink-0">
-                          <p className="font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
-                          <p className="text-xs text-slate-400">
-                            {format(new Date(ordem.dataEntrada), "HH:mm")}
-                          </p>
-                        </div>
-
-                        {/* Botão WhatsApp */}
-                        {ordem.cliente.telefone ? (
-                          <button
-                            onClick={() => enviarOSWhatsApp(ordem)}
-                            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md flex-shrink-0"
-                          >
-                            <Send className="w-4 h-4" />
-                            Enviar OS
-                          </button>
-                        ) : (
-                          <span className="text-xs text-slate-400 flex-shrink-0 italic">
-                            Sem telefone
-                          </span>
-                        )}
                       </div>
-                    ))}
+                    </div>
+                    
+                    {/* Grid de comprovantes */}
+                    <div className="p-5 grid grid-cols-1 gap-4">
+                      {data.ultimasOS.map((ordem) => (
+                        <div 
+                          key={ordem.id} 
+                          className="relative group bg-gradient-to-r from-slate-50 to-white rounded-xl border-2 border-slate-100 hover:border-green-200 hover:shadow-lg hover:shadow-green-500/5 transition-all overflow-hidden"
+                        >
+                          {/* Linha decorativa lateral */}
+                          <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
+                            ordem.status === "PRONTO" ? "bg-gradient-to-b from-emerald-400 to-emerald-600" :
+                            ordem.status === "ENTREGUE" ? "bg-gradient-to-b from-slate-400 to-slate-500" :
+                            ordem.status === "LAVANDO" ? "bg-gradient-to-b from-cyan-400 to-cyan-600" :
+                            "bg-gradient-to-b from-amber-400 to-amber-600"
+                          }`} />
+                          
+                          <div className="pl-5 pr-4 py-4 flex items-center gap-6">
+                            {/* Código da OS estilizado */}
+                            <div className="flex-shrink-0 text-center">
+                              <div className="bg-slate-900 text-white px-4 py-2 rounded-xl shadow-lg">
+                                <p className="text-[10px] text-slate-400 uppercase tracking-wide">Ordem</p>
+                                <p className="text-xl font-mono font-bold">#{ordem.codigo}</p>
+                              </div>
+                            </div>
+
+                            {/* Informações principais */}
+                            <div className="flex-1 min-w-0 grid grid-cols-3 gap-6">
+                              {/* Cliente */}
+                              <div>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Cliente</p>
+                                <p className="font-bold text-slate-800 truncate">{ordem.cliente.nome}</p>
+                                <p className="text-xs text-slate-500">{ordem.cliente.telefone || "Sem telefone"}</p>
+                              </div>
+
+                              {/* Veículo */}
+                              <div>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Veículo</p>
+                                <p className="font-bold text-slate-800">{ordem.veiculo.placa}</p>
+                                <p className="text-xs text-slate-500 truncate">{ordem.veiculo.modelo}</p>
+                              </div>
+
+                              {/* Serviços */}
+                              <div>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-1">Serviços</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {ordem.itens.slice(0, 2).map((item, i) => (
+                                    <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                                      {item.servico.nome}
+                                    </span>
+                                  ))}
+                                  {ordem.itens.length > 2 && (
+                                    <span className="text-xs text-slate-400">+{ordem.itens.length - 2}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Status */}
+                            <div className="flex-shrink-0 text-center">
+                              <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${
+                                ordem.status === "PRONTO" ? "bg-emerald-100 text-emerald-700" :
+                                ordem.status === "ENTREGUE" ? "bg-slate-100 text-slate-600" :
+                                ordem.status === "LAVANDO" ? "bg-cyan-100 text-cyan-700" :
+                                "bg-amber-100 text-amber-700"
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  ordem.status === "PRONTO" ? "bg-emerald-500" :
+                                  ordem.status === "ENTREGUE" ? "bg-slate-400" :
+                                  ordem.status === "LAVANDO" ? "bg-cyan-500" :
+                                  "bg-amber-500"
+                                }`} />
+                                {ordem.status === "AGUARDANDO" ? "Aguardando" :
+                                 ordem.status === "LAVANDO" ? "Lavando" :
+                                 ordem.status === "FINALIZANDO" ? "Finalizando" :
+                                 ordem.status === "PRONTO" ? "Pronto" : "Entregue"}
+                              </span>
+                              <p className="text-xs text-slate-400 mt-1">
+                                {format(new Date(ordem.dataEntrada), "HH:mm")}
+                              </p>
+                            </div>
+
+                            {/* Valor */}
+                            <div className="flex-shrink-0 text-right min-w-[100px]">
+                              <p className="text-[10px] text-slate-400 uppercase tracking-wide">Total</p>
+                              <p className="text-2xl font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
+                            </div>
+
+                            {/* Botão WhatsApp */}
+                            <div className="flex-shrink-0">
+                              {ordem.cliente.telefone ? (
+                                <button
+                                  onClick={() => enviarOSWhatsApp(ordem)}
+                                  className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-5 py-3 rounded-xl transition-all shadow-lg shadow-green-500/20 hover:shadow-green-500/30 hover:scale-[1.02] active:scale-[0.98]"
+                                >
+                                  <MessageCircle className="w-5 h-5" />
+                                  <span>Enviar</span>
+                                </button>
+                              ) : (
+                                <div className="px-5 py-3 bg-slate-100 rounded-xl text-slate-400 text-sm italic">
+                                  Sem telefone
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
