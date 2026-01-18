@@ -443,7 +443,7 @@ export default async function CidadePage({ params }: PageProps) {
                   <div 
                     className="px-6 pb-6 text-white/70"
                     dangerouslySetInnerHTML={{ __html: processarMarkdown(item.resposta) }}
-                  </div>
+                  />
                 </details>
               ))}
             </div>
