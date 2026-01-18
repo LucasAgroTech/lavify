@@ -593,60 +593,60 @@ export default function ClientesPage() {
             </div>
           )}
 
-          {/* Stats */}
-          <div className="grid grid-cols-5 gap-4">
+          {/* Stats - Responsivo */}
+          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4">
             <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
-                  <p className="text-sm text-slate-500">Total</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
                   <Users className="w-5 h-5 text-slate-600" />
                 </div>
+                <div>
+                  <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
+                  <p className="text-xs text-slate-500">Total</p>
+                </div>
               </div>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">{stats.ativos}</p>
-                  <p className="text-sm text-slate-500">Ativos</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
                   <UserCheck className="w-5 h-5 text-emerald-600" />
                 </div>
+                <div>
+                  <p className="text-2xl font-bold text-emerald-600">{stats.ativos}</p>
+                  <p className="text-xs text-slate-500">Ativos</p>
+                </div>
               </div>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-orange-600">{stats.inativos}</p>
-                  <p className="text-sm text-slate-500">Inativos</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
                   <Clock className="w-5 h-5 text-orange-600" />
                 </div>
+                <div>
+                  <p className="text-2xl font-bold text-orange-600">{stats.inativos}</p>
+                  <p className="text-xs text-slate-500">Inativos</p>
+                </div>
               </div>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-red-600">{stats.sumidos}</p>
-                  <p className="text-sm text-slate-500">Sumidos</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
                   <Ghost className="w-5 h-5 text-red-600" />
                 </div>
+                <div>
+                  <p className="text-2xl font-bold text-red-600">{stats.sumidos}</p>
+                  <p className="text-xs text-slate-500">Sumidos</p>
+                </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-amber-600">{stats.mensalistas}</p>
-                  <p className="text-sm text-slate-500">Mensalistas</p>
+            <div className="col-span-2 xl:col-span-1 bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-4 text-white">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                  <Crown className="w-5 h-5 text-white" />
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Crown className="w-5 h-5 text-amber-600" />
+                <div>
+                  <p className="text-2xl font-bold">{stats.mensalistas}</p>
+                  <p className="text-xs text-white/80">Mensalistas</p>
                 </div>
               </div>
             </div>
@@ -699,7 +699,7 @@ export default function ClientesPage() {
                     <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Última</th>
                     {fidelidadeConfig.ativa && (
-                      <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Fidelidade</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase min-w-[180px]">Fidelidade</th>
                     )}
                     <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Lavagens</th>
                     <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Total</th>
@@ -744,32 +744,42 @@ export default function ClientesPage() {
                         {fidelidadeConfig.ativa && (
                           <td className="py-3 px-4">
                             {mostrarFidelidade ? (
-                              <div className="flex flex-col items-center gap-1">
-                                <div className="flex items-center gap-1">
-                                  <div className="flex gap-0.5">
-                                    {[...Array(meta)].map((_, i) => (
-                                      <div key={i} className={`w-2 h-2 rounded-full ${i < cliente.carimbos ? "bg-emerald-500" : "bg-slate-200"}`} />
-                                    ))}
+                              <div className="flex items-center gap-3">
+                                {/* Barra de Progresso Visual */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                      <div 
+                                        className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all"
+                                        style={{ width: `${(cliente.carimbos / meta) * 100}%` }}
+                                      />
+                                    </div>
+                                    <span className="text-xs font-semibold text-slate-600 whitespace-nowrap">{cliente.carimbos}/{meta}</span>
                                   </div>
-                                  <span className="text-xs text-slate-500 ml-1">{cliente.carimbos}/{meta}</span>
+                                  {cliente.lavagensGratis > 0 && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 font-semibold bg-amber-50 px-1.5 py-0.5 rounded">
+                                      <Gift className="w-3 h-3" /> {cliente.lavagensGratis} grátis
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="flex gap-1">
+                                {/* Botões */}
+                                <div className="flex gap-1 flex-shrink-0">
                                   <button
                                     onClick={() => gerenciarFidelidade(cliente.id, "adicionar")}
                                     disabled={processandoFidelidade === cliente.id}
-                                    className="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded text-[10px] font-bold disabled:opacity-50 flex items-center gap-0.5"
+                                    className="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg disabled:opacity-50"
                                     title="Dar carimbo"
                                   >
-                                    {processandoFidelidade === cliente.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3" /> Carimbo</>}
+                                    {processandoFidelidade === cliente.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                                   </button>
                                   {cliente.lavagensGratis > 0 && (
                                     <button
                                       onClick={() => gerenciarFidelidade(cliente.id, "resgatar")}
                                       disabled={processandoFidelidade === cliente.id}
-                                      className="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded text-[10px] font-bold disabled:opacity-50 flex items-center gap-0.5"
+                                      className="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg disabled:opacity-50"
                                       title="Resgatar prêmio"
                                     >
-                                      <Gift className="w-3 h-3" /> {cliente.lavagensGratis}
+                                      <Gift className="w-4 h-4" />
                                     </button>
                                   )}
                                 </div>
