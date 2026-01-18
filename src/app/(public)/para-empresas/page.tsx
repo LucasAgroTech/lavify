@@ -208,7 +208,7 @@ export default function LandingPageEmpresas() {
     {
       icon: MessageCircle,
       titulo: "WhatsApp Automático",
-      descricao: "Notifique o cliente quando o carro ficar pronto em 1 clique.",
+      descricao: "Notifique quando pronto e envie comprovante da OS em 1 clique.",
       destaque: "API oficial integrada",
       cor: "from-green-500 to-emerald-600",
     },
@@ -586,7 +586,7 @@ export default function LandingPageEmpresas() {
                 <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
                   <MessageCircle className="w-6 h-6 text-white mb-2" />
                   <h4 className="text-white font-semibold text-[14px] mb-1">WhatsApp Automático</h4>
-                  <p className="text-emerald-100 text-[12px] leading-relaxed">Cliente notificado quando o carro fica pronto.</p>
+                  <p className="text-emerald-100 text-[12px] leading-relaxed">Cliente notificado quando pronto + comprovante da OS enviado.</p>
                 </div>
                 <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
                   <Gift className="w-6 h-6 text-white mb-2" />
