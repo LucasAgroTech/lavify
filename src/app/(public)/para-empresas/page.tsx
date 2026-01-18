@@ -349,9 +349,9 @@ export default function LandingPageEmpresas() {
             </span></span>
           </h1>
 
-          {/* Subheadline - Direto e estratégico */}
+          {/* Subheadline - Linguagem simples */}
           <p className="text-slate-300 text-center text-[15px] lg:text-[18px] leading-relaxed mb-6 max-w-sm lg:max-w-2xl mx-auto">
-            <span className="text-white font-semibold">Gestão inteligente</span> + <span className="text-white font-semibold">presença digital</span> + <span className="text-white font-semibold">remarketing automático</span>. Profissionalize sua operação e <span className="text-cyan-400 font-semibold">escale seu negócio</span>.
+            Controle <span className="text-white font-semibold">pátio</span>, <span className="text-white font-semibold">caixa</span>, <span className="text-white font-semibold">estoque</span> e <span className="text-white font-semibold">equipe</span> pelo celular. Cliente agenda sozinho e recebe <span className="text-cyan-400 font-semibold">WhatsApp quando o carro fica pronto</span>.
           </p>
 
           {/* Carrossel Mobile - Imagens Verticais */}
