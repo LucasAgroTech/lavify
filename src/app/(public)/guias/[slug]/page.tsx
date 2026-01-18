@@ -395,22 +395,25 @@ export default async function GuiaPage({ params }: PageProps) {
             )}
 
             {/* Seções */}
-            {conteudo.secoes?.map((secao, index) => (
-              <div key={index} className="mb-10">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">{secao.titulo}</h2>
-                <p className="text-slate-600 leading-relaxed mb-4">{secao.conteudo}</p>
-                {secao.lista && (
-                  <ul className="list-none space-y-2">
-                    {secao.lista.map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-slate-600">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
+            {conteudo.secoes?.map((secao, index) => {
+              const secaoComLista = secao as { titulo: string; conteudo: string; lista?: string[] };
+              return (
+                <div key={index} className="mb-10">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-4">{secao.titulo}</h2>
+                  <p className="text-slate-600 leading-relaxed mb-4">{secao.conteudo}</p>
+                  {secaoComLista.lista && secaoComLista.lista.length > 0 && (
+                    <ul className="list-none space-y-2">
+                      {secaoComLista.lista.map((item, i) => (
+                        <li key={i} className="flex items-center gap-3 text-slate-600">
+                          <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
 
             {/* FAQ */}
             {conteudo.faq && conteudo.faq.length > 0 && (
