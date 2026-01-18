@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Kanban,
@@ -127,7 +128,7 @@ export default function LandingPageEmpresas() {
   const [videoAberto, setVideoAberto] = useState(false);
   const [slideAtual, setSlideAtual] = useState(0);
   const [slideMobileAtual, setSlideMobileAtual] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null); // null = ainda não detectou
 
   // Detectar se é mobile
   useEffect(() => {
@@ -354,85 +355,106 @@ export default function LandingPageEmpresas() {
             Controle <span className="text-white font-semibold">pátio</span>, <span className="text-white font-semibold">caixa</span>, <span className="text-white font-semibold">estoque</span> e <span className="text-white font-semibold">equipe</span> pelo celular. Cliente agenda sozinho e recebe <span className="text-cyan-400 font-semibold">WhatsApp quando o carro fica pronto</span>.
           </p>
 
-          {/* Carrossel Mobile - Imagens Verticais */}
-          <div className="lg:hidden relative mb-8 max-w-[300px] mx-auto">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
-              <div 
-                className="flex transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${slideMobileAtual * 100}%)` }}
-              >
-                {imagensHeroMobile.map((img, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
-                    <img
-                      src={img}
-                      alt={`Sistema Lavify mobile ${index + 1}`}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                ))}
+          {/* Placeholder enquanto detecta dispositivo */}
+          {isMobile === null && (
+            <div className="relative mb-8 max-w-[300px] lg:max-w-3xl mx-auto">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 bg-slate-800/50 animate-pulse">
+                <div className="aspect-[9/16] lg:aspect-video" />
+              </div>
+            </div>
+          )}
+
+          {/* Carrossel Mobile - Imagens Verticais (só renderiza no mobile) */}
+          {isMobile === true && (
+            <div className="relative mb-8 max-w-[300px] mx-auto">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
+                <div 
+                  className="flex transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${slideMobileAtual * 100}%)` }}
+                >
+                  {imagensHeroMobile.map((img, index) => (
+                    <div key={index} className="w-full flex-shrink-0 relative aspect-[9/16]">
+                      <Image
+                        src={img}
+                        alt={`Sistema Lavify mobile ${index + 1}`}
+                        fill
+                        sizes="300px"
+                        className="object-cover"
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
+                      />
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Badge flutuante */}
+                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 z-10">
+                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-white text-[11px] font-medium">Visão do App</span>
+                </div>
               </div>
               
-              {/* Badge flutuante */}
-              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-white text-[11px] font-medium">Visão do App</span>
-              </div>
-            </div>
-            
-            {/* Indicadores mobile */}
-            <div className="flex justify-center gap-1.5 mt-4">
-              {imagensHeroMobile.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSlideMobileAtual(index)}
-                  className={`h-1.5 rounded-full transition-all ${
-                    slideMobileAtual === index 
-                      ? "bg-cyan-400 w-4" 
-                      : "bg-white/30 w-1.5"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Carrossel Desktop - Imagens Horizontais */}
-          <div className="hidden lg:block relative mb-8 max-w-3xl mx-auto">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
-              <div 
-                className="flex transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${slideAtual * 100}%)` }}
-              >
-                {imagensHero.map((img, index) => (
-                  <div key={index} className="w-full flex-shrink-0 relative overflow-hidden">
-                    <img
-                      src={img}
-                      alt={`Sistema Lavify em ação ${index + 1}`}
-                      className={`w-full object-cover ${
-                        index === 2 
-                          ? "scale-[1.8] origin-top" 
-                          : ""
-                      }`}
-                    />
-                  </div>
+              {/* Indicadores mobile */}
+              <div className="flex justify-center gap-1.5 mt-4">
+                {imagensHeroMobile.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSlideMobileAtual(index)}
+                    className={`h-1.5 rounded-full transition-all ${
+                      slideMobileAtual === index 
+                        ? "bg-cyan-400 w-4" 
+                        : "bg-white/30 w-1.5"
+                    }`}
+                  />
                 ))}
               </div>
             </div>
-            
-            {/* Indicadores desktop */}
-            <div className="flex justify-center gap-2 mt-4">
-              {imagensHero.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSlideAtual(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    slideAtual === index 
-                      ? "bg-cyan-400 w-6" 
-                      : "bg-white/30 hover:bg-white/50"
-                  }`}
-                />
-              ))}
+          )}
+
+          {/* Carrossel Desktop - Imagens Horizontais (só renderiza no desktop) */}
+          {isMobile === false && (
+            <div className="hidden lg:block relative mb-8 max-w-3xl mx-auto">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
+                <div 
+                  className="flex transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+                >
+                  {imagensHero.map((img, index) => (
+                    <div key={index} className="w-full flex-shrink-0 relative aspect-video overflow-hidden">
+                      <Image
+                        src={img}
+                        alt={`Sistema Lavify em ação ${index + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 768px"
+                        className={`object-cover ${
+                          index === 2 
+                            ? "scale-[1.8] origin-top" 
+                            : ""
+                        }`}
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Indicadores desktop */}
+              <div className="flex justify-center gap-2 mt-4">
+                {imagensHero.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSlideAtual(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      slideAtual === index 
+                        ? "bg-cyan-400 w-6" 
+                        : "bg-white/30 hover:bg-white/50"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* CTA Principal */}
           <div className="space-y-3 lg:space-y-0 lg:flex lg:items-center lg:justify-center lg:gap-4">

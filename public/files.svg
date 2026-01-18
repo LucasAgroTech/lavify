@@ -1,0 +1,111 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0a192f;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#174a7c;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="lavify-gradient" x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" style="stop-color:#00c6ff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0072ff;stop-opacity:1" />
+        </linearGradient>
+        <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+            <feOffset dx="5" dy="10" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1600" height="900" fill="url(#bg-gradient)" />
+
+    <g text-anchor="middle" font-family="'Roboto', Arial, sans-serif">
+        <text x="800" y="100" fill="#ffffff" font-size="60" font-weight="bold" letter-spacing="2">
+            TRANSFORME SEU LAVA RÁPIDO EM UMA REFERÊNCIA
+        </text>
+        <text x="800" y="160" fill="#bddfff" font-size="32">
+            Com o <tspan font-weight="bold" fill="#00c6ff">Lavify</tspan>, sua presença no Google se torna profissional e atrai mais clientes.
+        </text>
+    </g>
+
+    <g transform="translate(150, 250)" filter="url(#dropShadow)">
+        <path d="M50,200 L50,100 L200,50 L350,100 L350,200 M80,200 L80,140 L150,140 L150,200 M250,200 L250,140 L320,140 L320,200" stroke="#5a6e8c" stroke-width="5" fill="none" opacity="0.6"/>
+        <rect x="180" y="120" width="40" height="40" rx="5" fill="#5a6e8c" opacity="0.6"/>
+        
+        <g transform="translate(130, -80)">
+            <path d="M70,140 C20,140 0,100 0,70 C0,31.3 31.3,0 70,0 C108.7,0 140,31.3 140,70 C140,100 120,140 70,180 C20,140 0,100 0,70 Z" fill="#33455b" opacity="0.8"/>
+            <text x="70" y="95" font-family="Arial" font-size="80" fill="#174a7c" text-anchor="middle" font-weight="bold">?</text>
+        </g>
+        
+        <text x="200" y="300" fill="#8fa3bf" font-family="'Roboto', Arial, sans-serif" font-size="28" text-anchor="middle" font-weight="bold">INVISÍVEL ONLINE</text>
+        <text x="200" y="340" fill="#8fa3bf" font-family="'Roboto', Arial, sans-serif" font-size="20" text-anchor="middle">Clientes não te encontram.</text>
+    </g>
+
+    <g transform="translate(650, 350)">
+        <path d="M50,100 L350,100 L300,50 M350,100 L300,150" stroke="url(#lavify-gradient)" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        
+        <circle cx="200" cy="100" r="60" fill="#ffffff" filter="url(#dropShadow)"/>
+        <path d="M200,60 C180,90 170,110 170,125 C170,141.5 183.4,155 200,155 C216.6,155 230,141.5 230,125 C230,110 220,90 200,60 Z" fill="url(#lavify-gradient)"/>
+        <path d="M190,115 L200,130 L220,100" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <text x="200" y="220" fill="#ffffff" font-family="'Roboto', Arial, sans-serif" font-size="24" text-anchor="middle" font-weight="bold">ATIVAR LAVIFY</text>
+    </g>
+
+    <g transform="translate(1050, 200)" filter="url(#dropShadow)">
+        <rect x="0" y="0" width="400" height="650" rx="30" fill="#ffffff" stroke="#d0d7de" stroke-width="4"/>
+        <rect x="20" y="60" width="360" height="550" fill="#f8f9fa"/>
+        <rect x="150" y="20" width="100" height="20" rx="10" fill="#e0e0e0"/>
+
+        <g transform="translate(20, 60)">
+            <rect x="10" y="20" width="340" height="50" rx="25" fill="#ffffff" stroke="#e0e0e0"/>
+            <text x="40" y="52" fill="#70757a" font-family="Arial" font-size="18">Lava Rápido Profissional...</text>
+            <circle cx="320" cy="45" r="15" fill="#4285f4"/> <rect x="10" y="100" width="340" height="400" rx="10" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+            
+            <rect x="10" y="100" width="340" height="120" rx="10" fill="#0072ff" opacity="0.8"/>
+             <path d="M10,200 L120,150 L200,180 L350,120 L350,220 L10,220 Z" fill="#ffffff" opacity="0.3"/>
+            
+            <text x="30" y="260" fill="#202124" font-family="'Roboto', Arial, sans-serif" font-size="24" font-weight="bold">Lava Rápido Premium Auto</text>
+            
+            <g transform="translate(30, 280)">
+                <text x="0" y="15" fill="#e7711b" font-size="18" font-weight="bold" font-family="Arial">5.0</text>
+                <g transform="translate(35, 0)" fill="#fbbc04">
+                    <polygon points="10,1 13,7 19,7 15,11 17,17 10,13 3,17 5,11 1,7 7,7"/>
+                    <polygon points="30,1 33,7 39,7 35,11 37,17 30,13 23,17 25,11 21,7 27,7"/>
+                    <polygon points="50,1 53,7 59,7 55,11 57,17 50,13 43,17 45,11 41,7 47,7"/>
+                    <polygon points="70,1 73,7 79,7 75,11 77,17 70,13 63,17 65,11 61,7 67,7"/>
+                    <polygon points="90,1 93,7 99,7 95,11 97,17 90,13 83,17 85,11 81,7 87,7"/>
+                </g>
+                <text x="140" y="15" fill="#70757a" font-size="16" font-family="Arial">(342 avaliações) • Aberto agora</text>
+            </g>
+
+            <g transform="translate(30, 330)">
+                <rect x="0" y="0" width="90" height="40" rx="20" fill="#e8f0fe" stroke="#d2e3fc"/>
+                <text x="45" y="25" fill="#1967d2" font-size="14" font-family="Arial" text-anchor="middle" font-weight="bold">Ligar</text>
+                <rect x="100" y="0" width="90" height="40" rx="20" fill="#1967d2"/>
+                <text x="145" y="25" fill="#ffffff" font-size="14" font-family="Arial" text-anchor="middle" font-weight="bold">Rotas</text>
+                <rect x="200" y="0" width="90" height="40" rx="20" fill="#e8f0fe" stroke="#d2e3fc"/>
+                <text x="245" y="25" fill="#1967d2" font-size="14" font-family="Arial" text-anchor="middle" font-weight="bold">Website</text>
+            </g>
+
+            <g transform="translate(30, 400)">
+                <circle cx="15" cy="15" r="15" fill="#34a853"/>
+                <path d="M10,15 L15,20 L25,10" stroke="#fff" stroke-width="3" fill="none"/>
+                <text x="40" y="20" fill="#34a853" font-size="16" font-family="Arial" font-weight="bold">Verificado pelo Lavify</text>
+            </g>
+        </g>
+
+        <g transform="translate(330, -30)" filter="url(#glow)">
+            <path d="M70,140 C20,140 0,100 0,70 C0,31.3 31.3,0 70,0 C108.7,0 140,31.3 140,70 C140,100 120,140 70,180 C20,140 0,100 0,70 Z" fill="#ea4335"/>
+            <circle cx="70" cy="70" r="30" fill="#960a0a"/>
+        </g>
