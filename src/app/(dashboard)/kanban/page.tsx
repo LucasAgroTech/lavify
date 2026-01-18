@@ -579,19 +579,25 @@ export default function KanbanPage() {
                           onDragStart={(e) => handleDragStart(e, ordem)}
                           onDragEnd={handleDragEnd}
                           className={`
-                            bg-white rounded-lg border border-slate-200 p-4
+                            bg-white rounded-xl border border-slate-200 overflow-hidden
                             cursor-grab active:cursor-grabbing
-                            hover:border-slate-300 hover:shadow-md
+                            hover:border-slate-300 hover:shadow-lg
                             transition-all duration-200
                             ${dragging === ordem.id ? "opacity-50 scale-95" : ""}
                           `}
                         >
-                          {/* Placa + Valor */}
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="bg-slate-800 text-white px-3 py-1.5 rounded-md">
-                              <span className="font-mono font-bold text-sm">{ordem.veiculo.placa}</span>
+                          {/* Header do Card - Placa + Valor + Hora */}
+                          <div className="flex items-center justify-between gap-3 p-3 bg-slate-50 border-b border-slate-100">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="bg-slate-800 text-white px-2.5 py-1 rounded-md flex-shrink-0">
+                                <span className="font-mono font-bold text-xs tracking-wider">{ordem.veiculo.placa}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-xs text-slate-500 flex-shrink-0">
+                                <Clock className="w-3 h-3" />
+                                <span>{format(new Date(ordem.dataEntrada), "HH:mm")}</span>
+                              </div>
                             </div>
-                            <span className="font-bold text-emerald-600">
+                            <span className="font-bold text-emerald-600 text-sm flex-shrink-0">
                               {new Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
@@ -599,28 +605,31 @@ export default function KanbanPage() {
                             </span>
                           </div>
 
-                          {/* Veículo */}
-                          <p className="font-semibold text-slate-800 mb-1">{ordem.veiculo.modelo}</p>
-                          
-                          {/* Serviços */}
-                          <p className="text-sm text-slate-500 mb-3">
-                            {ordem.itens.map((item) => item.servico.nome).join(", ")}
-                          </p>
+                          {/* Body do Card */}
+                          <div className="p-3 space-y-2">
+                            {/* Veículo + Cor */}
+                            <div className="flex items-center gap-2">
+                              <Car className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                              <p className="font-semibold text-slate-800 text-sm truncate">
+                                {ordem.veiculo.modelo}
+                                {ordem.veiculo.cor && <span className="font-normal text-slate-500"> • {ordem.veiculo.cor}</span>}
+                              </p>
+                            </div>
+                            
+                            {/* Serviços */}
+                            <p className="text-xs text-slate-500 truncate pl-6" title={ordem.itens.map((item) => item.servico.nome).join(", ")}>
+                              {ordem.itens.map((item) => item.servico.nome).join(" • ")}
+                            </p>
 
-                          {/* Cliente */}
-                          <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
-                            <User className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{ordem.cliente.nome}</span>
+                            {/* Cliente */}
+                            <div className="flex items-center gap-2 pt-1">
+                              <User className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                              <span className="text-sm text-slate-600 truncate">{ordem.cliente.nome}</span>
+                            </div>
                           </div>
 
-                          {/* Horário */}
-                          <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>Entrada: {format(new Date(ordem.dataEntrada), "HH:mm", { locale: ptBR })}</span>
-                          </div>
-
-                          {/* Botões de Ação */}
-                          <div className="flex gap-2 pt-3 border-t border-slate-100">
+                          {/* Footer - Botões de Ação */}
+                          <div className="flex gap-2 p-3 pt-0">
                             {/* WhatsApp - quando pronto */}
                             {ordem.status === "PRONTO" && (
                               <button
@@ -629,9 +638,9 @@ export default function KanbanPage() {
                                   ordem.cliente.nome.split(" ")[0],
                                   ordem.veiculo.placa
                                 )}
-                                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 hover:bg-green-600 text-white text-sm rounded-lg font-medium transition-colors"
+                                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-green-500 hover:bg-green-600 text-white text-xs rounded-lg font-medium transition-colors"
                               >
-                                <MessageCircle className="w-4 h-4" />
+                                <MessageCircle className="w-3.5 h-3.5" />
                                 Avisar
                               </button>
                             )}
@@ -646,7 +655,7 @@ export default function KanbanPage() {
                                   atualizarStatus(ordem.id, proximo);
                                 }}
                                 className={`
-                                  flex-1 flex items-center justify-center gap-2 py-2.5 text-sm rounded-lg font-medium transition-colors
+                                  flex-1 flex items-center justify-center gap-1.5 py-2 text-xs rounded-lg font-medium transition-colors
                                   ${proximo === "ENTREGUE" 
                                     ? 'bg-slate-800 hover:bg-slate-700 text-white' 
                                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
@@ -655,12 +664,12 @@ export default function KanbanPage() {
                               >
                                 {proximo === "ENTREGUE" ? (
                                   <>
-                                    <CheckCircle2 className="w-4 h-4" />
+                                    <CheckCircle2 className="w-3.5 h-3.5" />
                                     Entregar
                                   </>
                                 ) : (
                                   <>
-                                    <ArrowRight className="w-4 h-4" />
+                                    <ArrowRight className="w-3.5 h-3.5" />
                                     Avançar
                                   </>
                                 )}
