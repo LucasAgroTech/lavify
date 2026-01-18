@@ -21,6 +21,7 @@ export default function PublicLayoutClient({
   // Páginas que usam layout próprio (landing pages B2B e SEO programático)
   const isLandingPage = 
     pathname === "/para-empresas" || 
+    pathname === "/blog" ||
     pathname?.startsWith("/sistema-lava-rapido") ||
     pathname?.startsWith("/solucoes") ||
     pathname?.startsWith("/guias") ||
