@@ -350,9 +350,9 @@ export default function LandingPageEmpresas() {
                   loop
                   muted
                   playsInline
-                  preload="auto"
-                  width={640}
-                  height={1386}
+                  preload="metadata"
+                  width={557}
+                  height={1205}
                   className="w-full h-auto"
                   poster="/hero-mobile-poster.jpg"
                 >

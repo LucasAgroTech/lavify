@@ -20,6 +20,10 @@ export const metadata: Metadata = {
       "Chega de planilha e estoque acabando. Gerencie pátio, estoque e financeiro em um único sistema.",
     type: "website",
   },
+  other: {
+    // Preload para LCP mobile
+    "link-preload-poster": "/hero-mobile-poster.jpg",
+  },
 };
 
 export default function ParaEmpresasLayout({
@@ -28,6 +32,23 @@ export default function ParaEmpresasLayout({
   children: React.ReactNode;
 }) {
   // Layout limpo sem header/footer do cliente - a página tem seus próprios
-  return <>{children}</>;
+  return (
+    <>
+      {/* Preload para recursos críticos do LCP */}
+      <link
+        rel="preload"
+        href="/hero-mobile-poster.jpg"
+        as="image"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        href="/hero-1.webp"
+        as="image"
+        fetchPriority="high"
+      />
+      {children}
+    </>
+  );
 }
 
