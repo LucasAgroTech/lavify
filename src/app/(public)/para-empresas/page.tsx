@@ -127,7 +127,6 @@ function FeatureCard({
 export default function LandingPageEmpresas() {
   const [videoAberto, setVideoAberto] = useState(false);
   const [slideAtual, setSlideAtual] = useState(0);
-  const [slideMobileAtual, setSlideMobileAtual] = useState(0);
   const [isMobile, setIsMobile] = useState<boolean | null>(null); // null = ainda não detectou
 
   // Detectar se é mobile
@@ -144,23 +143,9 @@ export default function LandingPageEmpresas() {
     "/hero-2.webp",
     "/hero-3.webp",
     "/hero-4.webp",
-    "/hero-5.webp",
-    "/hero-6.webp",
-    "/hero-7.webp",
   ];
 
   // Imagens para mobile (vertical/retrato)
-  const imagensHeroMobile = [
-    "/hero-mobile-1.webp",
-    "/hero-mobile-2.webp",
-    "/hero-mobile-3.webp",
-    "/hero-mobile-4.webp",
-    "/hero-mobile-5.webp",
-    "/hero-mobile-6.webp",
-    "/hero-mobile-7.webp",
-    "/hero-mobile-8.webp",
-  ];
-
   // Auto-play do carrossel desktop
   useEffect(() => {
     const timer = setInterval(() => {
@@ -168,14 +153,6 @@ export default function LandingPageEmpresas() {
     }, 4000);
     return () => clearInterval(timer);
   }, [imagensHero.length]);
-
-  // Auto-play do carrossel mobile
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlideMobileAtual((prev) => (prev + 1) % imagensHeroMobile.length);
-    }, 3500);
-    return () => clearInterval(timer);
-  }, [imagensHeroMobile.length]);
 
   const funcionalidades = [
     {
