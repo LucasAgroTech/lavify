@@ -678,26 +678,62 @@ export default function LandingPageEmpresas() {
               </div>
             </div>
 
-          </div>
-
-          {/* BÔNUS: Equipe */}
-          <div className="mt-8 lg:mt-12 bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 overflow-hidden">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+            {/* ══════════════════════════════════════════════════════════════════
+                PILAR 4: GESTÃO DE EQUIPE
+            ══════════════════════════════════════════════════════════════════ */}
+            <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl lg:rounded-3xl p-6 lg:p-8 overflow-hidden relative">
+              {/* Header do Pilar */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-[16px] lg:text-[20px] font-bold text-white">+ Gestão de Equipe</h3>
-                  <p className="text-rose-100 text-[13px] lg:text-[14px]">Controle permissões, comissões e desempenho de cada funcionário. <strong>Viaje tranquilo.</strong></p>
+                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Gestão de Equipe</h3>
+                  <p className="text-rose-100 text-[12px] lg:text-[13px]">Viaje tranquilo, seu time funciona sozinho</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Permissões por função</span>
-                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Comissões automáticas</span>
-                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Relatório de produtividade</span>
+              
+              {/* Grid de funcionalidades */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <ShieldCheck className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Permissões por Função</h4>
+                  <p className="text-rose-100 text-[12px] leading-relaxed">Cada funcionário vê só o que precisa. Sem vazamento de dados.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Wallet className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Comissões Automáticas</h4>
+                  <p className="text-rose-100 text-[12px] leading-relaxed">Sistema calcula quanto pagar pra cada lavador automaticamente.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <TrendingUp className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Relatório de Produtividade</h4>
+                  <p className="text-rose-100 text-[12px] leading-relaxed">Veja quem rende mais. Tome decisões baseadas em dados.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Users className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Níveis de Acesso</h4>
+                  <p className="text-rose-100 text-[12px] leading-relaxed">Admin, gerente, lavador — cada um com seu painel.</p>
+                </div>
+              </div>
+              
+              {/* Valor gerado */}
+              <div className="mt-5 pt-5 border-t border-white/20 flex flex-wrap items-center gap-4 lg:gap-8">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-rose-100 text-[12px] lg:text-[13px]"><strong className="text-white">Equipe</strong> autônoma</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-rose-100 text-[12px] lg:text-[13px]"><strong className="text-white">Zero</strong> erro em comissão</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-rose-100 text-[12px] lg:text-[13px]"><strong className="text-white">Viaje</strong> tranquilo</span>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
