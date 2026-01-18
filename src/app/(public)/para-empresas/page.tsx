@@ -576,7 +576,7 @@ export default function LandingPageEmpresas() {
                   <Heart className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Relacionamento com Cliente</h3>
+                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Relacionamento</h3>
                   <p className="text-emerald-100 text-[12px] lg:text-[13px]">Fidelize e venda mais</p>
                 </div>
               </div>
