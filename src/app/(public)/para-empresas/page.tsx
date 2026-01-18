@@ -729,318 +729,6 @@ export default function LandingPageEmpresas() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SOLUÇÃO - Autonomia da Equipe
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="px-5 py-12 lg:py-20 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="w-5 h-5 text-cyan-500" />
-            <h2 className="text-[13px] lg:text-[14px] font-semibold text-cyan-600 uppercase tracking-wide">
-              A Solução
-            </h2>
-          </div>
-          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
-            Equipe Que Funciona{" "}
-            <span className="text-cyan-600">Sem Você</span>
-          </h3>
-          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-6 lg:mb-12">
-            Cada membro sabe exatamente o que fazer — e você controla tudo pelo celular.
-          </p>
-
-          {/* Mobile: Scroll horizontal com cards compactos */}
-          <div className="lg:hidden">
-            {/* Cards scrolláveis */}
-            <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 snap-x snap-mandatory scrollbar-hide">
-              {niveisEquipe.map((item) => (
-                <div
-                  key={item.nivel}
-                  className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm flex-shrink-0 w-[260px] snap-center"
-                >
-                  {/* Header do card */}
-                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
-                    <div
-                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0 shadow-lg`}
-                    >
-                      <item.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-slate-900 text-[15px]">{item.nivel}</h4>
-                        {item.badge && (
-                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>
-                            {item.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-slate-500 text-[12px]">{item.descricao}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Permissões */}
-                  <div className="space-y-2">
-                    {item.permissoes.slice(0, 4).map((perm) => (
-                      <div key={perm} className="flex items-center gap-2 text-[12px]">
-                        <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-2.5 h-2.5 text-emerald-600" />
-                        </div>
-                        <span className="text-slate-700">{perm}</span>
-                      </div>
-                    ))}
-                    {item.permissoes.length > 4 && (
-                      <p className="text-[11px] text-cyan-600 font-medium pl-6">+{item.permissoes.length - 4} mais recursos</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Indicador de scroll */}
-            <div className="flex justify-center gap-1.5 mt-2">
-              {niveisEquipe.map((_, i) => (
-                <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop: Grid original */}
-          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {niveisEquipe.map((item) => (
-              <div
-                key={item.nivel}
-                className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className={`w-10 h-10 rounded-lg bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0`}
-                  >
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <h4 className="font-bold text-slate-900 text-[14px] truncate">{item.nivel}</h4>
-                      {item.badge && (
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-slate-500 text-[11px] truncate">{item.descricao}</p>
-                  </div>
-                </div>
-                
-                {/* Permissões - Lista compacta */}
-                <div className="space-y-1.5">
-                  {item.permissoes.slice(0, 3).map((perm) => (
-                    <div key={perm} className="flex items-center gap-1.5 text-[11px] lg:text-[12px]">
-                      <Check className="w-3 h-3 text-emerald-500 flex-shrink-0" />
-                      <span className="text-slate-600 truncate">{perm}</span>
-                    </div>
-                  ))}
-                  {item.permissoes.length > 3 && (
-                    <p className="text-[10px] text-slate-400 pl-4">+{item.permissoes.length - 3} mais</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Destaque */}
-          <div className="mt-6 lg:mt-10 p-4 lg:p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 lg:gap-4">
-              <ShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-white/90 flex-shrink-0" />
-              <div>
-                <p className="text-white font-bold text-[15px] lg:text-[17px]">
-                  Cada um vê só o que precisa
-                </p>
-                <p className="text-emerald-100 text-[13px] lg:text-[14px]">
-                  Lavador não vê financeiro. Gerente não altera configurações.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          REMARKETING - WhatsApp Marketing
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-green-50 to-emerald-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-2 mb-2">
-            <MessageCircle className="w-5 h-5 text-green-500" />
-            <h2 className="text-[13px] lg:text-[14px] font-semibold text-green-600 uppercase tracking-wide">
-              Remarketing
-            </h2>
-          </div>
-          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
-            Marketing Direto via{" "}
-            <span className="text-green-600">WhatsApp</span>
-          </h3>
-          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
-            Envie mensagens estratégicas para seus clientes na hora certa e traga eles de volta.
-          </p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-            {/* Card principal */}
-            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30">
-                  <Send className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[18px]">Mensagens Estratégicas</h4>
-                  <p className="text-slate-500 text-[13px]">Templates prontos para cada situação</p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { emoji: "😢", titulo: "Cliente sumido", desc: "Detectamos que faz tempo que não vem, enviamos mensagem de saudade" },
-                  { emoji: "🎁", titulo: "Cartão fidelidade", desc: "Avise quando está perto de ganhar uma lavagem grátis" },
-                  { emoji: "🔥", titulo: "Promoções especiais", desc: "Dispare ofertas exclusivas para clientes selecionados" },
-                  { emoji: "💚", titulo: "Agradecimento", desc: "Agradeça após cada lavagem e peça avaliação" },
-                ].map((item) => (
-                  <div key={item.titulo} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
-                    <span className="text-2xl">{item.emoji}</span>
-                    <div>
-                      <p className="font-semibold text-slate-800 text-[14px]">{item.titulo}</p>
-                      <p className="text-slate-500 text-[12px]">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Benefícios */}
-            <div className="space-y-4">
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
-                <h4 className="font-bold text-[18px] mb-4 flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Por que funciona?
-                </h4>
-                <ul className="space-y-3">
-                  {[
-                    "WhatsApp tem 98% de taxa de abertura",
-                    "Clientes preferem receber ofertas por lá",
-                    "Mensagem personalizada com nome do cliente",
-                    "Você escolhe quando e para quem enviar",
-                    "Sem spam: só mensagens relevantes",
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-[14px]">
-                      <Check className="w-4 h-4 text-green-200 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900 text-[16px]">Aumente seu faturamento</p>
-                    <p className="text-slate-500 text-[13px]">Clientes que recebem remarketing voltam 3x mais</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          PROGRAMAS DE FIDELIDADE - Destaque especial
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-pink-50 to-rose-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-2 mb-2">
-            <Gift className="w-5 h-5 text-pink-500" />
-            <h2 className="text-[13px] lg:text-[14px] font-semibold text-pink-600 uppercase tracking-wide">
-              Fidelização
-            </h2>
-          </div>
-          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
-            Crie Programas de Fidelidade{" "}
-            <span className="text-pink-600">No Seu App</span>
-          </h3>
-          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
-            Cliente que volta é cliente que você não precisa conquistar de novo. Automatize a fidelização.
-          </p>
-
-          <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-5">
-            {/* Pontos */}
-            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                  <Star className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Programa de Pontos</h4>
-                  <p className="text-slate-500 text-[13px] lg:text-[14px]">A cada R$ gasto, ganha pontos</p>
-                </div>
-              </div>
-              <div className="bg-amber-50 rounded-xl p-4">
-                <p className="text-amber-800 text-[14px]">
-                  <span className="font-bold">Exemplo:</span> A cada R$ 10 = 1 ponto. Com 100 pontos = 1 lavagem grátis.
-                </p>
-              </div>
-            </div>
-
-            {/* Cashback */}
-            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
-                  <Percent className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Cashback Automático</h4>
-                  <p className="text-slate-500 text-[13px] lg:text-[14px]">% volta como crédito para próxima visita</p>
-                </div>
-              </div>
-              <div className="bg-emerald-50 rounded-xl p-4">
-                <p className="text-emerald-800 text-[14px]">
-                  <span className="font-bold">Exemplo:</span> 5% de cashback. Lavou R$ 100 = R$ 5 de crédito.
-                </p>
-              </div>
-            </div>
-
-            {/* Plano Mensal */}
-            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
-                  <RotateCcw className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Plano Mensal</h4>
-                  <p className="text-slate-500 text-[13px] lg:text-[14px]">Assinatura com lavagens ilimitadas</p>
-                </div>
-              </div>
-              <div className="bg-cyan-50 rounded-xl p-4">
-                <p className="text-cyan-800 text-[14px]">
-                  <span className="font-bold">Exemplo:</span> R$ 149/mês = lavagens ilimitadas. Receita recorrente garantida.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Benefício */}
-          <div className="mt-6 lg:mt-10 flex items-center gap-4 bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-5 lg:p-6 max-w-2xl mx-auto">
-            <Award className="w-10 h-10 lg:w-12 lg:h-12 text-white/90" />
-            <div>
-              <p className="text-white font-bold text-[15px] lg:text-[17px]">
-                Aumente em até 40% a recorrência
-              </p>
-              <p className="text-pink-100 text-[13px] lg:text-[14px]">
-                Clientes fidelizados voltam mais e gastam mais.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
           SEO INTELIGENTE - Marketing Digital Automático
       ═══════════════════════════════════════════════════════════════════════ */}
       <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-violet-50 to-indigo-50">
@@ -1252,6 +940,407 @@ export default function LandingPageEmpresas() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-slate-500" />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          REMARKETING - WhatsApp Marketing
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-green-50 to-emerald-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageCircle className="w-5 h-5 text-green-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-green-600 uppercase tracking-wide">
+              Remarketing
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Marketing Direto via{" "}
+            <span className="text-green-600">WhatsApp</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+            Envie mensagens estratégicas para seus clientes na hora certa e traga eles de volta.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Card principal */}
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30">
+                  <Send className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[18px]">Mensagens Estratégicas</h4>
+                  <p className="text-slate-500 text-[13px]">Templates prontos para cada situação</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { emoji: "😢", titulo: "Cliente sumido", desc: "Detectamos que faz tempo que não vem, enviamos mensagem de saudade" },
+                  { emoji: "🎁", titulo: "Cartão fidelidade", desc: "Avise quando está perto de ganhar uma lavagem grátis" },
+                  { emoji: "🔥", titulo: "Promoções especiais", desc: "Dispare ofertas exclusivas para clientes selecionados" },
+                  { emoji: "💚", titulo: "Agradecimento", desc: "Agradeça após cada lavagem e peça avaliação" },
+                ].map((item) => (
+                  <div key={item.titulo} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
+                    <span className="text-2xl">{item.emoji}</span>
+                    <div>
+                      <p className="font-semibold text-slate-800 text-[14px]">{item.titulo}</p>
+                      <p className="text-slate-500 text-[12px]">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Benefícios */}
+            <div className="space-y-4">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+                <h4 className="font-bold text-[18px] mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  Por que funciona?
+                </h4>
+                <ul className="space-y-3">
+                  {[
+                    "WhatsApp tem 98% de taxa de abertura",
+                    "Clientes preferem receber ofertas por lá",
+                    "Mensagem personalizada com nome do cliente",
+                    "Você escolhe quando e para quem enviar",
+                    "Sem spam: só mensagens relevantes",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-[14px]">
+                      <Check className="w-4 h-4 text-green-200 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 text-[16px]">Aumente seu faturamento</p>
+                    <p className="text-slate-500 text-[13px]">Clientes que recebem remarketing voltam 3x mais</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SOLUÇÃO - Autonomia da Equipe
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <Users className="w-5 h-5 text-cyan-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-cyan-600 uppercase tracking-wide">
+              A Solução
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Equipe Que Funciona{" "}
+            <span className="text-cyan-600">Sem Você</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-6 lg:mb-12">
+            Cada membro sabe exatamente o que fazer — e você controla tudo pelo celular.
+          </p>
+
+          {/* Mobile: Scroll horizontal com cards compactos */}
+          <div className="lg:hidden">
+            {/* Cards scrolláveis */}
+            <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 snap-x snap-mandatory scrollbar-hide">
+              {niveisEquipe.map((item) => (
+                <div
+                  key={item.nivel}
+                  className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm flex-shrink-0 w-[260px] snap-center"
+                >
+                  {/* Header do card */}
+                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
+                    <div
+                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0 shadow-lg`}
+                    >
+                      <item.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-slate-900 text-[15px]">{item.nivel}</h4>
+                        {item.badge && (
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-500 text-[12px]">{item.descricao}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Permissões */}
+                  <div className="space-y-2">
+                    {item.permissoes.slice(0, 4).map((perm) => (
+                      <div key={perm} className="flex items-center gap-2 text-[12px]">
+                        <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-2.5 h-2.5 text-emerald-600" />
+                        </div>
+                        <span className="text-slate-700">{perm}</span>
+                      </div>
+                    ))}
+                    {item.permissoes.length > 4 && (
+                      <p className="text-[11px] text-cyan-600 font-medium pl-6">+{item.permissoes.length - 4} mais recursos</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Indicador de scroll */}
+            <div className="flex justify-center gap-1.5 mt-2">
+              {niveisEquipe.map((_, i) => (
+                <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Grid original */}
+          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {niveisEquipe.map((item) => (
+              <div
+                key={item.nivel}
+                className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className={`w-10 h-10 rounded-lg bg-gradient-to-br ${item.cor} flex items-center justify-center flex-shrink-0`}
+                  >
+                    <item.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="font-bold text-slate-900 text-[14px] truncate">{item.nivel}</h4>
+                      {item.badge && (
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-500 text-[11px] truncate">{item.descricao}</p>
+                  </div>
+                </div>
+                
+                {/* Permissões - Lista compacta */}
+                <div className="space-y-1.5">
+                  {item.permissoes.slice(0, 3).map((perm) => (
+                    <div key={perm} className="flex items-center gap-1.5 text-[11px] lg:text-[12px]">
+                      <Check className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                      <span className="text-slate-600 truncate">{perm}</span>
+                    </div>
+                  ))}
+                  {item.permissoes.length > 3 && (
+                    <p className="text-[10px] text-slate-400 pl-4">+{item.permissoes.length - 3} mais</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Destaque */}
+          <div className="mt-6 lg:mt-10 p-4 lg:p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl max-w-2xl mx-auto">
+            <div className="flex items-center gap-3 lg:gap-4">
+              <ShieldCheck className="w-8 h-8 lg:w-10 lg:h-10 text-white/90 flex-shrink-0" />
+              <div>
+                <p className="text-white font-bold text-[15px] lg:text-[17px]">
+                  Cada um vê só o que precisa
+                </p>
+                <p className="text-emerald-100 text-[13px] lg:text-[14px]">
+                  Lavador não vê financeiro. Gerente não altera configurações.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          PROGRAMAS DE FIDELIDADE - Destaque especial
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-green-50 to-emerald-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageCircle className="w-5 h-5 text-green-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-green-600 uppercase tracking-wide">
+              Remarketing
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Marketing Direto via{" "}
+            <span className="text-green-600">WhatsApp</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+            Envie mensagens estratégicas para seus clientes na hora certa e traga eles de volta.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Card principal */}
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30">
+                  <Send className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[18px]">Mensagens Estratégicas</h4>
+                  <p className="text-slate-500 text-[13px]">Templates prontos para cada situação</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { emoji: "😢", titulo: "Cliente sumido", desc: "Detectamos que faz tempo que não vem, enviamos mensagem de saudade" },
+                  { emoji: "🎁", titulo: "Cartão fidelidade", desc: "Avise quando está perto de ganhar uma lavagem grátis" },
+                  { emoji: "🔥", titulo: "Promoções especiais", desc: "Dispare ofertas exclusivas para clientes selecionados" },
+                  { emoji: "💚", titulo: "Agradecimento", desc: "Agradeça após cada lavagem e peça avaliação" },
+                ].map((item) => (
+                  <div key={item.titulo} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
+                    <span className="text-2xl">{item.emoji}</span>
+                    <div>
+                      <p className="font-semibold text-slate-800 text-[14px]">{item.titulo}</p>
+                      <p className="text-slate-500 text-[12px]">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Benefícios */}
+            <div className="space-y-4">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+                <h4 className="font-bold text-[18px] mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  Por que funciona?
+                </h4>
+                <ul className="space-y-3">
+                  {[
+                    "WhatsApp tem 98% de taxa de abertura",
+                    "Clientes preferem receber ofertas por lá",
+                    "Mensagem personalizada com nome do cliente",
+                    "Você escolhe quando e para quem enviar",
+                    "Sem spam: só mensagens relevantes",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-[14px]">
+                      <Check className="w-4 h-4 text-green-200 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 text-[16px]">Aumente seu faturamento</p>
+                    <p className="text-slate-500 text-[13px]">Clientes que recebem remarketing voltam 3x mais</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          PROGRAMAS DE FIDELIDADE - Destaque especial
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-5 py-12 lg:py-20 bg-gradient-to-b from-pink-50 to-rose-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <Gift className="w-5 h-5 text-pink-500" />
+            <h2 className="text-[13px] lg:text-[14px] font-semibold text-pink-600 uppercase tracking-wide">
+              Fidelização
+            </h2>
+          </div>
+          <h3 className="text-[22px] lg:text-[32px] font-bold text-slate-900 leading-tight mb-2">
+            Crie Programas de Fidelidade{" "}
+            <span className="text-pink-600">No Seu App</span>
+          </h3>
+          <p className="text-slate-600 text-[14px] lg:text-[16px] mb-8 lg:mb-12">
+            Cliente que volta é cliente que você não precisa conquistar de novo. Automatize a fidelização.
+          </p>
+
+          <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-5">
+            {/* Pontos */}
+            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                  <Star className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Programa de Pontos</h4>
+                  <p className="text-slate-500 text-[13px] lg:text-[14px]">A cada R$ gasto, ganha pontos</p>
+                </div>
+              </div>
+              <div className="bg-amber-50 rounded-xl p-4">
+                <p className="text-amber-800 text-[14px]">
+                  <span className="font-bold">Exemplo:</span> A cada R$ 10 = 1 ponto. Com 100 pontos = 1 lavagem grátis.
+                </p>
+              </div>
+            </div>
+
+            {/* Cashback */}
+            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
+                  <Percent className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Cashback Automático</h4>
+                  <p className="text-slate-500 text-[13px] lg:text-[14px]">% volta como crédito para próxima visita</p>
+                </div>
+              </div>
+              <div className="bg-emerald-50 rounded-xl p-4">
+                <p className="text-emerald-800 text-[14px]">
+                  <span className="font-bold">Exemplo:</span> 5% de cashback. Lavou R$ 100 = R$ 5 de crédito.
+                </p>
+              </div>
+            </div>
+
+            {/* Plano Mensal */}
+            <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-pink-100 hover:shadow-md hover:border-pink-200 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <RotateCcw className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-[16px] lg:text-[17px]">Plano Mensal</h4>
+                  <p className="text-slate-500 text-[13px] lg:text-[14px]">Assinatura com lavagens ilimitadas</p>
+                </div>
+              </div>
+              <div className="bg-cyan-50 rounded-xl p-4">
+                <p className="text-cyan-800 text-[14px]">
+                  <span className="font-bold">Exemplo:</span> R$ 149/mês = lavagens ilimitadas. Receita recorrente garantida.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Benefício */}
+          <div className="mt-6 lg:mt-10 flex items-center gap-4 bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-5 lg:p-6 max-w-2xl mx-auto">
+            <Award className="w-10 h-10 lg:w-12 lg:h-12 text-white/90" />
+            <div>
+              <p className="text-white font-bold text-[15px] lg:text-[17px]">
+                Aumente em até 40% a recorrência
+              </p>
+              <p className="text-pink-100 text-[13px] lg:text-[14px]">
+                Clientes fidelizados voltam mais e gastam mais.
+              </p>
             </div>
           </div>
         </div>
