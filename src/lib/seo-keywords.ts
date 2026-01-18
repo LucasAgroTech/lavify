@@ -215,6 +215,129 @@ export const paginasGuias: PaginaSEO[] = [
   },
 ];
 
+// Páginas NICHO - Frotas, Jurídico e Sustentável
+export const paginasNicho: PaginaSEO[] = [
+  // ═══════════════════════════════════════════════════════════════════
+  // GESTÃO DE FROTAS PRIVADAS
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    slug: "sistema-lavagem-frotas-empresariais",
+    titulo: "Sistema para Lavagem de Frotas Empresariais | Controle Completo",
+    h1: "Sistema para Lavagem de Frotas Empresariais",
+    descricaoMeta: "Software para controle de higienização de frotas corporativas. Gestão de veículos, histórico de lavagens, custos e relatórios. Ideal para locadoras e transportadoras.",
+    keywords: ["lavagem frotas empresariais", "higienização frotas corporativas", "sistema frotas lava jato", "controle lavagem frota"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "controle-higienizacao-frotas-agricolas",
+    titulo: "Controle de Higienização de Frotas Agrícolas | Software",
+    h1: "Controle de Higienização de Frotas Agrícolas: Sistema Completo",
+    descricaoMeta: "Sistema especializado para higienização de tratores, colheitadeiras e máquinas agrícolas. Controle de produtos, frequência de lavagem e conformidade sanitária.",
+    keywords: ["higienização frotas agrícolas", "lavagem tratores sistema", "controle máquinas agrícolas", "higienização agrícola"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "software-lavagem-caminhoes-onibus",
+    titulo: "Software para Lavagem de Caminhões e Ônibus | Gestão de Frotas",
+    h1: "Software para Lavagem de Caminhões e Ônibus",
+    descricaoMeta: "Sistema de gestão para lavagem de veículos pesados. Controle de caminhões, ônibus e carretas. Histórico completo, custos por veículo e relatórios para transportadoras.",
+    keywords: ["software lavagem caminhões", "sistema lavagem ônibus", "gestão frota pesada", "lava jato caminhões"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "sistema-lava-jato-locadoras-veiculos",
+    titulo: "Sistema para Lava Jato de Locadoras | Controle de Frota",
+    h1: "Sistema para Lava Jato de Locadoras de Veículos",
+    descricaoMeta: "Software para locadoras de veículos. Controle de higienização entre locações, checklist de limpeza, histórico por veículo e integração com gestão de frota.",
+    keywords: ["lava jato locadoras", "higienização locadora veículos", "sistema locadora limpeza", "controle frota locadora"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════
+  // CONFORMIDADE E JURÍDICO
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    slug: "licenciamento-ambiental-lava-rapido",
+    titulo: "Licenciamento Ambiental para Lava Rápido | Guia Completo 2026",
+    h1: "Licenciamento Ambiental para Lava Rápido: Como Regularizar",
+    descricaoMeta: "Guia completo sobre licenciamento ambiental para lava jato. Documentação necessária, órgãos responsáveis, caixa separadora e tratamento de efluentes.",
+    keywords: ["licenciamento ambiental lava rapido", "licença ambiental lava jato", "regularizar lava jato", "documentação lava rapido"],
+    tipo: "guia",
+    prioridade: 5
+  },
+  {
+    slug: "tratamento-efluentes-lava-jato",
+    titulo: "Tratamento de Efluentes para Lava Jato | Normas Ambientais",
+    h1: "Tratamento de Efluentes para Lava Jato: Guia de Conformidade",
+    descricaoMeta: "Como instalar sistema de tratamento de efluentes no lava jato. Caixa separadora de água e óleo, reuso de água e conformidade com normas ambientais.",
+    keywords: ["tratamento efluentes lava jato", "caixa separadora lava rapido", "reuso água lava jato", "normas ambientais lava jato"],
+    tipo: "guia",
+    prioridade: 5
+  },
+  {
+    slug: "contrato-estetica-automotiva",
+    titulo: "Modelo de Contrato para Estética Automotiva | Responsabilidade",
+    h1: "Contrato para Estética Automotiva: Proteja seu Negócio",
+    descricaoMeta: "Modelo de contrato de prestação de serviços para estética automotiva. Cláusulas de responsabilidade civil, checklist de entrada e proteção jurídica.",
+    keywords: ["contrato estética automotiva", "responsabilidade civil lava jato", "termo responsabilidade lava rapido", "contrato lava jato"],
+    tipo: "guia",
+    prioridade: 4
+  },
+  {
+    slug: "checklist-entrada-veiculo-lava-jato",
+    titulo: "Checklist de Entrada de Veículo | Proteção Jurídica Lava Jato",
+    h1: "Checklist de Entrada de Veículo: Proteja seu Lava Jato",
+    descricaoMeta: "Sistema de checklist digital para entrada de veículos. Registre arranhões, amassados e pertences. Proteção jurídica contra reclamações indevidas.",
+    keywords: ["checklist entrada veículo", "vistoria lava jato", "registro danos veículo", "proteção lava rapido"],
+    tipo: "funcionalidade",
+    prioridade: 4
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════
+  // ESTÉTICA AUTOMOTIVA SUSTENTÁVEL
+  // ═══════════════════════════════════════════════════════════════════
+  {
+    slug: "estetica-automotiva-sustentavel",
+    titulo: "Estética Automotiva Sustentável | Sistema de Gestão Verde",
+    h1: "Estética Automotiva Sustentável: Gestão para Negócios Verdes",
+    descricaoMeta: "Sistema para estética automotiva sustentável. Controle de produtos biodegradáveis, métricas de economia de água e certificação ambiental para seu negócio.",
+    keywords: ["estética automotiva sustentável", "lava jato sustentável", "lavagem ecológica sistema", "gestão verde automotiva"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "sistema-lavagem-seco-automotiva",
+    titulo: "Sistema para Lavagem a Seco Automotiva | Gestão Completa",
+    h1: "Sistema para Lavagem a Seco Automotiva: Zero Água",
+    descricaoMeta: "Software de gestão para lavagem a seco. Controle de produtos especiais, custos por serviço e diferencial competitivo para seu negócio premium.",
+    keywords: ["lavagem a seco automotiva", "sistema lavagem seco", "lava jato a seco", "dry wash sistema"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "lavagem-sem-efluentes-sistema",
+    titulo: "Lavagem sem Efluentes | Sistema para Lava Jato Ecológico",
+    h1: "Lavagem sem Efluentes: Sistema para Lava Jato Sustentável",
+    descricaoMeta: "Gestão para lava jato sem geração de efluentes. Sistema para controle de produtos biodegradáveis, economia de água e conformidade ambiental premium.",
+    keywords: ["lavagem sem efluentes", "lava jato sem água", "lavagem ecológica premium", "lava jato zero efluente"],
+    tipo: "funcionalidade",
+    prioridade: 5
+  },
+  {
+    slug: "detalhamento-automotivo-premium",
+    titulo: "Sistema para Detalhamento Automotivo Premium | Gestão Completa",
+    h1: "Sistema para Detalhamento Automotivo Premium",
+    descricaoMeta: "Software para detalhamento automotivo de alto padrão. Gestão de serviços premium, vitrificação, PPF, controle de produtos importados e clientes VIP.",
+    keywords: ["detalhamento automotivo premium", "sistema detailing", "gestão detalhamento", "auto detailing software"],
+    tipo: "funcionalidade",
+    prioridade: 4
+  },
+];
+
 // Páginas LONG-TAIL - Buscas específicas de alta intenção
 export const paginasLongTail: PaginaSEO[] = [
   // Variações de "sistema"
@@ -357,6 +480,7 @@ export const todasPaginasSEO: PaginaSEO[] = [
   ...paginasFuncionalidades,
   ...paginasComparativos,
   ...paginasGuias,
+  ...paginasNicho,
   ...paginasLongTail,
 ].sort((a, b) => b.prioridade - a.prioridade);
 

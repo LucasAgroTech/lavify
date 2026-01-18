@@ -164,6 +164,303 @@ function getConteudoPorTipo(pagina: PaginaSEO) {
         "Previsibilidade de faturamento"
       ]
     },
+    // ═══════════════════════════════════════════════════════════════════
+    // GESTÃO DE FROTAS PRIVADAS
+    // ═══════════════════════════════════════════════════════════════════
+    "sistema-lavagem-frotas-empresariais": {
+      secoes: [
+        {
+          titulo: "Por que Frotas Empresariais Precisam de Sistema Dedicado?",
+          texto: "Locadoras, transportadoras e empresas com frota própria enfrentam um desafio único: controlar a higienização de dezenas ou centenas de veículos. Planilhas não dão conta. Você precisa saber qual veículo foi lavado, quando, por quem e quanto custou. O Lavify oferece controle completo com histórico por veículo, alertas de manutenção programada e relatórios gerenciais."
+        },
+        {
+          titulo: "Controle por Veículo: Histórico Completo",
+          texto: "Cada veículo da frota tem ficha própria no sistema. Você vê todas as lavagens realizadas, serviços aplicados, produtos utilizados e custos acumulados. Quando um gestor de frota pergunta 'quando foi a última higienização do veículo X?', você responde em segundos. É profissionalismo que gera confiança e contratos renovados."
+        },
+        {
+          titulo: "Integração com Gestão de Frota",
+          texto: "O Lavify permite exportar relatórios detalhados para integração com sistemas de gestão de frota. Custos por veículo, frequência de lavagem, tempo médio de atendimento — tudo documentado. Ideal para empresas que precisam prestar contas ou auditar custos operacionais."
+        }
+      ],
+      beneficios: [
+        "Ficha completa por veículo da frota",
+        "Histórico de todas as higienizações",
+        "Relatórios de custo por veículo",
+        "Alertas de manutenção programada",
+        "Exportação para sistemas de frota",
+        "Contratos de frota com preços especiais"
+      ]
+    },
+    "controle-higienizacao-frotas-agricolas": {
+      secoes: [
+        {
+          titulo: "Higienização de Máquinas Agrícolas: Conformidade e Controle",
+          texto: "Tratores, colheitadeiras, pulverizadores e implementos agrícolas exigem higienização especializada. Além da limpeza, há exigências sanitárias e de conformidade que precisam ser documentadas. O Lavify permite registrar cada procedimento, produtos utilizados e gerar laudos de conformidade para fiscalizações."
+        },
+        {
+          titulo: "Controle de Produtos Especiais para Agro",
+          texto: "Máquinas agrícolas exigem produtos específicos: desengraxantes para equipamentos, neutralizadores de defensivos, produtos para borrachas e mangueiras. O sistema controla o estoque desses produtos especiais, calcula custo por higienização e alerta quando estão acabando."
+        },
+        {
+          titulo: "Rastreabilidade e Documentação para Auditorias",
+          texto: "Empresas agrícolas são frequentemente auditadas. O Lavify gera relatórios completos de higienização por máquina, com datas, responsáveis e produtos utilizados. Você demonstra conformidade sanitária com documentação profissional, evitando multas e problemas com certificações."
+        }
+      ],
+      beneficios: [
+        "Controle por máquina/equipamento",
+        "Registro de conformidade sanitária",
+        "Gestão de produtos agrícolas especiais",
+        "Laudos de higienização para auditorias",
+        "Alertas de higienização programada",
+        "Relatórios para certificações"
+      ]
+    },
+    "software-lavagem-caminhoes-onibus": {
+      secoes: [
+        {
+          titulo: "Lavagem de Veículos Pesados: Operação Especializada",
+          texto: "Caminhões, ônibus e carretas exigem estrutura e gestão diferenciada. Mais tempo por lavagem, produtos específicos, equipe treinada. O Lavify foi adaptado para operações com veículos pesados: tempos de serviço maiores, checklist específico para cabine, carroceria e chassi, e controle de custos realista."
+        },
+        {
+          titulo: "Gestão de Frotas de Transportadoras",
+          texto: "Transportadoras precisam de controle rígido. Qual motorista trouxe o caminhão? Quando foi a última lavagem? Quanto está custando manter a frota limpa? O Lavify responde tudo isso com relatórios por veículo, por período e por tipo de serviço. Gestores tomam decisões baseadas em dados, não em achismos."
+        },
+        {
+          titulo: "Atendimento a Frotas de Ônibus",
+          texto: "Empresas de ônibus — urbanos, rodoviários ou fretamento — têm rotina intensa de higienização. O sistema permite criar pacotes de serviços específicos: lavagem externa, higienização de poltronas, limpeza de banheiro. Cada ônibus tem histórico, e você oferece um serviço profissional que fideliza frotas inteiras."
+        }
+      ],
+      beneficios: [
+        "Serviços específicos para pesados",
+        "Controle por veículo da frota",
+        "Checklist cabine/carroceria/chassi",
+        "Relatórios para transportadoras",
+        "Gestão de produtos para pesados",
+        "Tempo de serviço diferenciado"
+      ]
+    },
+    "sistema-lava-jato-locadoras-veiculos": {
+      secoes: [
+        {
+          titulo: "Higienização para Locadoras: Velocidade e Qualidade",
+          texto: "Locadoras de veículos vivem de rotatividade. Carro devolvido precisa estar limpo e pronto para o próximo cliente em horas. O Lavify otimiza esse fluxo: integra com o sistema da locadora, prioriza veículos com reserva, e garante que nenhum carro saia sujo para um cliente."
+        },
+        {
+          titulo: "Checklist de Devolução Integrado",
+          texto: "Quando o veículo chega da locação, o sistema registra o estado: sujeira do interior, condições externas, nível de combustível. Isso alimenta automaticamente a ordem de serviço de higienização. Tudo documentado, protegendo a locadora de reclamações e gerando histórico para precificação de danos."
+        },
+        {
+          titulo: "Relatórios para Gestão de Frota da Locadora",
+          texto: "Quanto custa manter cada veículo limpo? Quais carros dão mais trabalho? O Lavify gera relatórios que ajudam a locadora a tomar decisões: vender veículos problemáticos, ajustar preços de locação, ou identificar padrões de mau uso por determinados perfis de cliente."
+        }
+      ],
+      beneficios: [
+        "Integração com fluxo de locação",
+        "Checklist de devolução digital",
+        "Priorização por reserva",
+        "Histórico por veículo",
+        "Custo de higienização por carro",
+        "Relatórios gerenciais para locadora"
+      ]
+    },
+    // ═══════════════════════════════════════════════════════════════════
+    // CONFORMIDADE E JURÍDICO
+    // ═══════════════════════════════════════════════════════════════════
+    "licenciamento-ambiental-lava-rapido": {
+      secoes: [
+        {
+          titulo: "Por que o Licenciamento Ambiental é Obrigatório?",
+          texto: "Lava rápidos geram efluentes com óleo, graxa, detergentes e resíduos químicos. A legislação ambiental brasileira exige que esses resíduos sejam tratados antes de descarte. Operar sem licença ambiental pode resultar em multas pesadas, interdição e até processo criminal. O primeiro passo para regularizar é entender o que sua cidade e estado exigem."
+        },
+        {
+          titulo: "Documentação Necessária para Licenciamento",
+          texto: "Geralmente você precisará de: CNPJ ativo, alvará de funcionamento, projeto de tratamento de efluentes assinado por engenheiro, comprovante de instalação de caixa separadora de água e óleo, e laudos de análise de efluentes. O processo varia por estado, mas o Lavify ajuda você a manter registros que comprovam conformidade contínua."
+        },
+        {
+          titulo: "Como o Sistema Ajuda na Conformidade",
+          texto: "O Lavify registra quantidade de água utilizada, produtos aplicados e volume estimado de efluentes por período. Esses dados são valiosos para relatórios ambientais e renovação de licenças. Você demonstra aos órgãos fiscalizadores que tem controle profissional da operação."
+        }
+      ],
+      beneficios: [
+        "Registro de consumo de água",
+        "Controle de produtos químicos",
+        "Relatórios para órgãos ambientais",
+        "Histórico de operação documentado",
+        "Dados para renovação de licença",
+        "Comprovação de conformidade"
+      ]
+    },
+    "tratamento-efluentes-lava-jato": {
+      secoes: [
+        {
+          titulo: "O que são Efluentes de Lava Jato?",
+          texto: "Efluentes são as águas residuais da lavagem: contêm óleo, graxa, detergentes, partículas de sujeira e produtos químicos. Descartar isso direto na rede de esgoto ou no solo é crime ambiental. A solução é o tratamento adequado, começando pela caixa separadora de água e óleo (SAO) e, dependendo do volume, sistemas mais completos."
+        },
+        {
+          titulo: "Caixa Separadora de Água e Óleo (SAO)",
+          texto: "A caixa SAO é obrigatória para lava rápidos. Ela separa óleo e graxa da água por diferença de densidade. A água tratada pode ser descartada na rede de esgoto (com autorização) ou reutilizada. O óleo coletado deve ser destinado a empresas especializadas. Mantenha laudos de destinação para comprovar conformidade."
+        },
+        {
+          titulo: "Reuso de Água: Economia e Sustentabilidade",
+          texto: "Sistemas de reuso permitem reutilizar até 80% da água da lavagem. O investimento inicial se paga em economia na conta de água e em diferencial competitivo. Clientes cada vez mais valorizam negócios sustentáveis. O Lavify ajuda a documentar sua economia de água para marketing verde."
+        }
+      ],
+      beneficios: [
+        "Documentação de tratamento",
+        "Controle de destinação de resíduos",
+        "Métricas de consumo de água",
+        "Relatórios de economia hídrica",
+        "Comprovantes para fiscalização",
+        "Diferencial de marketing verde"
+      ]
+    },
+    "contrato-estetica-automotiva": {
+      secoes: [
+        {
+          titulo: "Por que Contratos Protegem seu Negócio?",
+          texto: "Sem contrato, qualquer arranhão vira discussão. 'Isso já estava aí' versus 'vocês fizeram isso'. O contrato de prestação de serviços estabelece responsabilidades: o que você fará, o que não é sua culpa, e como serão resolvidas disputas. É proteção jurídica básica que todo profissional sério deve ter."
+        },
+        {
+          titulo: "Cláusulas Essenciais para Estética Automotiva",
+          texto: "Um bom contrato deve incluir: descrição dos serviços, valores e formas de pagamento, prazo de entrega, vistoria de entrada documentada, limitação de responsabilidade por danos pré-existentes, e foro para resolução de conflitos. O Lavify integra o checklist de entrada ao sistema, gerando documentação automatizada."
+        },
+        {
+          titulo: "Checklist Digital como Prova",
+          texto: "O checklist de entrada com fotos é sua melhor proteção. Antes de começar qualquer serviço, registre o estado do veículo: arranhões, amassados, pertences deixados. Com o Lavify, isso fica salvo digitalmente com data e hora. Se o cliente reclamar de algo que já existia, você tem a prova."
+        }
+      ],
+      beneficios: [
+        "Modelo de contrato incluso",
+        "Checklist digital de entrada",
+        "Registro fotográfico de danos",
+        "Data e hora de cada registro",
+        "Histórico por cliente/veículo",
+        "Proteção contra reclamações"
+      ]
+    },
+    "checklist-entrada-veiculo-lava-jato": {
+      secoes: [
+        {
+          titulo: "Vistoria de Entrada: Sua Proteção Diária",
+          texto: "Todo veículo que entra no lava jato deve passar por vistoria. Arranhões, amassados, partes soltas, pertences no interior. Se você não registrar, qualquer problema vira sua responsabilidade. Com o checklist digital do Lavify, a vistoria leva segundos e fica salva automaticamente."
+        },
+        {
+          titulo: "Como Funciona o Checklist Digital",
+          texto: "Na abertura da OS, o sistema exibe o checklist: para-choque, capô, portas, vidros, retrovisores, interior. Você marca o que encontrou e pode adicionar fotos. Tudo fica vinculado à ordem de serviço. Se o cliente questionar depois, você acessa o registro em segundos."
+        },
+        {
+          titulo: "Benefícios Além da Proteção Jurídica",
+          texto: "O checklist também ajuda na operação: você sabe se o carro tem antena para ter cuidado, se tem câmera de ré que precisa de atenção, ou se o cliente deixou pertences valiosos. É profissionalismo que evita problemas e impressiona clientes."
+        }
+      ],
+      beneficios: [
+        "Checklist digital em segundos",
+        "Registro fotográfico integrado",
+        "Histórico por veículo",
+        "Proteção contra reclamações",
+        "Alerta de itens especiais",
+        "Documento com data e hora"
+      ]
+    },
+    // ═══════════════════════════════════════════════════════════════════
+    // ESTÉTICA AUTOMOTIVA SUSTENTÁVEL
+    // ═══════════════════════════════════════════════════════════════════
+    "estetica-automotiva-sustentavel": {
+      secoes: [
+        {
+          titulo: "O Mercado de Estética Automotiva Sustentável",
+          texto: "Consumidores estão cada vez mais conscientes. Eles querem saber de onde vêm os produtos, se são biodegradáveis, se a empresa economiza água. Estética automotiva sustentável não é apenas tendência: é diferencial competitivo real. Você atrai um público premium que paga mais por serviços alinhados com seus valores."
+        },
+        {
+          titulo: "Métricas de Sustentabilidade no Sistema",
+          texto: "O Lavify permite registrar e exibir suas métricas verdes: litros de água economizados, produtos biodegradáveis utilizados, resíduos corretamente destinados. Você pode usar esses números no marketing, nas redes sociais, e até em certificações ambientais."
+        },
+        {
+          titulo: "Certificações e Selos Verdes",
+          texto: "Algumas certificações ambientais exigem documentação de práticas sustentáveis. O Lavify gera relatórios que comprovam sua operação verde: consumo de água, produtos utilizados, tratamento de efluentes. É a base documental que você precisa para conquistar selos que diferenciam seu negócio."
+        }
+      ],
+      beneficios: [
+        "Métricas de economia de água",
+        "Controle de produtos biodegradáveis",
+        "Relatórios de sustentabilidade",
+        "Dados para marketing verde",
+        "Documentação para certificações",
+        "Diferencial competitivo premium"
+      ]
+    },
+    "sistema-lavagem-seco-automotiva": {
+      secoes: [
+        {
+          titulo: "Lavagem a Seco: O Futuro da Estética Automotiva",
+          texto: "Lavagem a seco usa produtos especiais que dispensam água corrente. É ideal para ambientes sem encanamento, condomínios, escritórios e eventos. O custo por lavagem é maior, mas o ticket médio também. É um nicho premium que cresce rapidamente, especialmente em grandes cidades."
+        },
+        {
+          titulo: "Controle de Produtos Especiais",
+          texto: "Produtos para lavagem a seco são mais caros e específicos. O Lavify controla o estoque com precisão, calcula custo real por serviço e alerta quando precisa repor. Você sabe exatamente sua margem em cada lavagem a seco realizada."
+        },
+        {
+          titulo: "Atendimento em Domicílio e Corporativo",
+          texto: "Lavagem a seco é perfeita para ir até o cliente: em casa, no trabalho, no shopping. O sistema permite agendar atendimentos externos, registrar localização e gerar rotas otimizadas. Você oferece conveniência total e cobra por isso."
+        }
+      ],
+      beneficios: [
+        "Gestão de produtos dry wash",
+        "Custo preciso por lavagem",
+        "Agendamento de atendimentos externos",
+        "Controle de estoque específico",
+        "Serviços premium com margem maior",
+        "Operação em qualquer local"
+      ]
+    },
+    "lavagem-sem-efluentes-sistema": {
+      secoes: [
+        {
+          titulo: "Zero Efluentes: Máxima Conformidade Ambiental",
+          texto: "Lavagem sem efluentes significa que nada é descartado no meio ambiente. Isso é possível com tecnologias de lavagem a seco, sistemas de reuso total de água, ou métodos de captura e tratamento completo. É o padrão ouro de sustentabilidade, exigido em alguns locais e valorizado em todos."
+        },
+        {
+          titulo: "Tecnologias para Zero Efluentes",
+          texto: "As principais são: lavagem a seco com produtos encapsuladores, sistemas de reuso com filtragem avançada, e lavagem com vapor (steam cleaning). Cada uma tem custos e aplicações diferentes. O Lavify se adapta a qualquer modelo, controlando os insumos específicos de cada tecnologia."
+        },
+        {
+          titulo: "Documentação para Fiscalização",
+          texto: "Operar sem efluentes é um diferencial, mas você precisa provar. O Lavify gera relatórios que demonstram sua operação limpa: nenhum descarte, todos os resíduos destinados corretamente, métricas de consumo. É a documentação que fiscalizadores e clientes conscientes querem ver."
+        }
+      ],
+      beneficios: [
+        "Operação sem descarte ambiental",
+        "Conformidade máxima documentada",
+        "Métricas de sustentabilidade",
+        "Relatórios para fiscalização",
+        "Marketing verde comprovado",
+        "Adaptação a qualquer tecnologia"
+      ]
+    },
+    "detalhamento-automotivo-premium": {
+      secoes: [
+        {
+          titulo: "Gestão para Detalhamento de Alto Padrão",
+          texto: "Detalhamento premium envolve serviços de alta complexidade: correção de pintura, vitrificação, aplicação de PPF, higienização de couro, tratamento de rodas. Cada serviço tem produtos específicos, tempo de execução maior e preço elevado. Você precisa de gestão à altura do seu padrão de serviço."
+        },
+        {
+          titulo: "Controle de Produtos Importados e Especiais",
+          texto: "Produtos de detalhamento premium frequentemente são importados e caros: polidores, ceras, cerâmicas, selantes. O Lavify controla cada ml utilizado, calcula custo real por serviço e evita desperdício. Você garante margem saudável mesmo com insumos de alto valor."
+        },
+        {
+          titulo: "Gestão de Clientes VIP",
+          texto: "Clientes de detalhamento premium têm expectativas altas. Eles querem acompanhar o serviço, receber fotos do progresso, ter histórico detalhado do veículo. O Lavify permite esse nível de atendimento: comunicação pelo WhatsApp, galeria de fotos por OS, e CRM completo do cliente VIP."
+        }
+      ],
+      beneficios: [
+        "Serviços de alta complexidade",
+        "Controle de produtos premium",
+        "Custo preciso por serviço",
+        "Comunicação VIP com cliente",
+        "Galeria de fotos por OS",
+        "CRM para clientes premium"
+      ]
+    },
   };
 
   // Conteúdo padrão para páginas não mapeadas
