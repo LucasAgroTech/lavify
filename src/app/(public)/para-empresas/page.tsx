@@ -357,35 +357,22 @@ export default function LandingPageEmpresas() {
 
           {/* Placeholder enquanto detecta dispositivo */}
           {isMobile === null && (
-            <div className="relative mb-8 max-w-[300px] lg:max-w-3xl mx-auto">
+            <div className="relative mb-8 max-w-[320px] lg:max-w-4xl mx-auto">
               <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 bg-slate-800/50 animate-pulse">
-                <div className="aspect-[9/16] lg:aspect-video" />
+                <div className="aspect-[9/16] lg:aspect-[16/7]" />
               </div>
             </div>
           )}
 
-          {/* Carrossel Mobile - Imagens Verticais (só renderiza no mobile) */}
+          {/* GIF Mobile - Animação do App */}
           {isMobile === true && (
-            <div className="relative mb-8 max-w-[300px] mx-auto">
+            <div className="relative mb-8 w-full max-w-[320px] mx-auto">
               <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
-                <div 
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${slideMobileAtual * 100}%)` }}
-                >
-                  {imagensHeroMobile.map((img, index) => (
-                    <div key={index} className="w-full flex-shrink-0 relative aspect-[9/16]">
-                      <Image
-                        src={img}
-                        alt={`Sistema Lavify mobile ${index + 1}`}
-                        fill
-                        sizes="300px"
-                        className="object-cover"
-                        priority={index === 0}
-                        loading={index === 0 ? "eager" : "lazy"}
-                      />
-                    </div>
-                  ))}
-                </div>
+                <img
+                  src="/hero-mobile.gif"
+                  alt="Sistema Lavify em ação"
+                  className="w-full h-auto"
+                />
                 
                 {/* Badge flutuante */}
                 <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 z-10">
@@ -393,28 +380,13 @@ export default function LandingPageEmpresas() {
                   <span className="text-white text-[11px] font-medium">Visão do App</span>
                 </div>
               </div>
-              
-              {/* Indicadores mobile */}
-              <div className="flex justify-center gap-1.5 mt-4">
-                {imagensHeroMobile.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSlideMobileAtual(index)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      slideMobileAtual === index 
-                        ? "bg-cyan-400 w-4" 
-                        : "bg-white/30 w-1.5"
-                    }`}
-                  />
-                ))}
-              </div>
             </div>
           )}
 
           {/* Carrossel Desktop - Imagens Horizontais (só renderiza no desktop) */}
           {isMobile === false && (
-            <div className="hidden lg:block relative mb-8 max-w-3xl mx-auto">
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
+            <div className="hidden lg:block relative mb-8 max-w-4xl mx-auto">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 max-h-[420px]">
                 <div 
                   className="flex transition-transform duration-500 ease-out"
                   style={{ transform: `translateX(-${slideAtual * 100}%)` }}
@@ -426,8 +398,8 @@ export default function LandingPageEmpresas() {
                         alt={`Sistema Lavify em ação ${index + 1}`}
                         width={1600}
                         height={900}
-                        sizes="(max-width: 768px) 100vw, 768px"
-                        className="w-full h-auto"
+                        sizes="(max-width: 1024px) 100vw, 896px"
+                        className="w-full h-auto object-cover object-top"
                         priority={index === 0}
                         loading={index === 0 ? "eager" : "lazy"}
                       />
