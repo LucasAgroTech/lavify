@@ -694,21 +694,11 @@ export default function LandingPageEmpresas() {
               </div>
               
               {/* Grid de funcionalidades */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
                 <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
                   <ShieldCheck className="w-6 h-6 text-white mb-2" />
                   <h4 className="text-white font-semibold text-[14px] mb-1">Permissões por Função</h4>
                   <p className="text-rose-100 text-[12px] leading-relaxed">Cada funcionário vê só o que precisa. Sem vazamento de dados.</p>
-                </div>
-                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
-                  <Wallet className="w-6 h-6 text-white mb-2" />
-                  <h4 className="text-white font-semibold text-[14px] mb-1">Comissões Automáticas</h4>
-                  <p className="text-rose-100 text-[12px] leading-relaxed">Sistema calcula quanto pagar pra cada lavador automaticamente.</p>
-                </div>
-                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
-                  <TrendingUp className="w-6 h-6 text-white mb-2" />
-                  <h4 className="text-white font-semibold text-[14px] mb-1">Relatório de Produtividade</h4>
-                  <p className="text-rose-100 text-[12px] leading-relaxed">Veja quem rende mais. Tome decisões baseadas em dados.</p>
                 </div>
                 <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
                   <Users className="w-6 h-6 text-white mb-2" />
@@ -725,7 +715,7 @@ export default function LandingPageEmpresas() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-white" />
-                  <span className="text-rose-100 text-[12px] lg:text-[13px]"><strong className="text-white">Zero</strong> erro em comissão</span>
+                  <span className="text-rose-100 text-[12px] lg:text-[13px]"><strong className="text-white">Controle</strong> total de acesso</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-white" />
