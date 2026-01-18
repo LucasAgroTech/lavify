@@ -390,38 +390,38 @@ export default function FinanceiroPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-5 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="hidden lg:block p-5 min-h-screen bg-slate-100">
         <div className="max-w-[1400px] mx-auto space-y-4">
           
-          {/* Header Tech */}
-          <div className="flex items-center justify-between bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 px-6 py-4">
+          {/* Header */}
+          <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200 shadow-sm px-6 py-4">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                   <Wallet className="w-7 h-7 text-white" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-800 animate-pulse" />
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Financeiro</h1>
-                <p className="text-slate-400 text-sm font-mono">
-                  {new Date().toLocaleDateString("pt-BR", { month: "short", year: "numeric" }).toUpperCase()}
+                <h1 className="text-xl font-bold text-slate-800">Financeiro</h1>
+                <p className="text-slate-500 text-sm">
+                  {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               {/* Variação */}
-              <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border ${
+              <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 ${
                 variacaoMes >= 0 
-                  ? 'bg-emerald-500/10 border-emerald-500/30' 
-                  : 'bg-red-500/10 border-red-500/30'
+                  ? 'bg-emerald-50 border-emerald-200' 
+                  : 'bg-red-50 border-red-200'
               }`}>
                 {variacaoMes >= 0 ? (
-                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
                 ) : (
-                  <TrendingDown className="w-5 h-5 text-red-400" />
+                  <TrendingDown className="w-5 h-5 text-red-600" />
                 )}
-                <span className={`font-bold text-lg font-mono ${variacaoMes >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className={`font-bold text-lg ${variacaoMes >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                   {variacaoMes >= 0 ? '+' : ''}{variacaoMes}%
                 </span>
                 <span className="text-xs text-slate-500">vs mês anterior</span>
@@ -435,22 +435,21 @@ export default function FinanceiroPage() {
             {/* Coluna Esquerda */}
             <div className="col-span-8 space-y-4">
               
-              {/* Cards de Lucro, Receita e Despesa - TECH STYLE */}
+              {/* Cards de Lucro, Receita e Despesa */}
               <div className="grid grid-cols-3 gap-4">
                 {/* Lucro do Mês */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-cyan-600/20 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-5">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-cyan-500/5" />
+                <div className="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-lg p-5">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
                   <div className="relative">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
                         <PiggyBank className="w-6 h-6 text-purple-300" />
                       </div>
-                      <span className="text-purple-300/80 font-medium text-sm uppercase tracking-wide">Lucro do Mês</span>
+                      <span className="text-slate-400 font-semibold text-sm uppercase tracking-wide">Lucro do Mês</span>
                     </div>
-                    <p className="text-4xl font-bold text-white font-mono">{formatCurrency(lucro)}</p>
+                    <p className="text-4xl font-bold text-white">{formatCurrency(lucro)}</p>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${lucro >= 0 ? 'bg-emerald-400' : 'bg-red-400'} animate-pulse`} />
+                      <div className={`w-2 h-2 rounded-full ${lucro >= 0 ? 'bg-emerald-400' : 'bg-red-400'}`} />
                       <span className={`text-xs ${lucro >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                         {lucro >= 0 ? 'Positivo' : 'Negativo'}
                       </span>
@@ -458,37 +457,35 @@ export default function FinanceiroPage() {
                   </div>
                 </div>
 
-                {/* Receitas - Card Tech Estético */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-emerald-500/30 p-5 group hover:border-emerald-500/50 transition-all">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all" />
-                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-teal-500/10 rounded-full blur-2xl" />
+                {/* Receitas - Card Estético */}
+                <div className="relative overflow-hidden bg-white rounded-2xl border-2 border-emerald-200 shadow-sm p-5 group hover:shadow-md hover:border-emerald-300 transition-all">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-100 to-transparent rounded-full blur-2xl opacity-80" />
                   <div className="relative">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 flex items-center justify-center">
-                        <ArrowUpRight className="w-6 h-6 text-emerald-400" />
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 flex items-center justify-center">
+                        <ArrowUpRight className="w-6 h-6 text-emerald-600" />
                       </div>
-                      <span className="text-emerald-400/80 font-medium text-sm uppercase tracking-wide">Receitas</span>
+                      <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wide">Receitas</span>
                     </div>
-                    <p className="text-4xl font-bold text-emerald-400 font-mono">+{formatCurrencyShort(totalReceitas)}</p>
-                    <div className="mt-3 h-1 bg-slate-700/50 rounded-full overflow-hidden">
+                    <p className="text-4xl font-bold text-emerald-600">+{formatCurrencyShort(totalReceitas)}</p>
+                    <div className="mt-3 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-full" />
                     </div>
                   </div>
                 </div>
 
-                {/* Despesas - Card Tech Estético */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-red-500/30 p-5 group hover:border-red-500/50 transition-all">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/20 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all" />
-                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-orange-500/10 rounded-full blur-2xl" />
+                {/* Despesas - Card Estético */}
+                <div className="relative overflow-hidden bg-white rounded-2xl border-2 border-red-200 shadow-sm p-5 group hover:shadow-md hover:border-red-300 transition-all">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-red-100 to-transparent rounded-full blur-2xl opacity-80" />
                   <div className="relative">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/40 flex items-center justify-center">
-                        <ArrowDownRight className="w-6 h-6 text-red-400" />
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-red-100 border border-red-200 flex items-center justify-center">
+                        <ArrowDownRight className="w-6 h-6 text-red-600" />
                       </div>
-                      <span className="text-red-400/80 font-medium text-sm uppercase tracking-wide">Despesas</span>
+                      <span className="text-red-700 font-semibold text-sm uppercase tracking-wide">Despesas</span>
                     </div>
-                    <p className="text-4xl font-bold text-red-400 font-mono">-{formatCurrencyShort(totalDespesas)}</p>
-                    <div className="mt-3 h-1 bg-slate-700/50 rounded-full overflow-hidden">
+                    <p className="text-4xl font-bold text-red-600">-{formatCurrencyShort(totalDespesas)}</p>
+                    <div className="mt-3 h-1.5 bg-red-100 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all"
                         style={{ width: `${totalReceitas > 0 ? Math.min((totalDespesas / totalReceitas) * 100, 100) : 0}%` }}
@@ -498,23 +495,23 @@ export default function FinanceiroPage() {
                 </div>
               </div>
 
-              {/* Gráfico Tech */}
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+              {/* Gráfico */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-bold text-white flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-slate-300" />
+                  <h3 className="font-bold text-slate-800 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-slate-600" />
                     </div>
                     Fluxo de Caixa Semanal
                   </h3>
                   <div className="flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" />
-                      <span className="text-slate-400">Receitas</span>
+                      <span className="text-slate-600 font-medium">Receitas</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-500 to-orange-400" />
-                      <span className="text-slate-400">Despesas</span>
+                      <span className="text-slate-600 font-medium">Despesas</span>
                     </div>
                   </div>
                 </div>
@@ -523,18 +520,18 @@ export default function FinanceiroPage() {
                     <AreaChart data={chartData}>
                       <defs>
                         <linearGradient id="colorReceita" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
                           <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorDespesa" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
                           <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                      <XAxis dataKey="dia" stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                      <XAxis dataKey="dia" stroke="#94a3b8" fontSize={11} axisLine={false} tickLine={false} />
                       <YAxis
-                        stroke="#64748b"
+                        stroke="#94a3b8"
                         fontSize={11}
                         tickFormatter={(v) => `R$${v}`}
                         axisLine={false}
@@ -543,8 +540,8 @@ export default function FinanceiroPage() {
                       />
                       <Tooltip
                         contentStyle={{
-                          background: "#0f172a",
-                          border: "1px solid #334155",
+                          background: "#1e293b",
+                          border: "none",
                           borderRadius: "12px",
                           color: "#fff",
                           fontSize: "12px",
@@ -572,7 +569,7 @@ export default function FinanceiroPage() {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-[220px] flex items-center justify-center text-slate-500">
+                  <div className="h-[220px] flex items-center justify-center text-slate-400">
                     <div className="text-center">
                       <Receipt className="w-10 h-10 mx-auto mb-2 opacity-50" />
                       <p className="text-sm">Sem movimentações nesta semana</p>
@@ -581,36 +578,36 @@ export default function FinanceiroPage() {
                 )}
               </div>
 
-              {/* Receitas e Despesas Recentes - Tech Style */}
+              {/* Receitas e Despesas Recentes */}
               <div className="grid grid-cols-2 gap-4">
                 {/* Receitas Recentes */}
-                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
-                  <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50 to-white">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                        <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center">
+                        <ArrowUpRight className="w-4 h-4 text-emerald-600" />
                       </div>
-                      <h3 className="font-semibold text-white text-sm">Receitas Recentes</h3>
+                      <h3 className="font-semibold text-slate-800 text-sm">Receitas Recentes</h3>
                     </div>
-                    <span className="text-xs text-emerald-400 font-bold bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+                    <span className="text-xs text-emerald-600 font-bold bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
                       +{formatCurrencyShort(receitasRecentes.reduce((a, b) => a + b.valor, 0))}
                     </span>
                   </div>
-                  <div className="divide-y divide-slate-700/30 max-h-[180px] overflow-y-auto">
+                  <div className="divide-y divide-slate-100 max-h-[180px] overflow-y-auto">
                     {receitasRecentes.length > 0 ? (
                       receitasRecentes.slice(0, 5).map((item) => (
-                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-700/20 transition-colors">
+                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-slate-200 text-sm truncate">{item.desc}</p>
-                            <p className="text-xs text-slate-500 font-mono">{item.hora}</p>
+                            <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
+                            <p className="text-xs text-slate-400">{item.hora}</p>
                           </div>
-                          <span className="font-bold text-emerald-400 text-sm ml-2 font-mono">
+                          <span className="font-bold text-emerald-600 text-sm ml-2">
                             +{formatCurrencyShort(item.valor)}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="px-5 py-8 text-center text-slate-500 text-sm">
+                      <div className="px-5 py-8 text-center text-slate-400 text-sm">
                         Nenhuma receita recente
                       </div>
                     )}
@@ -618,33 +615,33 @@ export default function FinanceiroPage() {
                 </div>
 
                 {/* Despesas Recentes */}
-                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
-                  <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-red-50 to-white">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                        <ArrowDownRight className="w-4 h-4 text-red-400" />
+                      <div className="w-8 h-8 rounded-lg bg-red-100 border border-red-200 flex items-center justify-center">
+                        <ArrowDownRight className="w-4 h-4 text-red-600" />
                       </div>
-                      <h3 className="font-semibold text-white text-sm">Despesas Recentes</h3>
+                      <h3 className="font-semibold text-slate-800 text-sm">Despesas Recentes</h3>
                     </div>
-                    <span className="text-xs text-red-400 font-bold bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30">
+                    <span className="text-xs text-red-600 font-bold bg-red-100 px-3 py-1 rounded-full border border-red-200">
                       -{formatCurrencyShort(despesasRecentes.reduce((a, b) => a + b.valor, 0))}
                     </span>
                   </div>
-                  <div className="divide-y divide-slate-700/30 max-h-[180px] overflow-y-auto">
+                  <div className="divide-y divide-slate-100 max-h-[180px] overflow-y-auto">
                     {despesasRecentes.length > 0 ? (
                       despesasRecentes.slice(0, 5).map((item) => (
-                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-700/20 transition-colors">
+                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-slate-200 text-sm truncate">{item.desc}</p>
-                            <p className="text-xs text-slate-500 font-mono">{item.hora}</p>
+                            <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
+                            <p className="text-xs text-slate-400">{item.hora}</p>
                           </div>
-                          <span className="font-bold text-red-400 text-sm ml-2 font-mono">
+                          <span className="font-bold text-red-600 text-sm ml-2">
                             -{formatCurrencyShort(item.valor)}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="px-5 py-8 text-center text-slate-500 text-sm">
+                      <div className="px-5 py-8 text-center text-slate-400 text-sm">
                         Nenhuma despesa registrada
                       </div>
                     )}
@@ -657,7 +654,7 @@ export default function FinanceiroPage() {
             <div className="col-span-4 space-y-4">
               
               {/* Card Faturamento Destaque */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 rounded-2xl p-5 text-white">
+              <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/20">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
                 <div className="relative">
@@ -665,86 +662,86 @@ export default function FinanceiroPage() {
                     <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
                       <DollarSign className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-white/80 font-semibold text-sm uppercase tracking-wide">Faturamento do Mês</span>
+                    <span className="text-white/90 font-semibold text-sm uppercase tracking-wide">Faturamento do Mês</span>
                   </div>
-                  <p className="text-5xl font-bold mb-2 font-mono">{formatCurrency(faturamentoMes)}</p>
-                  <div className="flex items-center gap-2 text-white/70 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                  <p className="text-5xl font-bold mb-2">{formatCurrency(faturamentoMes)}</p>
+                  <div className="flex items-center gap-2 text-white/80 text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/60" />
                     Média: {formatCurrency(faturamentoMes / new Date().getDate())}/dia
                   </div>
                 </div>
               </div>
 
-              {/* Stats Grid Tech */}
+              {/* Stats Grid */}
               <div className="grid grid-cols-2 gap-3">
                 {/* Hoje */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-slate-600/50 transition-all">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-slate-500/10 rounded-full blur-2xl" />
+                <div className="relative overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-slate-100 to-transparent rounded-full blur-2xl" />
                   <div className="relative">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
-                        <DollarSign className="w-4 h-4 text-slate-400" />
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                        <DollarSign className="w-4 h-4 text-slate-600" />
                       </div>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide">Hoje</span>
+                      <span className="text-xs text-slate-500 uppercase font-medium tracking-wide">Hoje</span>
                     </div>
-                    <p className="text-2xl font-bold text-white font-mono">{formatCurrencyShort(faturamentoHoje)}</p>
+                    <p className="text-2xl font-bold text-slate-800">{formatCurrencyShort(faturamentoHoje)}</p>
                   </div>
                 </div>
 
                 {/* Ticket Médio */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-violet-500/30 transition-all">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-violet-500/10 rounded-full blur-2xl" />
+                <div className="relative overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-violet-300 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-violet-100 to-transparent rounded-full blur-2xl" />
                   <div className="relative">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
-                        <Receipt className="w-4 h-4 text-violet-400" />
+                      <div className="w-8 h-8 rounded-lg bg-violet-100 border border-violet-200 flex items-center justify-center">
+                        <Receipt className="w-4 h-4 text-violet-600" />
                       </div>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide">Ticket</span>
+                      <span className="text-xs text-slate-500 uppercase font-medium tracking-wide">Ticket</span>
                     </div>
-                    <p className="text-2xl font-bold text-violet-400 font-mono">{formatCurrencyShort(ticketMedio)}</p>
+                    <p className="text-2xl font-bold text-violet-600">{formatCurrencyShort(ticketMedio)}</p>
                   </div>
                 </div>
 
                 {/* OS no Mês */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-amber-500/30 transition-all">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-full blur-2xl" />
+                <div className="relative overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-amber-300 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-amber-100 to-transparent rounded-full blur-2xl" />
                   <div className="relative">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
-                        <Calendar className="w-4 h-4 text-amber-400" />
+                      <div className="w-8 h-8 rounded-lg bg-amber-100 border border-amber-200 flex items-center justify-center">
+                        <Calendar className="w-4 h-4 text-amber-600" />
                       </div>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide">OS Mês</span>
+                      <span className="text-xs text-slate-500 uppercase font-medium tracking-wide">OS Mês</span>
                     </div>
-                    <p className="text-2xl font-bold text-white font-mono">{totalOsMes}</p>
+                    <p className="text-2xl font-bold text-slate-800">{totalOsMes}</p>
                   </div>
                 </div>
 
                 {/* Média/dia */}
-                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-cyan-500/30 transition-all">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/10 rounded-full blur-2xl" />
+                <div className="relative overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-cyan-300 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-cyan-100 to-transparent rounded-full blur-2xl" />
                   <div className="relative">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
-                        <TrendingUp className="w-4 h-4 text-cyan-400" />
+                      <div className="w-8 h-8 rounded-lg bg-cyan-100 border border-cyan-200 flex items-center justify-center">
+                        <TrendingUp className="w-4 h-4 text-cyan-600" />
                       </div>
-                      <span className="text-xs text-slate-500 uppercase tracking-wide">Média</span>
+                      <span className="text-xs text-slate-500 uppercase font-medium tracking-wide">Média</span>
                     </div>
-                    <p className="text-2xl font-bold text-white font-mono">{(totalOsMes / new Date().getDate()).toFixed(1)}</p>
+                    <p className="text-2xl font-bold text-slate-800">{(totalOsMes / new Date().getDate()).toFixed(1)}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Balanço Visual Tech */}
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
-                <h3 className="font-bold text-white mb-4">Balanço do Mês</h3>
+              {/* Balanço Visual */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                <h3 className="font-bold text-slate-800 mb-4">Balanço do Mês</h3>
                 <div className="space-y-4">
                   {/* Receitas */}
                   <div>
                     <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-400">Receitas</span>
-                      <span className="font-bold text-emerald-400 font-mono">+{formatCurrencyShort(totalReceitas)}</span>
+                      <span className="text-slate-600 font-medium">Receitas</span>
+                      <span className="font-bold text-emerald-600">+{formatCurrencyShort(totalReceitas)}</span>
                     </div>
-                    <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: '100%' }} />
                     </div>
                   </div>
@@ -752,10 +749,10 @@ export default function FinanceiroPage() {
                   {/* Despesas */}
                   <div>
                     <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-400">Despesas</span>
-                      <span className="font-bold text-red-400 font-mono">-{formatCurrencyShort(totalDespesas)}</span>
+                      <span className="text-slate-600 font-medium">Despesas</span>
+                      <span className="font-bold text-red-600">-{formatCurrencyShort(totalDespesas)}</span>
                     </div>
-                    <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all"
                         style={{ width: `${totalReceitas > 0 ? Math.min((totalDespesas / totalReceitas) * 100, 100) : 0}%` }}
@@ -764,10 +761,10 @@ export default function FinanceiroPage() {
                   </div>
 
                   {/* Lucro */}
-                  <div className="border-t border-slate-700/50 pt-4 mt-4">
+                  <div className="border-t border-slate-100 pt-4 mt-4">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-300">Lucro Líquido</span>
-                      <span className={`text-2xl font-bold font-mono ${lucro >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                      <span className="font-semibold text-slate-700">Lucro Líquido</span>
+                      <span className={`text-2xl font-bold ${lucro >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                         {formatCurrency(lucro)}
                       </span>
                     </div>
@@ -778,41 +775,41 @@ export default function FinanceiroPage() {
                 </div>
               </div>
 
-              {/* Indicador de Saúde Tech */}
-              <div className={`relative overflow-hidden rounded-2xl border p-5 ${
+              {/* Indicador de Saúde */}
+              <div className={`relative overflow-hidden rounded-2xl border-2 p-5 ${
                 lucro > 0 
-                  ? 'bg-emerald-500/10 border-emerald-500/30' 
+                  ? 'bg-emerald-50 border-emerald-200' 
                   : lucro === 0 
-                    ? 'bg-amber-500/10 border-amber-500/30'
-                    : 'bg-red-500/10 border-red-500/30'
+                    ? 'bg-amber-50 border-amber-200'
+                    : 'bg-red-50 border-red-200'
               }`}>
-                <div className={`absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl ${
-                  lucro > 0 ? 'bg-emerald-500/20' : lucro === 0 ? 'bg-amber-500/20' : 'bg-red-500/20'
+                <div className={`absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl ${
+                  lucro > 0 ? 'bg-emerald-200' : lucro === 0 ? 'bg-amber-200' : 'bg-red-200'
                 }`} />
                 <div className="relative flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     lucro > 0 
-                      ? 'bg-emerald-500/20 border border-emerald-500/30' 
+                      ? 'bg-emerald-100 border border-emerald-200' 
                       : lucro === 0 
-                        ? 'bg-amber-500/20 border border-amber-500/30'
-                        : 'bg-red-500/20 border border-red-500/30'
+                        ? 'bg-amber-100 border border-amber-200'
+                        : 'bg-red-100 border border-red-200'
                   }`}>
                     {lucro > 0 ? (
-                      <TrendingUp className="w-6 h-6 text-emerald-400" />
+                      <TrendingUp className="w-6 h-6 text-emerald-600" />
                     ) : lucro === 0 ? (
-                      <AlertCircle className="w-6 h-6 text-amber-400" />
+                      <AlertCircle className="w-6 h-6 text-amber-600" />
                     ) : (
-                      <TrendingDown className="w-6 h-6 text-red-400" />
+                      <TrendingDown className="w-6 h-6 text-red-600" />
                     )}
                   </div>
                   <div>
                     <p className={`font-bold text-lg ${
-                      lucro > 0 ? 'text-emerald-400' : lucro === 0 ? 'text-amber-400' : 'text-red-400'
+                      lucro > 0 ? 'text-emerald-700' : lucro === 0 ? 'text-amber-700' : 'text-red-700'
                     }`}>
                       {lucro > 0 ? 'Mês Positivo!' : lucro === 0 ? 'Equilíbrio' : 'Mês Negativo'}
                     </p>
                     <p className={`text-xs ${
-                      lucro > 0 ? 'text-emerald-400/70' : lucro === 0 ? 'text-amber-400/70' : 'text-red-400/70'
+                      lucro > 0 ? 'text-emerald-600' : lucro === 0 ? 'text-amber-600' : 'text-red-600'
                     }`}>
                       {lucro > 0 ? 'Continue assim!' : lucro === 0 ? 'Aumente receitas' : 'Revise despesas'}
                     </p>
