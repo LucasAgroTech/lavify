@@ -410,78 +410,79 @@ export default function FinanceiroPage() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-6 gap-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-slate-800">{formatCurrency(faturamentoHoje)}</p>
-                  <p className="text-sm text-slate-500">Hoje</p>
+          {/* Card de Lucro Principal - Destaque */}
+          <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center">
+                  <PiggyBank className="w-7 h-7 text-white" />
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                <div>
+                  <p className="text-sm text-slate-400 mb-1">Lucro do Mês</p>
+                  <p className="text-3xl xl:text-4xl font-bold">{formatCurrency(lucro)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 xl:gap-8">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-emerald-400">+{formatCurrency(totalReceitas)}</p>
+                  <p className="text-xs text-slate-400">Receitas</p>
+                </div>
+                <div className="w-px h-10 bg-white/20" />
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-red-400">-{formatCurrency(totalDespesas)}</p>
+                  <p className="text-xs text-slate-400">Despesas</p>
+                </div>
+                <div className="w-px h-10 bg-white/20" />
+                <div className="text-center">
+                  <p className={`text-xl font-bold ${variacaoMes >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    {variacaoMes >= 0 ? "+" : ""}{variacaoMes}%
+                  </p>
+                  <p className="text-xs text-slate-400">vs mês anterior</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Grid - Responsivo */}
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
                   <DollarSign className="w-5 h-5 text-slate-600" />
                 </div>
+                <span className="text-sm text-slate-500 font-medium">Hoje</span>
               </div>
+              <p className="text-2xl font-bold text-slate-800">{formatCurrency(faturamentoHoje)}</p>
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-slate-800">{formatCurrency(faturamentoMes)}</p>
-                  <p className="text-sm text-slate-500">Este Mês</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="w-5 h-5 text-cyan-600" />
                 </div>
+                <span className="text-sm text-slate-500 font-medium">Este Mês</span>
               </div>
+              <p className="text-2xl font-bold text-slate-800">{formatCurrency(faturamentoMes)}</p>
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totalReceitas)}</p>
-                  <p className="text-sm text-slate-500">Receitas</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <ArrowUpRight className="w-5 h-5 text-emerald-600" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDespesas)}</p>
-                  <p className="text-sm text-slate-500">Despesas</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                  <ArrowDownRight className="w-5 h-5 text-red-600" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-violet-600">{formatCurrency(ticketMedio)}</p>
-                  <p className="text-sm text-slate-500">Ticket Médio</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
+
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
                   <Receipt className="w-5 h-5 text-violet-600" />
                 </div>
+                <span className="text-sm text-slate-500 font-medium">Ticket Médio</span>
               </div>
+              <p className="text-2xl font-bold text-violet-600">{formatCurrency(ticketMedio)}</p>
             </div>
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold">{formatCurrency(lucro)}</p>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-slate-300">Lucro</span>
-                    <span className={variacaoMes >= 0 ? "text-emerald-400" : "text-red-400"}>
-                      {variacaoMes >= 0 ? "+" : ""}{variacaoMes}%
-                    </span>
-                  </div>
+
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                  <PiggyBank className="w-5 h-5 text-white" />
-                </div>
+                <span className="text-sm text-slate-500 font-medium">OS no Mês</span>
               </div>
+              <p className="text-2xl font-bold text-slate-800">{totalOsMes}</p>
             </div>
           </div>
 
