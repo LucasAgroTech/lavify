@@ -588,7 +588,7 @@ export default function Dashboard() {
                             color: '#fff',
                             fontSize: '12px'
                           }}
-                          formatter={(value: number) => [`${value} vendas`, '']}
+                          formatter={(value) => [`${value} vendas`, '']}
                         />
                         <Bar 
                           dataKey="quantidade" 
