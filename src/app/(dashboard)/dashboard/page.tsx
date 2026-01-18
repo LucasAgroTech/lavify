@@ -427,252 +427,319 @@ export default function Dashboard() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
-        <div className="max-w-[1400px] mx-auto space-y-6">
+      <div className="hidden lg:block p-5 min-h-screen bg-slate-100">
+        <div className="max-w-[1400px] mx-auto space-y-4">
           
-          {/* Header Simples */}
-      <div className="flex items-center justify-between">
-        <div>
-              <h1 className="text-2xl font-bold text-slate-800">
-                {getGreeting()}, {usuario?.nome?.split(" ")[0] || "Usuário"}
-              </h1>
-              <p className="text-slate-500 text-sm mt-0.5">
-                {usuario?.lavaJato?.nome} • {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
-          </p>
-        </div>
-            <Link 
-              href="/nova-os"
-              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
-            >
-              <Wrench className="w-4 h-4" />
-              Nova OS
-            </Link>
-          </div>
-
-          {/* Alertas */}
-          {((data?.agendamentosPendentes ?? 0) > 0 || (data?.produtosEstoqueBaixo?.length ?? 0) > 0) && (
-            <div className="flex gap-4">
+          {/* Header Compacto */}
+          <div className="flex items-center justify-between bg-white rounded-xl border border-slate-200 px-5 py-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                <Droplets className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-slate-800">
+                  {usuario?.lavaJato?.nome || "Lava Jato"}
+                </h1>
+                <p className="text-slate-500 text-sm">
+                  {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Alertas inline */}
               {(data?.agendamentosPendentes ?? 0) > 0 && (
-                <Link href="/agendamentos" className="flex-1 flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 hover:bg-blue-100 transition-colors">
-                  <Bell className="w-5 h-5 text-blue-600" />
-                  <span className="text-blue-800 font-medium text-sm">{data?.agendamentosPendentes} agendamento(s) pendente(s)</span>
-                  <ChevronRight className="w-4 h-4 text-blue-400 ml-auto" />
+                <Link href="/agendamentos" className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 hover:bg-blue-100 transition-colors">
+                  <Bell className="w-4 h-4 text-blue-600" />
+                  <span className="text-blue-700 font-medium text-sm">{data?.agendamentosPendentes}</span>
                 </Link>
               )}
               {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 && (
-                <Link href="/estoque" className="flex-1 flex items-center gap-3 bg-red-50 border border-red-200 rounded-lg px-4 py-3 hover:bg-red-100 transition-colors">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                  <span className="text-red-800 font-medium text-sm">{data?.produtosEstoqueBaixo?.length} produto(s) com estoque baixo</span>
-                  <ChevronRight className="w-4 h-4 text-red-400 ml-auto" />
+                <Link href="/estoque" className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 hover:bg-red-100 transition-colors">
+                  <AlertTriangle className="w-4 h-4 text-red-600" />
+                  <span className="text-red-700 font-medium text-sm">{data?.produtosEstoqueBaixo?.length}</span>
                 </Link>
               )}
-            </div>
-          )}
-
-          {/* Grid Principal - Métricas do Dia */}
-          <div className="grid grid-cols-4 gap-4">
-            {/* OS Hoje */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-500 text-sm font-medium">OS Hoje</span>
-                <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
-                  <Car className="w-4 h-4 text-cyan-600" />
-        </div>
-              </div>
-              <p className="text-3xl font-bold text-slate-800">{data?.osHoje || 0}</p>
-              <p className="text-xs text-slate-400 mt-1">ordens de serviço</p>
-      </div>
-
-            {/* Em Andamento */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-500 text-sm font-medium">No Pátio</span>
-                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Columns3 className="w-4 h-4 text-amber-600" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-slate-800">{data?.osEmAndamento || 0}</p>
-              <p className="text-xs text-slate-400 mt-1">veículos agora</p>
-            </div>
-
-            {/* Faturamento Hoje */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-500 text-sm font-medium">Faturamento Hoje</span>
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-emerald-600" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-emerald-600">{formatCurrency(data?.faturamentoHoje || 0)}</p>
-              <p className="text-xs text-slate-400 mt-1">receita do dia</p>
-            </div>
-
-            {/* Faturamento Mês */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-500 text-sm font-medium">Faturamento Mês</span>
-                <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-purple-600" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-slate-800">{formatCurrency(data?.faturamentoMes || 0)}</p>
-              <p className="text-xs text-slate-400 mt-1">acumulado</p>
+              <Link 
+                href="/nova-os"
+                className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+              >
+                <Wrench className="w-4 h-4" />
+                Nova OS
+              </Link>
             </div>
           </div>
 
-          {/* Seção Status do Pátio + Métricas Secundárias */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* Status do Pátio */}
-            <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-800">Status do Pátio</h3>
-                <Link href="/kanban" className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1">
-                  Ver fila completa
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-        </Link>
-              </div>
+          {/* Grid Principal - Layout Compacto para Print */}
+          <div className="grid grid-cols-12 gap-4">
+            
+            {/* Coluna Esquerda - Métricas + Pátio */}
+            <div className="col-span-8 space-y-4">
               
+              {/* Métricas do Dia - Compactas */}
               <div className="grid grid-cols-4 gap-3">
-                {statusConfig.map((status) => {
-                  const count = data?.ordensPorStatus?.[status.key] || 0;
-                  return (
-                    <Link
-                      key={status.key}
-                      href="/kanban"
-                      className={`rounded-lg border ${status.border} ${status.bgLight} p-4 text-center hover:shadow-sm transition-all`}
-                    >
-                      <div className="flex items-center justify-center gap-2 mb-2">
-                        <div className={`w-2 h-2 rounded-full ${status.color}`} />
-                        <span className="text-xs font-medium text-slate-600">{status.label}</span>
+                {/* OS Hoje */}
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center flex-shrink-0">
+                      <Car className="w-5 h-5 text-cyan-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-slate-800">{data?.osHoje || 0}</p>
+                      <p className="text-xs text-slate-500">OS hoje</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* No Pátio */}
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                      <Columns3 className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-slate-800">{data?.osEmAndamento || 0}</p>
+                      <p className="text-xs text-slate-500">No pátio</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Faturamento Hoje */}
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                      <DollarSign className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-emerald-600">{formatCurrencyCompact(data?.faturamentoHoje || 0)}</p>
+                      <p className="text-xs text-slate-500">Hoje</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Faturamento Mês */}
+                <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-white">{formatCurrencyCompact(data?.faturamentoMes || 0)}</p>
+                      <p className="text-xs text-slate-400">Este mês</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status do Pátio - Destaque Visual */}
+              <div className="bg-white rounded-xl border border-slate-200 p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                    <Columns3 className="w-5 h-5 text-slate-600" />
+                    Fila do Pátio
+                  </h3>
+                  <Link href="/kanban" className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1">
+                    Ver Kanban
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                
+                <div className="grid grid-cols-4 gap-3">
+                  {statusConfig.map((status) => {
+                    const count = data?.ordensPorStatus?.[status.key] || 0;
+                    return (
+                      <div
+                        key={status.key}
+                        className={`rounded-xl border-2 ${status.border} ${status.bgLight} p-4 text-center`}
+                      >
+                        <span className="text-2xl mb-1 block">{status.emoji}</span>
+                        <p className="text-3xl font-bold text-slate-800">{count}</p>
+                        <p className="text-xs font-medium text-slate-600 mt-1">{status.label}</p>
                       </div>
-                      <p className="text-2xl font-bold text-slate-800">{count}</p>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Clientes e Estoque */}
-            <div className="space-y-4">
-              {/* Clientes */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-500 text-sm font-medium">Clientes</span>
-                  <Users className="w-4 h-4 text-slate-400" />
-                </div>
-                <div className="flex items-end gap-3">
-                  <p className="text-2xl font-bold text-slate-800">{data?.totalClientes || 0}</p>
-                  {data?.clientesNovosMes && data.clientesNovosMes > 0 && (
-                    <span className="text-sm text-emerald-600 font-medium mb-1">+{data.clientesNovosMes} este mês</span>
-                  )}
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Estoque */}
+              {/* Gráfico Principal - Top Serviços com Barras */}
               <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-500 text-sm font-medium">Estoque</span>
-                  <Package className="w-4 h-4 text-slate-400" />
-                </div>
-                {data?.produtosEstoqueBaixo && data.produtosEstoqueBaixo.length > 0 ? (
-                  <div className="flex items-end gap-3">
-                    <p className="text-2xl font-bold text-red-600">{data.produtosEstoqueBaixo.length}</p>
-                    <span className="text-sm text-red-600 font-medium mb-1">produto(s) baixo</span>
+                <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                  <Droplets className="w-5 h-5 text-slate-600" />
+                  Serviços Mais Vendidos
+                </h3>
+                {chartData && chartData.length > 0 ? (
+                  <div className="h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e2e8f0" />
+                        <XAxis type="number" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                        <YAxis 
+                          type="category" 
+                          dataKey="name" 
+                          tick={{ fontSize: 12, fill: '#475569' }} 
+                          axisLine={false} 
+                          tickLine={false}
+                          width={120}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#1e293b', 
+                            border: 'none', 
+                            borderRadius: '8px',
+                            color: '#fff',
+                            fontSize: '12px'
+                          }}
+                          formatter={(value: number) => [`${value} vendas`, '']}
+                        />
+                        <Bar 
+                          dataKey="quantidade" 
+                          fill="#06b6d4" 
+                          radius={[0, 4, 4, 0]}
+                          barSize={24}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="text-sm text-emerald-600 font-medium">Tudo em ordem</span>
+                  <div className="h-[200px] flex flex-col items-center justify-center text-slate-400">
+                    <Droplets className="w-10 h-10 mb-2 text-slate-300" />
+                    <p className="text-sm">Nenhum serviço registrado ainda</p>
                   </div>
                 )}
               </div>
             </div>
-          </div>
 
-          {/* Seção Inferior - Gráficos */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Distribuição de Status */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="font-semibold text-slate-800 mb-4">Distribuição de Status</h3>
-              <div className="space-y-3">
-            {[
-              { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
-              { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
-                  { key: "FINALIZANDO", label: "Finalizando", color: "bg-blue-500" },
-              { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
-              { key: "ENTREGUE", label: "Entregue", color: "bg-slate-400" },
-            ].map((status) => {
-              const count = data?.ordensPorStatus?.[status.key] || 0;
-                  const total = Object.values(data?.ordensPorStatus || {}).reduce((a, b) => a + b, 0);
-              const percent = total > 0 ? (count / total) * 100 : 0;
+            {/* Coluna Direita - Resumo + Clientes */}
+            <div className="col-span-4 space-y-4">
+              
+              {/* Card Destaque - Faturamento */}
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-5 text-white">
+                <div className="flex items-center gap-2 mb-3">
+                  <DollarSign className="w-5 h-5 text-emerald-200" />
+                  <span className="text-emerald-100 font-medium text-sm">Faturamento do Mês</span>
+                </div>
+                <p className="text-4xl font-bold mb-1">{formatCurrency(data?.faturamentoMes || 0)}</p>
+                <p className="text-emerald-200 text-sm">
+                  Média diária: {formatCurrency((data?.faturamentoMes || 0) / new Date().getDate())}
+                </p>
+              </div>
 
-              return (
-                    <div key={status.key} className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${status.color} flex-shrink-0`} />
-                      <span className="text-sm text-slate-600 w-24">{status.label}</span>
-                      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className={`h-full ${status.color} rounded-full`} style={{ width: `${percent}%` }} />
+              {/* Clientes */}
+              <div className="bg-white rounded-xl border border-slate-200 p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-slate-600" />
+                    Clientes
+                  </h3>
+                  <Link href="/clientes" className="text-xs text-cyan-600 hover:text-cyan-700 font-medium">
+                    Ver todos
+                  </Link>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-4xl font-bold text-slate-800">{data?.totalClientes || 0}</p>
+                  {data?.clientesNovosMes && data.clientesNovosMes > 0 && (
+                    <span className="text-sm text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
+                      +{data.clientesNovosMes} novos
+                    </span>
+                  )}
+                </div>
+                <p className="text-slate-500 text-sm mt-1">cadastrados no sistema</p>
+              </div>
+
+              {/* Distribuição de Status */}
+              <div className="bg-white rounded-xl border border-slate-200 p-5">
+                <h3 className="font-semibold text-slate-800 mb-4">Distribuição</h3>
+                <div className="space-y-2.5">
+                  {[
+                    { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
+                    { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
+                    { key: "FINALIZANDO", label: "Finalizando", color: "bg-blue-500" },
+                    { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
+                  ].map((status) => {
+                    const count = data?.ordensPorStatus?.[status.key] || 0;
+                    const total = statusConfig.reduce((acc, s) => acc + (data?.ordensPorStatus?.[s.key] || 0), 0);
+                    const percent = total > 0 ? (count / total) * 100 : 0;
+
+                    return (
+                      <div key={status.key} className="flex items-center gap-2">
+                        <div className={`w-2.5 h-2.5 rounded-full ${status.color} flex-shrink-0`} />
+                        <span className="text-xs text-slate-600 w-20">{status.label}</span>
+                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-full ${status.color} rounded-full transition-all`} style={{ width: `${percent}%` }} />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-700 w-6 text-right">{count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Estoque Status */}
+              <div className={`rounded-xl border p-5 ${
+                (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                  ? 'bg-red-50 border-red-200' 
+                  : 'bg-emerald-50 border-emerald-200'
+              }`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                      ? 'bg-red-100' 
+                      : 'bg-emerald-100'
+                  }`}>
+                    <Package className={`w-5 h-5 ${
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                        ? 'text-red-600' 
+                        : 'text-emerald-600'
+                    }`} />
                   </div>
-                      <span className="text-sm font-medium text-slate-800 w-8 text-right">{count}</span>
+                  <div>
+                    <p className={`font-semibold ${
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                        ? 'text-red-800' 
+                        : 'text-emerald-800'
+                    }`}>
+                      {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                        ? `${data?.produtosEstoqueBaixo?.length} produto(s) baixo`
+                        : 'Estoque OK'
+                      }
+                    </p>
+                    <p className={`text-xs ${
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                        ? 'text-red-600' 
+                        : 'text-emerald-600'
+                    }`}>
+                      {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 
+                        ? 'Precisa repor'
+                        : 'Tudo abastecido'
+                      }
+                    </p>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-            </div>
+              </div>
 
-            {/* Top Serviços */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="font-semibold text-slate-800 mb-4">Top Serviços do Mês</h3>
-          {chartData && chartData.length > 0 ? (
-                <div className="space-y-3">
-                  {data?.servicosMaisVendidos?.slice(0, 5).map((servico, index) => (
-                    <div key={servico.servicoId} className="flex items-center gap-3">
-                      <span className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${
-                        index === 0 ? 'bg-amber-100 text-amber-700' :
-                        index === 1 ? 'bg-slate-200 text-slate-600' :
-                        index === 2 ? 'bg-orange-100 text-orange-700' :
-                        'bg-slate-100 text-slate-500'
-                      }`}>
-                        {index + 1}
-                      </span>
-                      <span className="flex-1 text-sm text-slate-700 truncate">{servico.nome}</span>
-                      <span className="text-sm font-semibold text-slate-800">{servico._count}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-40 flex flex-col items-center justify-center text-slate-400">
-                  <Droplets className="w-8 h-8 mb-2 text-slate-300" />
-                  <p className="text-sm">Nenhum serviço registrado</p>
-                </div>
-              )}
-            </div>
-          </div>
+              {/* Ações Rápidas Compactas */}
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { href: "/kanban", label: "Pátio", icon: Columns3 },
+                  { href: "/clientes", label: "Clientes", icon: Users },
+                  { href: "/servicos", label: "Serviços", icon: Droplets },
+                  { href: "/agendamentos", label: "Agenda", icon: Calendar },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 px-3 py-2.5 hover:border-slate-300 hover:bg-slate-50 transition-all"
+                  >
+                    <item.icon className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
 
-          {/* Ações Rápidas */}
-          <div className="grid grid-cols-4 gap-3">
-            {[
-              { href: "/kanban", label: "Fila do Pátio", icon: Columns3, desc: "Ver veículos" },
-              { href: "/clientes", label: "Clientes", icon: Users, desc: "Gerenciar cadastros" },
-              { href: "/servicos", label: "Serviços", icon: Droplets, desc: "Ver catálogo" },
-              { href: "/agendamentos", label: "Agendamentos", icon: Calendar, desc: "Próximos horários" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-3 bg-white rounded-lg border border-slate-200 px-4 py-3 hover:border-slate-300 hover:bg-slate-50 transition-all"
-              >
-                <item.icon className="w-5 h-5 text-slate-500" />
-                <div>
-                  <p className="text-sm font-medium text-slate-800">{item.label}</p>
-                  <p className="text-xs text-slate-400">{item.desc}</p>
-                </div>
-              </Link>
-            ))}
+            </div>
           </div>
 
         </div>
-    </div>
+      </div>
     </>
   );
 }
