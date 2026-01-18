@@ -225,6 +225,48 @@ export async function GET() {
       },
     });
 
+    // Últimas 5 OSs do dia
+    const ultimasOS = await prisma.ordemServico.findMany({
+      where: {
+        lavaJatoId,
+        dataEntrada: {
+          gte: inicioHoje,
+          lte: fimHoje,
+        },
+      },
+      orderBy: {
+        dataEntrada: "desc",
+      },
+      take: 5,
+      include: {
+        cliente: {
+          select: {
+            id: true,
+            nome: true,
+            telefone: true,
+          },
+        },
+        veiculo: {
+          select: {
+            id: true,
+            placa: true,
+            modelo: true,
+            cor: true,
+          },
+        },
+        itens: {
+          include: {
+            servico: {
+              select: {
+                id: true,
+                nome: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
     return NextResponse.json({
       ordensPorStatus: ordensPorStatus.reduce(
         (acc, item) => {
@@ -243,6 +285,7 @@ export async function GET() {
       servicosMaisVendidos: servicosComNome,
       agendamentosPendentes,
       agendamentosHoje,
+      ultimasOS,
     });
   } catch (error) {
     console.error("Erro ao buscar dados do dashboard:", error);

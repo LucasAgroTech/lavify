@@ -18,7 +18,12 @@ import {
   Sparkles,
   ArrowUpRight,
   UsersRound,
+  MessageCircle,
+  Send,
+  FileText,
 } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { StatCard, Card } from "@/components/Card";
 import { Badge } from "@/components/Badge";
@@ -31,6 +36,33 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
+interface OrdemServico {
+  id: string;
+  codigo: number;
+  status: string;
+  dataEntrada: string;
+  total: number;
+  cliente: {
+    id: string;
+    nome: string;
+    telefone: string | null;
+  };
+  veiculo: {
+    id: string;
+    placa: string;
+    modelo: string;
+    cor: string | null;
+  };
+  itens: {
+    id: string;
+    preco: number;
+    servico: {
+      id: string;
+      nome: string;
+    };
+  }[];
+}
 
 interface DashboardData {
   ordensPorStatus: Record<string, number>;
@@ -54,6 +86,7 @@ interface DashboardData {
   }[];
   agendamentosPendentes: number;
   agendamentosHoje: number;
+  ultimasOS: OrdemServico[];
 }
 
 interface Usuario {
@@ -164,6 +197,41 @@ export default function Dashboard() {
   };
 
   const totalEmPatio = statusConfig.reduce((acc, s) => acc + (data?.ordensPorStatus?.[s.key] || 0), 0);
+
+  // Função para enviar OS via WhatsApp
+  function enviarOSWhatsApp(ordem: OrdemServico) {
+    if (!ordem.cliente.telefone) {
+      alert("Cliente não tem telefone cadastrado!");
+      return;
+    }
+
+    const servicos = ordem.itens.map(item => `• ${item.servico.nome}`).join("\n");
+    const dataFormatada = format(new Date(ordem.dataEntrada), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+    
+    const mensagem = `
+🚗 *ORDEM DE SERVIÇO #${ordem.codigo}*
+
+📅 *Data:* ${dataFormatada}
+
+👤 *Cliente:* ${ordem.cliente.nome}
+🚘 *Veículo:* ${ordem.veiculo.modelo}
+🔖 *Placa:* ${ordem.veiculo.placa}
+${ordem.veiculo.cor ? `🎨 *Cor:* ${ordem.veiculo.cor}` : ""}
+
+🧽 *Serviços:*
+${servicos}
+
+💰 *Total:* ${formatCurrency(ordem.total)}
+
+✅ *Status:* ${ordem.status === "ENTREGUE" ? "Entregue" : ordem.status === "PRONTO" ? "Pronto para retirada" : "Em andamento"}
+
+_${usuario?.lavaJato?.nome || "Lava Jato"}_
+    `.trim();
+
+    const telefone = ordem.cliente.telefone.replace(/\D/g, "");
+    const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, "_blank");
+  }
 
   // Loading skeleton
   if (loading) {
@@ -391,6 +459,71 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
+          {/* Últimas OS do Dia - Mobile */}
+          {data?.ultimasOS && data.ultimasOS.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-slate-600" />
+                  <h3 className="font-semibold text-slate-800">OS de Hoje</h3>
+                </div>
+                <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-1 rounded-full font-semibold">
+                  {data.ultimasOS.length} OS
+                </span>
+              </div>
+              
+              <div className="divide-y divide-slate-100">
+                {data.ultimasOS.map((ordem) => (
+                  <div key={ordem.id} className="p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="bg-slate-800 text-white text-xs font-mono px-2 py-0.5 rounded">
+                            #{ordem.codigo}
+                          </span>
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                            ordem.status === "PRONTO" ? "bg-emerald-100 text-emerald-700" :
+                            ordem.status === "ENTREGUE" ? "bg-slate-100 text-slate-600" :
+                            ordem.status === "LAVANDO" ? "bg-cyan-100 text-cyan-700" :
+                            "bg-amber-100 text-amber-700"
+                          }`}>
+                            {ordem.status === "AGUARDANDO" ? "Aguardando" :
+                             ordem.status === "LAVANDO" ? "Lavando" :
+                             ordem.status === "FINALIZANDO" ? "Finalizando" :
+                             ordem.status === "PRONTO" ? "Pronto" : "Entregue"}
+                          </span>
+                        </div>
+                        <p className="font-semibold text-slate-800 text-sm truncate">{ordem.cliente.nome}</p>
+                        <p className="text-xs text-slate-500">{ordem.veiculo.modelo} • {ordem.veiculo.placa}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
+                        <p className="text-xs text-slate-400">
+                          {format(new Date(ordem.dataEntrada), "HH:mm")}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 mt-3">
+                      <div className="flex-1 text-xs text-slate-500 truncate">
+                        {ordem.itens.map(i => i.servico.nome).join(", ")}
+                      </div>
+                      {ordem.cliente.telefone && (
+                        <button
+                          onClick={() => enviarOSWhatsApp(ordem)}
+                          className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded-lg active:scale-95 transition-all"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          Enviar OS
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Serviços mais vendidos - Mobile */}
           {chartData && chartData.length > 0 && (
@@ -627,6 +760,78 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
+
+              {/* Últimas OS do Dia - Desktop */}
+              {data?.ultimasOS && data.ultimasOS.length > 0 && (
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between p-5 border-b border-slate-100">
+                    <h3 className="font-bold text-slate-800 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                        <MessageCircle className="w-4 h-4 text-green-600" />
+                      </div>
+                      OS de Hoje - Enviar via WhatsApp
+                    </h3>
+                    <span className="text-xs bg-cyan-100 text-cyan-700 px-3 py-1.5 rounded-full font-semibold">
+                      {data.ultimasOS.length} OS
+                    </span>
+                  </div>
+                  
+                  <div className="divide-y divide-slate-100">
+                    {data.ultimasOS.map((ordem) => (
+                      <div key={ordem.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors">
+                        {/* Código e Status */}
+                        <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
+                          <span className="bg-slate-800 text-white text-xs font-mono px-2.5 py-1 rounded-md">
+                            #{ordem.codigo}
+                          </span>
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                            ordem.status === "PRONTO" ? "bg-emerald-100 text-emerald-700" :
+                            ordem.status === "ENTREGUE" ? "bg-slate-100 text-slate-600" :
+                            ordem.status === "LAVANDO" ? "bg-cyan-100 text-cyan-700" :
+                            "bg-amber-100 text-amber-700"
+                          }`}>
+                            {ordem.status === "AGUARDANDO" ? "Aguardando" :
+                             ordem.status === "LAVANDO" ? "Lavando" :
+                             ordem.status === "FINALIZANDO" ? "Finalizando" :
+                             ordem.status === "PRONTO" ? "Pronto" : "Entregue"}
+                          </span>
+                        </div>
+
+                        {/* Cliente e Veículo */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-slate-800 text-sm truncate">{ordem.cliente.nome}</p>
+                          <p className="text-xs text-slate-500 truncate">
+                            {ordem.veiculo.modelo} • {ordem.veiculo.placa} • {ordem.itens.map(i => i.servico.nome).join(", ")}
+                          </p>
+                        </div>
+
+                        {/* Hora e Valor */}
+                        <div className="text-right flex-shrink-0">
+                          <p className="font-bold text-emerald-600">{formatCurrency(ordem.total)}</p>
+                          <p className="text-xs text-slate-400">
+                            {format(new Date(ordem.dataEntrada), "HH:mm")}
+                          </p>
+                        </div>
+
+                        {/* Botão WhatsApp */}
+                        {ordem.cliente.telefone ? (
+                          <button
+                            onClick={() => enviarOSWhatsApp(ordem)}
+                            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md flex-shrink-0"
+                          >
+                            <Send className="w-4 h-4" />
+                            Enviar OS
+                          </button>
+                        ) : (
+                          <span className="text-xs text-slate-400 flex-shrink-0 italic">
+                            Sem telefone
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Coluna Direita */}
