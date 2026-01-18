@@ -390,31 +390,38 @@ export default function FinanceiroPage() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-5 min-h-screen bg-slate-100">
+      <div className="hidden lg:block p-5 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="max-w-[1400px] mx-auto space-y-4">
           
-          {/* Header Compacto */}
-          <div className="flex items-center justify-between bg-white rounded-xl border border-slate-200 px-5 py-4">
+          {/* Header Tech */}
+          <div className="flex items-center justify-between bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 px-6 py-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-white" />
+              <div className="relative">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                  <Wallet className="w-7 h-7 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-800 animate-pulse" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-800">Financeiro</h1>
-                <p className="text-slate-500 text-sm">
-                  {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+                <h1 className="text-xl font-bold text-white">Financeiro</h1>
+                <p className="text-slate-400 text-sm font-mono">
+                  {new Date().toLocaleDateString("pt-BR", { month: "short", year: "numeric" }).toUpperCase()}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              {/* Variação inline */}
-              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${variacaoMes >= 0 ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}`}>
+            <div className="flex items-center gap-4">
+              {/* Variação */}
+              <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border ${
+                variacaoMes >= 0 
+                  ? 'bg-emerald-500/10 border-emerald-500/30' 
+                  : 'bg-red-500/10 border-red-500/30'
+              }`}>
                 {variacaoMes >= 0 ? (
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
                 ) : (
-                  <TrendingDown className="w-4 h-4 text-red-600" />
+                  <TrendingDown className="w-5 h-5 text-red-400" />
                 )}
-                <span className={`font-semibold text-sm ${variacaoMes >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                <span className={`font-bold text-lg font-mono ${variacaoMes >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {variacaoMes >= 0 ? '+' : ''}{variacaoMes}%
                 </span>
                 <span className="text-xs text-slate-500">vs mês anterior</span>
@@ -422,63 +429,92 @@ export default function FinanceiroPage() {
             </div>
           </div>
 
-          {/* Grid Principal - Layout Compacto para Print */}
+          {/* Grid Principal */}
           <div className="grid grid-cols-12 gap-4">
             
-            {/* Coluna Esquerda - Métricas + Gráfico */}
+            {/* Coluna Esquerda */}
             <div className="col-span-8 space-y-4">
               
-              {/* Card Lucro Destaque + Métricas Inline */}
+              {/* Cards de Lucro, Receita e Despesa - TECH STYLE */}
               <div className="grid grid-cols-3 gap-4">
-                {/* Lucro do Mês - Destaque */}
-                <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 text-white">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
-                      <PiggyBank className="w-5 h-5 text-white" />
+                {/* Lucro do Mês */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-cyan-600/20 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-5">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-cyan-500/5" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                        <PiggyBank className="w-6 h-6 text-purple-300" />
+                      </div>
+                      <span className="text-purple-300/80 font-medium text-sm uppercase tracking-wide">Lucro do Mês</span>
                     </div>
-                    <span className="text-slate-400 text-sm">Lucro do Mês</span>
+                    <p className="text-4xl font-bold text-white font-mono">{formatCurrency(lucro)}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${lucro >= 0 ? 'bg-emerald-400' : 'bg-red-400'} animate-pulse`} />
+                      <span className={`text-xs ${lucro >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {lucro >= 0 ? 'Positivo' : 'Negativo'}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-3xl font-bold">{formatCurrency(lucro)}</p>
                 </div>
 
-                {/* Receitas */}
-                <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <ArrowUpRight className="w-5 h-5 text-emerald-600" />
+                {/* Receitas - Card Tech Estético */}
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-emerald-500/30 p-5 group hover:border-emerald-500/50 transition-all">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all" />
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-teal-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 flex items-center justify-center">
+                        <ArrowUpRight className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <span className="text-emerald-400/80 font-medium text-sm uppercase tracking-wide">Receitas</span>
                     </div>
-                    <span className="text-emerald-700 text-sm font-medium">Receitas</span>
+                    <p className="text-4xl font-bold text-emerald-400 font-mono">+{formatCurrencyShort(totalReceitas)}</p>
+                    <div className="mt-3 h-1 bg-slate-700/50 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-full" />
+                    </div>
                   </div>
-                  <p className="text-3xl font-bold text-emerald-700">+{formatCurrencyShort(totalReceitas)}</p>
                 </div>
 
-                {/* Despesas */}
-                <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-                      <ArrowDownRight className="w-5 h-5 text-red-600" />
+                {/* Despesas - Card Tech Estético */}
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-red-500/30 p-5 group hover:border-red-500/50 transition-all">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/20 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all" />
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-orange-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/40 flex items-center justify-center">
+                        <ArrowDownRight className="w-6 h-6 text-red-400" />
+                      </div>
+                      <span className="text-red-400/80 font-medium text-sm uppercase tracking-wide">Despesas</span>
                     </div>
-                    <span className="text-red-700 text-sm font-medium">Despesas</span>
+                    <p className="text-4xl font-bold text-red-400 font-mono">-{formatCurrencyShort(totalDespesas)}</p>
+                    <div className="mt-3 h-1 bg-slate-700/50 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all"
+                        style={{ width: `${totalReceitas > 0 ? Math.min((totalDespesas / totalReceitas) * 100, 100) : 0}%` }}
+                      />
+                    </div>
                   </div>
-                  <p className="text-3xl font-bold text-red-700">-{formatCurrencyShort(totalDespesas)}</p>
                 </div>
               </div>
 
-              {/* Gráfico Principal - Compacto */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-slate-600" />
+              {/* Gráfico Tech */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-bold text-white flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-slate-300" />
+                    </div>
                     Fluxo de Caixa Semanal
                   </h3>
                   <div className="flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                      <span className="text-slate-600">Receitas</span>
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" />
+                      <span className="text-slate-400">Receitas</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                      <span className="text-slate-600">Despesas</span>
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-500 to-orange-400" />
+                      <span className="text-slate-400">Despesas</span>
                     </div>
                   </div>
                 </div>
@@ -487,18 +523,18 @@ export default function FinanceiroPage() {
                     <AreaChart data={chartData}>
                       <defs>
                         <linearGradient id="colorReceita" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
                           <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorDespesa" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
                           <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                      <XAxis dataKey="dia" stroke="#94a3b8" fontSize={11} axisLine={false} tickLine={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                      <XAxis dataKey="dia" stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
                       <YAxis
-                        stroke="#94a3b8"
+                        stroke="#64748b"
                         fontSize={11}
                         tickFormatter={(v) => `R$${v}`}
                         axisLine={false}
@@ -507,9 +543,9 @@ export default function FinanceiroPage() {
                       />
                       <Tooltip
                         contentStyle={{
-                          background: "#1e293b",
-                          border: "none",
-                          borderRadius: "8px",
+                          background: "#0f172a",
+                          border: "1px solid #334155",
+                          borderRadius: "12px",
                           color: "#fff",
                           fontSize: "12px",
                         }}
@@ -536,7 +572,7 @@ export default function FinanceiroPage() {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-[220px] flex items-center justify-center text-slate-400">
+                  <div className="h-[220px] flex items-center justify-center text-slate-500">
                     <div className="text-center">
                       <Receipt className="w-10 h-10 mx-auto mb-2 opacity-50" />
                       <p className="text-sm">Sem movimentações nesta semana</p>
@@ -545,36 +581,36 @@ export default function FinanceiroPage() {
                 )}
               </div>
 
-              {/* Receitas e Despesas lado a lado - Compactos */}
+              {/* Receitas e Despesas Recentes - Tech Style */}
               <div className="grid grid-cols-2 gap-4">
                 {/* Receitas Recentes */}
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
-                        <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                        <ArrowUpRight className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <h3 className="font-semibold text-slate-800 text-sm">Receitas</h3>
+                      <h3 className="font-semibold text-white text-sm">Receitas Recentes</h3>
                     </div>
-                    <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-emerald-400 font-bold bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
                       +{formatCurrencyShort(receitasRecentes.reduce((a, b) => a + b.valor, 0))}
                     </span>
                   </div>
-                  <div className="divide-y divide-slate-50 max-h-[180px] overflow-y-auto">
+                  <div className="divide-y divide-slate-700/30 max-h-[180px] overflow-y-auto">
                     {receitasRecentes.length > 0 ? (
                       receitasRecentes.slice(0, 5).map((item) => (
-                        <div key={item.id} className="px-4 py-2.5 flex items-center justify-between">
+                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-700/20 transition-colors">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
-                            <p className="text-xs text-slate-400">{item.hora}</p>
+                            <p className="font-medium text-slate-200 text-sm truncate">{item.desc}</p>
+                            <p className="text-xs text-slate-500 font-mono">{item.hora}</p>
                           </div>
-                          <span className="font-semibold text-emerald-600 text-sm ml-2">
+                          <span className="font-bold text-emerald-400 text-sm ml-2 font-mono">
                             +{formatCurrencyShort(item.valor)}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="px-4 py-6 text-center text-slate-400 text-sm">
+                      <div className="px-5 py-8 text-center text-slate-500 text-sm">
                         Nenhuma receita recente
                       </div>
                     )}
@@ -582,33 +618,33 @@ export default function FinanceiroPage() {
                 </div>
 
                 {/* Despesas Recentes */}
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
-                        <ArrowDownRight className="w-3.5 h-3.5 text-red-600" />
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                        <ArrowDownRight className="w-4 h-4 text-red-400" />
                       </div>
-                      <h3 className="font-semibold text-slate-800 text-sm">Despesas</h3>
+                      <h3 className="font-semibold text-white text-sm">Despesas Recentes</h3>
                     </div>
-                    <span className="text-xs text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-red-400 font-bold bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30">
                       -{formatCurrencyShort(despesasRecentes.reduce((a, b) => a + b.valor, 0))}
                     </span>
                   </div>
-                  <div className="divide-y divide-slate-50 max-h-[180px] overflow-y-auto">
+                  <div className="divide-y divide-slate-700/30 max-h-[180px] overflow-y-auto">
                     {despesasRecentes.length > 0 ? (
                       despesasRecentes.slice(0, 5).map((item) => (
-                        <div key={item.id} className="px-4 py-2.5 flex items-center justify-between">
+                        <div key={item.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-700/20 transition-colors">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-slate-700 text-sm truncate">{item.desc}</p>
-                            <p className="text-xs text-slate-400">{item.hora}</p>
+                            <p className="font-medium text-slate-200 text-sm truncate">{item.desc}</p>
+                            <p className="text-xs text-slate-500 font-mono">{item.hora}</p>
                           </div>
-                          <span className="font-semibold text-red-600 text-sm ml-2">
+                          <span className="font-bold text-red-400 text-sm ml-2 font-mono">
                             -{formatCurrencyShort(item.valor)}
                           </span>
                         </div>
                       ))
                     ) : (
-                      <div className="px-4 py-6 text-center text-slate-400 text-sm">
+                      <div className="px-5 py-8 text-center text-slate-500 text-sm">
                         Nenhuma despesa registrada
                       </div>
                     )}
@@ -617,167 +653,168 @@ export default function FinanceiroPage() {
               </div>
             </div>
 
-            {/* Coluna Direita - Stats + Resumo */}
+            {/* Coluna Direita */}
             <div className="col-span-4 space-y-4">
               
               {/* Card Faturamento Destaque */}
-              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-5 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <DollarSign className="w-5 h-5 text-cyan-200" />
-                  <span className="text-cyan-100 font-medium text-sm">Faturamento do Mês</span>
+              <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 rounded-2xl p-5 text-white">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-white/80 font-semibold text-sm uppercase tracking-wide">Faturamento do Mês</span>
+                  </div>
+                  <p className="text-5xl font-bold mb-2 font-mono">{formatCurrency(faturamentoMes)}</p>
+                  <div className="flex items-center gap-2 text-white/70 text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                    Média: {formatCurrency(faturamentoMes / new Date().getDate())}/dia
+                  </div>
                 </div>
-                <p className="text-4xl font-bold mb-1">{formatCurrency(faturamentoMes)}</p>
-                <p className="text-cyan-200 text-sm">
-                  Média: {formatCurrency(faturamentoMes / new Date().getDate())}/dia
-                </p>
               </div>
 
-              {/* Stats Compactos */}
+              {/* Stats Grid Tech */}
               <div className="grid grid-cols-2 gap-3">
                 {/* Hoje */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                      <DollarSign className="w-4 h-4 text-slate-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-slate-600/50 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-slate-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                        <DollarSign className="w-4 h-4 text-slate-400" />
+                      </div>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide">Hoje</span>
                     </div>
-                    <span className="text-xs text-slate-500">Hoje</span>
+                    <p className="text-2xl font-bold text-white font-mono">{formatCurrencyShort(faturamentoHoje)}</p>
                   </div>
-                  <p className="text-xl font-bold text-slate-800">{formatCurrencyShort(faturamentoHoje)}</p>
                 </div>
 
                 {/* Ticket Médio */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
-                      <Receipt className="w-4 h-4 text-violet-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-violet-500/30 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-violet-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
+                        <Receipt className="w-4 h-4 text-violet-400" />
+                      </div>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide">Ticket</span>
                     </div>
-                    <span className="text-xs text-slate-500">Ticket Médio</span>
+                    <p className="text-2xl font-bold text-violet-400 font-mono">{formatCurrencyShort(ticketMedio)}</p>
                   </div>
-                  <p className="text-xl font-bold text-violet-600">{formatCurrencyShort(ticketMedio)}</p>
                 </div>
 
                 {/* OS no Mês */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                      <Calendar className="w-4 h-4 text-amber-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-amber-500/30 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
+                        <Calendar className="w-4 h-4 text-amber-400" />
+                      </div>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide">OS Mês</span>
                     </div>
-                    <span className="text-xs text-slate-500">OS no Mês</span>
+                    <p className="text-2xl font-bold text-white font-mono">{totalOsMes}</p>
                   </div>
-                  <p className="text-xl font-bold text-slate-800">{totalOsMes}</p>
                 </div>
 
-                {/* Média OS/dia */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-cyan-600" />
+                {/* Média/dia */}
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 hover:border-cyan-500/30 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
+                        <TrendingUp className="w-4 h-4 text-cyan-400" />
+                      </div>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide">Média</span>
                     </div>
-                    <span className="text-xs text-slate-500">Média/dia</span>
+                    <p className="text-2xl font-bold text-white font-mono">{(totalOsMes / new Date().getDate()).toFixed(1)}</p>
                   </div>
-                  <p className="text-xl font-bold text-slate-800">{(totalOsMes / new Date().getDate()).toFixed(1)}</p>
                 </div>
               </div>
 
-              {/* Resumo Visual - Balanço */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <h3 className="font-semibold text-slate-800 mb-4">Balanço do Mês</h3>
-                <div className="space-y-3">
-                  {/* Barra Receitas */}
+              {/* Balanço Visual Tech */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+                <h3 className="font-bold text-white mb-4">Balanço do Mês</h3>
+                <div className="space-y-4">
+                  {/* Receitas */}
                   <div>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-slate-600">Receitas</span>
-                      <span className="font-semibold text-emerald-600">+{formatCurrencyShort(totalReceitas)}</span>
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-slate-400">Receitas</span>
+                      <span className="font-bold text-emerald-400 font-mono">+{formatCurrencyShort(totalReceitas)}</span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-emerald-500 rounded-full transition-all"
-                        style={{ width: `${totalReceitas > 0 ? 100 : 0}%` }}
-                      />
+                    <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: '100%' }} />
                     </div>
                   </div>
                   
-                  {/* Barra Despesas */}
+                  {/* Despesas */}
                   <div>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-slate-600">Despesas</span>
-                      <span className="font-semibold text-red-600">-{formatCurrencyShort(totalDespesas)}</span>
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-slate-400">Despesas</span>
+                      <span className="font-bold text-red-400 font-mono">-{formatCurrencyShort(totalDespesas)}</span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-red-500 rounded-full transition-all"
-                        style={{ width: `${totalReceitas > 0 ? (totalDespesas / totalReceitas) * 100 : 0}%` }}
+                        className="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all"
+                        style={{ width: `${totalReceitas > 0 ? Math.min((totalDespesas / totalReceitas) * 100, 100) : 0}%` }}
                       />
                     </div>
                   </div>
 
-                  {/* Divisor */}
-                  <div className="border-t border-slate-100 pt-3 mt-3">
+                  {/* Lucro */}
+                  <div className="border-t border-slate-700/50 pt-4 mt-4">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-700">Lucro Líquido</span>
-                      <span className={`text-xl font-bold ${lucro >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                      <span className="font-semibold text-slate-300">Lucro Líquido</span>
+                      <span className={`text-2xl font-bold font-mono ${lucro >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                         {formatCurrency(lucro)}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       Margem de {totalReceitas > 0 ? ((lucro / totalReceitas) * 100).toFixed(1) : 0}%
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Indicador de Saúde */}
-              <div className={`rounded-xl border-2 p-4 ${
+              {/* Indicador de Saúde Tech */}
+              <div className={`relative overflow-hidden rounded-2xl border p-5 ${
                 lucro > 0 
-                  ? 'bg-emerald-50 border-emerald-200' 
+                  ? 'bg-emerald-500/10 border-emerald-500/30' 
                   : lucro === 0 
-                    ? 'bg-amber-50 border-amber-200'
-                    : 'bg-red-50 border-red-200'
+                    ? 'bg-amber-500/10 border-amber-500/30'
+                    : 'bg-red-500/10 border-red-500/30'
               }`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                <div className={`absolute top-0 right-0 w-20 h-20 rounded-full blur-3xl ${
+                  lucro > 0 ? 'bg-emerald-500/20' : lucro === 0 ? 'bg-amber-500/20' : 'bg-red-500/20'
+                }`} />
+                <div className="relative flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     lucro > 0 
-                      ? 'bg-emerald-100' 
+                      ? 'bg-emerald-500/20 border border-emerald-500/30' 
                       : lucro === 0 
-                        ? 'bg-amber-100'
-                        : 'bg-red-100'
+                        ? 'bg-amber-500/20 border border-amber-500/30'
+                        : 'bg-red-500/20 border border-red-500/30'
                   }`}>
                     {lucro > 0 ? (
-                      <TrendingUp className="w-5 h-5 text-emerald-600" />
+                      <TrendingUp className="w-6 h-6 text-emerald-400" />
                     ) : lucro === 0 ? (
-                      <AlertCircle className="w-5 h-5 text-amber-600" />
+                      <AlertCircle className="w-6 h-6 text-amber-400" />
                     ) : (
-                      <TrendingDown className="w-5 h-5 text-red-600" />
+                      <TrendingDown className="w-6 h-6 text-red-400" />
                     )}
                   </div>
                   <div>
-                    <p className={`font-semibold ${
-                      lucro > 0 
-                        ? 'text-emerald-800' 
-                        : lucro === 0 
-                          ? 'text-amber-800'
-                          : 'text-red-800'
+                    <p className={`font-bold text-lg ${
+                      lucro > 0 ? 'text-emerald-400' : lucro === 0 ? 'text-amber-400' : 'text-red-400'
                     }`}>
-                      {lucro > 0 
-                        ? 'Mês positivo!' 
-                        : lucro === 0 
-                          ? 'Ponto de equilíbrio'
-                          : 'Mês negativo'
-                      }
+                      {lucro > 0 ? 'Mês Positivo!' : lucro === 0 ? 'Equilíbrio' : 'Mês Negativo'}
                     </p>
                     <p className={`text-xs ${
-                      lucro > 0 
-                        ? 'text-emerald-600' 
-                        : lucro === 0 
-                          ? 'text-amber-600'
-                          : 'text-red-600'
+                      lucro > 0 ? 'text-emerald-400/70' : lucro === 0 ? 'text-amber-400/70' : 'text-red-400/70'
                     }`}>
-                      {lucro > 0 
-                        ? 'Continue assim!' 
-                        : lucro === 0 
-                          ? 'Aumente as receitas'
-                          : 'Revise as despesas'
-                      }
+                      {lucro > 0 ? 'Continue assim!' : lucro === 0 ? 'Aumente receitas' : 'Revise despesas'}
                     </p>
                   </div>
                 </div>

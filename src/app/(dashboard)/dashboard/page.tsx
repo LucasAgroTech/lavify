@@ -427,41 +427,44 @@ export default function Dashboard() {
       </div>
 
       {/* ==================== DESKTOP VERSION ==================== */}
-      <div className="hidden lg:block p-5 min-h-screen bg-slate-100">
+      <div className="hidden lg:block p-5 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="max-w-[1400px] mx-auto space-y-4">
           
-          {/* Header Compacto */}
-          <div className="flex items-center justify-between bg-white rounded-xl border border-slate-200 px-5 py-4">
+          {/* Header Tech */}
+          <div className="flex items-center justify-between bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 px-6 py-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-                <Droplets className="w-6 h-6 text-white" />
+              <div className="relative">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/25">
+                  <Droplets className="w-7 h-7 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-slate-800 animate-pulse" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-800">
+                <h1 className="text-xl font-bold text-white">
                   {usuario?.lavaJato?.nome || "Lava Jato"}
                 </h1>
-                <p className="text-slate-500 text-sm">
-                  {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                <p className="text-slate-400 text-sm font-mono">
+                  {new Date().toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }).toUpperCase()}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               {/* Alertas inline */}
               {(data?.agendamentosPendentes ?? 0) > 0 && (
-                <Link href="/agendamentos" className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 hover:bg-blue-100 transition-colors">
-                  <Bell className="w-4 h-4 text-blue-600" />
-                  <span className="text-blue-700 font-medium text-sm">{data?.agendamentosPendentes}</span>
+                <Link href="/agendamentos" className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 rounded-xl px-4 py-2.5 hover:bg-blue-500/20 transition-all group">
+                  <Bell className="w-4 h-4 text-blue-400 group-hover:animate-pulse" />
+                  <span className="text-blue-300 font-bold text-sm">{data?.agendamentosPendentes}</span>
                 </Link>
               )}
               {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 && (
-                <Link href="/estoque" className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 hover:bg-red-100 transition-colors">
-                  <AlertTriangle className="w-4 h-4 text-red-600" />
-                  <span className="text-red-700 font-medium text-sm">{data?.produtosEstoqueBaixo?.length}</span>
+                <Link href="/estoque" className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2.5 hover:bg-red-500/20 transition-all">
+                  <AlertTriangle className="w-4 h-4 text-red-400" />
+                  <span className="text-red-300 font-bold text-sm">{data?.produtosEstoqueBaixo?.length}</span>
                 </Link>
               )}
               <Link 
                 href="/nova-os"
-                className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-xl font-semibold transition-all shadow-lg shadow-cyan-500/25"
               >
                 <Wrench className="w-4 h-4" />
                 Nova OS
@@ -469,122 +472,136 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Grid Principal - Layout Compacto para Print */}
+          {/* Grid Principal */}
           <div className="grid grid-cols-12 gap-4">
             
-            {/* Coluna Esquerda - Métricas + Pátio */}
+            {/* Coluna Esquerda */}
             <div className="col-span-8 space-y-4">
               
-              {/* Métricas do Dia - Compactas */}
+              {/* Métricas Tech */}
               <div className="grid grid-cols-4 gap-3">
                 {/* OS Hoje */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center flex-shrink-0">
-                      <Car className="w-5 h-5 text-cyan-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 group hover:border-cyan-500/50 transition-all">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-cyan-500/10 rounded-full blur-2xl" />
+                  <div className="relative flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
+                      <Car className="w-6 h-6 text-cyan-400" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-slate-800">{data?.osHoje || 0}</p>
-                      <p className="text-xs text-slate-500">OS hoje</p>
+                      <p className="text-3xl font-bold text-white font-mono">{data?.osHoje || 0}</p>
+                      <p className="text-xs text-cyan-400/80 font-medium uppercase tracking-wide">OS Hoje</p>
                     </div>
                   </div>
                 </div>
 
                 {/* No Pátio */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                      <Columns3 className="w-5 h-5 text-amber-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 group hover:border-amber-500/50 transition-all">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl" />
+                  <div className="relative flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/20 border border-amber-500/30 flex items-center justify-center">
+                      <Columns3 className="w-6 h-6 text-amber-400" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-slate-800">{data?.osEmAndamento || 0}</p>
-                      <p className="text-xs text-slate-500">No pátio</p>
+                      <p className="text-3xl font-bold text-white font-mono">{data?.osEmAndamento || 0}</p>
+                      <p className="text-xs text-amber-400/80 font-medium uppercase tracking-wide">No Pátio</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Faturamento Hoje */}
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="w-5 h-5 text-emerald-600" />
+                <div className="relative overflow-hidden bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-4 group hover:border-emerald-500/50 transition-all">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl" />
+                  <div className="relative flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 border border-emerald-500/30 flex items-center justify-center">
+                      <DollarSign className="w-6 h-6 text-emerald-400" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-emerald-600">{formatCurrencyCompact(data?.faturamentoHoje || 0)}</p>
-                      <p className="text-xs text-slate-500">Hoje</p>
+                      <p className="text-2xl font-bold text-emerald-400 font-mono">{formatCurrencyCompact(data?.faturamentoHoje || 0)}</p>
+                      <p className="text-xs text-emerald-400/80 font-medium uppercase tracking-wide">Hoje</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Faturamento Mês */}
-                <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
-                      <TrendingUp className="w-5 h-5 text-emerald-400" />
+                <div className="relative overflow-hidden bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-cyan-600/20 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-cyan-500/5" />
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/20 rounded-full blur-3xl" />
+                  <div className="relative flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-purple-300" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">{formatCurrencyCompact(data?.faturamentoMes || 0)}</p>
-                      <p className="text-xs text-slate-400">Este mês</p>
+                      <p className="text-2xl font-bold text-white font-mono">{formatCurrencyCompact(data?.faturamentoMes || 0)}</p>
+                      <p className="text-xs text-purple-300/80 font-medium uppercase tracking-wide">Este Mês</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Status do Pátio - Destaque Visual */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <Columns3 className="w-5 h-5 text-slate-600" />
+              {/* Status do Pátio */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-bold text-white flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                      <Columns3 className="w-4 h-4 text-slate-300" />
+                    </div>
                     Fila do Pátio
                   </h3>
-                  <Link href="/kanban" className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1">
+                  <Link href="/kanban" className="text-sm text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1.5 group">
                     Ver Kanban
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </Link>
                 </div>
                 
                 <div className="grid grid-cols-4 gap-3">
-                  {statusConfig.map((status) => {
+                  {[
+                    { key: "AGUARDANDO", label: "Aguardando", emoji: "🚗", gradient: "from-amber-500/20 to-orange-500/20", border: "border-amber-500/40", text: "text-amber-300" },
+                    { key: "LAVANDO", label: "Lavando", emoji: "🧽", gradient: "from-cyan-500/20 to-blue-500/20", border: "border-cyan-500/40", text: "text-cyan-300" },
+                    { key: "FINALIZANDO", label: "Finalizando", emoji: "✨", gradient: "from-blue-500/20 to-indigo-500/20", border: "border-blue-500/40", text: "text-blue-300" },
+                    { key: "PRONTO", label: "Pronto", emoji: "✅", gradient: "from-emerald-500/20 to-teal-500/20", border: "border-emerald-500/40", text: "text-emerald-300" },
+                  ].map((status) => {
                     const count = data?.ordensPorStatus?.[status.key] || 0;
                     return (
                       <div
                         key={status.key}
-                        className={`rounded-xl border-2 ${status.border} ${status.bgLight} p-4 text-center`}
+                        className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${status.gradient} border ${status.border} p-4 text-center`}
                       >
-                        <span className="text-2xl mb-1 block">{status.emoji}</span>
-                        <p className="text-3xl font-bold text-slate-800">{count}</p>
-                        <p className="text-xs font-medium text-slate-600 mt-1">{status.label}</p>
+                        <span className="text-3xl mb-2 block">{status.emoji}</span>
+                        <p className="text-4xl font-bold text-white font-mono">{count}</p>
+                        <p className={`text-xs font-semibold ${status.text} mt-1 uppercase tracking-wide`}>{status.label}</p>
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Gráfico Principal - Top Serviços com Barras */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                  <Droplets className="w-5 h-5 text-slate-600" />
+              {/* Gráfico */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+                <h3 className="font-bold text-white mb-5 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                    <Droplets className="w-4 h-4 text-slate-300" />
+                  </div>
                   Serviços Mais Vendidos
                 </h3>
                 {chartData && chartData.length > 0 ? (
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 20 }}>
-                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e2e8f0" />
-                        <XAxis type="number" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#334155" />
+                        <XAxis type="number" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                         <YAxis 
                           type="category" 
                           dataKey="name" 
-                          tick={{ fontSize: 12, fill: '#475569' }} 
+                          tick={{ fontSize: 11, fill: '#cbd5e1' }} 
                           axisLine={false} 
                           tickLine={false}
                           width={120}
                         />
                         <Tooltip 
                           contentStyle={{ 
-                            backgroundColor: '#1e293b', 
-                            border: 'none', 
-                            borderRadius: '8px',
+                            backgroundColor: '#0f172a', 
+                            border: '1px solid #334155', 
+                            borderRadius: '12px',
                             color: '#fff',
                             fontSize: '12px'
                           }}
@@ -592,81 +609,99 @@ export default function Dashboard() {
                         />
                         <Bar 
                           dataKey="quantidade" 
-                          fill="#06b6d4" 
-                          radius={[0, 4, 4, 0]}
-                          barSize={24}
+                          fill="url(#barGradient)" 
+                          radius={[0, 8, 8, 0]}
+                          barSize={28}
                         />
+                        <defs>
+                          <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="#06b6d4" />
+                            <stop offset="100%" stopColor="#8b5cf6" />
+                          </linearGradient>
+                        </defs>
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <div className="h-[200px] flex flex-col items-center justify-center text-slate-400">
-                    <Droplets className="w-10 h-10 mb-2 text-slate-300" />
+                  <div className="h-[200px] flex flex-col items-center justify-center text-slate-500">
+                    <Droplets className="w-10 h-10 mb-2 text-slate-600" />
                     <p className="text-sm">Nenhum serviço registrado ainda</p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Coluna Direita - Resumo + Clientes */}
+            {/* Coluna Direita */}
             <div className="col-span-4 space-y-4">
               
-              {/* Card Destaque - Faturamento */}
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-5 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <DollarSign className="w-5 h-5 text-emerald-200" />
-                  <span className="text-emerald-100 font-medium text-sm">Faturamento do Mês</span>
+              {/* Card Faturamento */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl p-5 text-white">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-2xl" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-white/80 font-semibold text-sm uppercase tracking-wide">Faturamento do Mês</span>
+                  </div>
+                  <p className="text-4xl font-bold mb-2 font-mono">{formatCurrency(data?.faturamentoMes || 0)}</p>
+                  <div className="flex items-center gap-2 text-white/70 text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                    Média: {formatCurrency((data?.faturamentoMes || 0) / new Date().getDate())}/dia
+                  </div>
                 </div>
-                <p className="text-4xl font-bold mb-1">{formatCurrency(data?.faturamentoMes || 0)}</p>
-                <p className="text-emerald-200 text-sm">
-                  Média diária: {formatCurrency((data?.faturamentoMes || 0) / new Date().getDate())}
-                </p>
               </div>
 
               {/* Clientes */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-slate-600" />
+                  <h3 className="font-bold text-white flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                      <Users className="w-4 h-4 text-slate-300" />
+                    </div>
                     Clientes
                   </h3>
-                  <Link href="/clientes" className="text-xs text-cyan-600 hover:text-cyan-700 font-medium">
-                    Ver todos
+                  <Link href="/clientes" className="text-xs text-cyan-400 hover:text-cyan-300 font-medium">
+                    Ver todos →
                   </Link>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-4xl font-bold text-slate-800">{data?.totalClientes || 0}</p>
+                <div className="flex items-baseline gap-3">
+                  <p className="text-5xl font-bold text-white font-mono">{data?.totalClientes || 0}</p>
                   {data?.clientesNovosMes && data.clientesNovosMes > 0 && (
-                    <span className="text-sm text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
-                      +{data.clientesNovosMes} novos
+                    <span className="text-sm text-emerald-400 font-bold bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+                      +{data.clientesNovosMes}
                     </span>
                   )}
                 </div>
-                <p className="text-slate-500 text-sm mt-1">cadastrados no sistema</p>
+                <p className="text-slate-400 text-sm mt-2">cadastrados no sistema</p>
               </div>
 
-              {/* Distribuição de Status */}
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <h3 className="font-semibold text-slate-800 mb-4">Distribuição</h3>
-                <div className="space-y-2.5">
+              {/* Distribuição */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-5">
+                <h3 className="font-bold text-white mb-4">Distribuição</h3>
+                <div className="space-y-3">
                   {[
-                    { key: "AGUARDANDO", label: "Aguardando", color: "bg-amber-500" },
-                    { key: "LAVANDO", label: "Lavando", color: "bg-cyan-500" },
-                    { key: "FINALIZANDO", label: "Finalizando", color: "bg-blue-500" },
-                    { key: "PRONTO", label: "Pronto", color: "bg-emerald-500" },
+                    { key: "AGUARDANDO", label: "Aguardando", color: "from-amber-500 to-orange-500", bg: "bg-amber-500" },
+                    { key: "LAVANDO", label: "Lavando", color: "from-cyan-500 to-blue-500", bg: "bg-cyan-500" },
+                    { key: "FINALIZANDO", label: "Finalizando", color: "from-blue-500 to-indigo-500", bg: "bg-blue-500" },
+                    { key: "PRONTO", label: "Pronto", color: "from-emerald-500 to-teal-500", bg: "bg-emerald-500" },
                   ].map((status) => {
                     const count = data?.ordensPorStatus?.[status.key] || 0;
                     const total = statusConfig.reduce((acc, s) => acc + (data?.ordensPorStatus?.[s.key] || 0), 0);
                     const percent = total > 0 ? (count / total) * 100 : 0;
 
                     return (
-                      <div key={status.key} className="flex items-center gap-2">
-                        <div className={`w-2.5 h-2.5 rounded-full ${status.color} flex-shrink-0`} />
-                        <span className="text-xs text-slate-600 w-20">{status.label}</span>
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className={`h-full ${status.color} rounded-full transition-all`} style={{ width: `${percent}%` }} />
+                      <div key={status.key} className="flex items-center gap-3">
+                        <div className={`w-2 h-2 rounded-full ${status.bg}`} />
+                        <span className="text-xs text-slate-400 w-20">{status.label}</span>
+                        <div className="flex-1 h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full bg-gradient-to-r ${status.color} rounded-full transition-all`} 
+                            style={{ width: `${percent}%` }} 
+                          />
                         </div>
-                        <span className="text-xs font-semibold text-slate-700 w-6 text-right">{count}</span>
+                        <span className="text-xs font-bold text-white w-6 text-right font-mono">{count}</span>
                       </div>
                     );
                   })}
@@ -674,28 +709,27 @@ export default function Dashboard() {
               </div>
 
               {/* Estoque Status */}
-              <div className={`rounded-xl border p-5 ${
+              <div className={`relative overflow-hidden rounded-2xl border p-5 ${
                 (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                  ? 'bg-red-50 border-red-200' 
-                  : 'bg-emerald-50 border-emerald-200'
+                  ? 'bg-red-500/10 border-red-500/30' 
+                  : 'bg-emerald-500/10 border-emerald-500/30'
               }`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                <div className={`absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl ${
+                  (data?.produtosEstoqueBaixo?.length ?? 0) > 0 ? 'bg-red-500/20' : 'bg-emerald-500/20'
+                }`} />
+                <div className="relative flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                      ? 'bg-red-100' 
-                      : 'bg-emerald-100'
+                      ? 'bg-red-500/20 border border-red-500/30' 
+                      : 'bg-emerald-500/20 border border-emerald-500/30'
                   }`}>
-                    <Package className={`w-5 h-5 ${
-                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                        ? 'text-red-600' 
-                        : 'text-emerald-600'
+                    <Package className={`w-6 h-6 ${
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 ? 'text-red-400' : 'text-emerald-400'
                     }`} />
                   </div>
                   <div>
-                    <p className={`font-semibold ${
-                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                        ? 'text-red-800' 
-                        : 'text-emerald-800'
+                    <p className={`font-bold ${
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 ? 'text-red-300' : 'text-emerald-300'
                     }`}>
                       {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 
                         ? `${data?.produtosEstoqueBaixo?.length} produto(s) baixo`
@@ -703,34 +737,29 @@ export default function Dashboard() {
                       }
                     </p>
                     <p className={`text-xs ${
-                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                        ? 'text-red-600' 
-                        : 'text-emerald-600'
+                      (data?.produtosEstoqueBaixo?.length ?? 0) > 0 ? 'text-red-400/70' : 'text-emerald-400/70'
                     }`}>
-                      {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 
-                        ? 'Precisa repor'
-                        : 'Tudo abastecido'
-                      }
+                      {(data?.produtosEstoqueBaixo?.length ?? 0) > 0 ? 'Precisa repor' : 'Tudo abastecido'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Ações Rápidas Compactas */}
+              {/* Ações Rápidas */}
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { href: "/kanban", label: "Pátio", icon: Columns3 },
-                  { href: "/clientes", label: "Clientes", icon: Users },
-                  { href: "/servicos", label: "Serviços", icon: Droplets },
-                  { href: "/agendamentos", label: "Agenda", icon: Calendar },
+                  { href: "/kanban", label: "Pátio", icon: Columns3, color: "hover:border-amber-500/50 hover:bg-amber-500/5" },
+                  { href: "/clientes", label: "Clientes", icon: Users, color: "hover:border-blue-500/50 hover:bg-blue-500/5" },
+                  { href: "/servicos", label: "Serviços", icon: Droplets, color: "hover:border-cyan-500/50 hover:bg-cyan-500/5" },
+                  { href: "/agendamentos", label: "Agenda", icon: Calendar, color: "hover:border-purple-500/50 hover:bg-purple-500/5" },
                 ].map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 px-3 py-2.5 hover:border-slate-300 hover:bg-slate-50 transition-all"
+                    className={`flex items-center gap-2 bg-slate-800/50 rounded-xl border border-slate-700/50 px-4 py-3 transition-all ${item.color}`}
                   >
-                    <item.icon className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                    <item.icon className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-300">{item.label}</span>
                   </Link>
                 ))}
               </div>
