@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
     }
     
     // Cidade é opcional para guias
-    const cidade = cidadeSlug ? getCidadeBySlug(cidadeSlug) : null;
+    const cidadeData = cidadeSlug ? getCidadeBySlug(cidadeSlug) : null;
+    const cidade: CidadeSEO | null = cidadeData || null;
 
     const conteudo = await gerarConteudoGuia(problema, cidade);
     
