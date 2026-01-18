@@ -112,7 +112,7 @@ const iconesPorTipo: Record<string, React.ComponentType<{ className?: string }>>
 };
 
 // Conteúdo fallback por problema
-function getConteudoFallback(problema: ProblemaSEO, cidade: { nome: string; uf: string; regiao: string } | null) {
+function getConteudoFallback(problema: ProblemaSEO, cidade: { nome: string; uf: string; regiao: string; slug?: string; estado?: string; populacao?: number; keywords?: string[] } | null) {
   const localidade = cidade ? ` em ${cidade.nome}` : "";
   const locUF = cidade ? `, ${cidade.uf}` : "";
   
@@ -222,7 +222,8 @@ export default async function GuiaPage({ params }: PageProps) {
   const problema = getProblemaBySlug(parsed.problemaSlug);
   if (!problema) notFound();
   
-  const cidade = parsed.cidadeSlug ? getCidadeBySlug(parsed.cidadeSlug) : null;
+  const cidadeData = parsed.cidadeSlug ? getCidadeBySlug(parsed.cidadeSlug) : null;
+  const cidade = cidadeData || null;
   const localidade = cidade ? ` em ${cidade.nome}` : "";
   
   const conteudo = getConteudoFallback(problema, cidade);
