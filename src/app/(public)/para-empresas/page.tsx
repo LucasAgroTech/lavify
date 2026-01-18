@@ -49,6 +49,7 @@ import {
   TrendingUp as TrendUp,
   Brain,
   Send,
+  Heart,
 } from "lucide-react";
 
 // FAQ Accordion Component
@@ -493,159 +494,209 @@ export default function LandingPageEmpresas() {
           <div className="text-center mb-10 lg:mb-16">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 text-cyan-700 text-[12px] lg:text-[13px] font-semibold px-4 py-2 rounded-full mb-4">
               <Sparkles className="w-4 h-4" />
-              <span>Funcionalidades que fazem a diferença</span>
+              <span>Tudo que você precisa em um só lugar</span>
             </div>
             <h2 className="text-[24px] lg:text-[40px] font-bold text-slate-900 leading-tight mb-3">
-              Automatize. Organize.{" "}
+              3 Pilares para{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
-                Cresça.
+                Escalar seu Negócio
               </span>
             </h2>
             <p className="text-slate-600 text-[15px] lg:text-[18px] max-w-2xl mx-auto">
-              Tudo o que seu lava-rápido precisa para funcionar <strong>sem depender só de você</strong>.
+              Gestão profissional, relacionamento com cliente e presença digital — <strong>integrados em um único sistema</strong>.
             </p>
           </div>
 
-          {/* Grid Desktop 2 colunas / Mobile lista */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5">
-            {/* 1. WhatsApp Automático */}
-            <div className="group bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+          {/* 3 PILARES */}
+          <div className="space-y-8 lg:space-y-12">
+            
+            {/* ══════════════════════════════════════════════════════════════════
+                PILAR 1: GESTÃO INTELIGENTE
+            ══════════════════════════════════════════════════════════════════ */}
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl lg:rounded-3xl p-6 lg:p-8 overflow-hidden relative">
+              {/* Header do Pilar */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-cyan-500 flex items-center justify-center">
+                  <LayoutDashboard className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">WhatsApp Automático</h3>
-                  <p className="text-green-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Cliente recebe notificação quando o carro fica pronto. Sem você ligar.
-                  </p>
+                <div>
+                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Gestão Inteligente</h3>
+                  <p className="text-slate-400 text-[12px] lg:text-[13px]">Controle total da operação</p>
+                </div>
+              </div>
+              
+              {/* Grid de funcionalidades */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                  <Kanban className="w-6 h-6 text-violet-400 mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Kanban do Pátio</h4>
+                  <p className="text-slate-400 text-[12px] leading-relaxed">Arraste carros entre etapas. Visualize tudo em tempo real.</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                  <Wallet className="w-6 h-6 text-emerald-400 mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Financeiro Integrado</h4>
+                  <p className="text-slate-400 text-[12px] leading-relaxed">Cada OS entra no caixa. Lucro calculado automaticamente.</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                  <Package className="w-6 h-6 text-amber-400 mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Estoque Inteligente</h4>
+                  <p className="text-slate-400 text-[12px] leading-relaxed">Alerta antes de acabar. Custo por produto em cada OS.</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all">
+                  <LayoutDashboard className="w-6 h-6 text-cyan-400 mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Dashboard ao Vivo</h4>
+                  <p className="text-slate-400 text-[12px] leading-relaxed">Faturamento, ticket médio e métricas em tempo real.</p>
+                </div>
+              </div>
+              
+              {/* Valor gerado */}
+              <div className="mt-5 pt-5 border-t border-white/10 flex flex-wrap items-center gap-4 lg:gap-8">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-slate-300 text-[12px] lg:text-[13px]"><strong className="text-white">-50%</strong> tempo com gestão</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-slate-300 text-[12px] lg:text-[13px]"><strong className="text-white">Zero</strong> planilhas</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span className="text-slate-300 text-[12px] lg:text-[13px]"><strong className="text-white">100%</strong> controle pelo celular</span>
                 </div>
               </div>
             </div>
 
-            {/* 2. Agendamento Online 24h */}
-            <div className="group bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <CalendarClock className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+            {/* ══════════════════════════════════════════════════════════════════
+                PILAR 2: RELACIONAMENTO COM CLIENTE
+            ══════════════════════════════════════════════════════════════════ */}
+            <div className="bg-gradient-to-br from-emerald-600 to-green-700 rounded-2xl lg:rounded-3xl p-6 lg:p-8 overflow-hidden relative">
+              {/* Header do Pilar */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Heart className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Agendamento Online 24h</h3>
-                  <p className="text-cyan-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Cliente agenda pelo celular. Você acorda com a agenda cheia.
-                  </p>
+                <div>
+                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Relacionamento com Cliente</h3>
+                  <p className="text-emerald-100 text-[12px] lg:text-[13px]">Fidelize e venda mais</p>
+                </div>
+              </div>
+              
+              {/* Grid de funcionalidades */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <MessageCircle className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">WhatsApp Automático</h4>
+                  <p className="text-emerald-100 text-[12px] leading-relaxed">Cliente notificado quando o carro fica pronto.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Gift className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Programa de Fidelidade</h4>
+                  <p className="text-emerald-100 text-[12px] leading-relaxed">Cliente acumula lavagens e ganha bônus. Volta sempre.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Send className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Remarketing WhatsApp</h4>
+                  <p className="text-emerald-100 text-[12px] leading-relaxed">Envie promoções e campanhas para sua base de clientes.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Users className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">CRM Completo</h4>
+                  <p className="text-emerald-100 text-[12px] leading-relaxed">Histórico de veículos, serviços e gastos de cada cliente.</p>
+                </div>
+              </div>
+              
+              {/* Valor gerado */}
+              <div className="mt-5 pt-5 border-t border-white/20 flex flex-wrap items-center gap-4 lg:gap-8">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-emerald-100 text-[12px] lg:text-[13px]"><strong className="text-white">+40%</strong> retenção de clientes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-emerald-100 text-[12px] lg:text-[13px]"><strong className="text-white">Campanhas</strong> ilimitadas</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-emerald-100 text-[12px] lg:text-[13px]"><strong className="text-white">Fidelidade</strong> automatizada</span>
                 </div>
               </div>
             </div>
 
-            {/* 3. Kanban do Pátio */}
-            <div className="group bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <Kanban className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+            {/* ══════════════════════════════════════════════════════════════════
+                PILAR 3: PRESENÇA DIGITAL
+            ══════════════════════════════════════════════════════════════════ */}
+            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl lg:rounded-3xl p-6 lg:p-8 overflow-hidden relative">
+              {/* Header do Pilar */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Globe className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Kanban Visual do Pátio</h3>
-                  <p className="text-violet-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Arraste carros entre etapas. Veja seu pátio de qualquer lugar.
-                  </p>
+                <div>
+                  <h3 className="text-[18px] lg:text-[22px] font-bold text-white">Presença Digital</h3>
+                  <p className="text-cyan-100 text-[12px] lg:text-[13px]">Seja encontrado e conquiste novos clientes</p>
+                </div>
+              </div>
+              
+              {/* Grid de funcionalidades */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Globe className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Página Própria Online</h4>
+                  <p className="text-cyan-100 text-[12px] leading-relaxed">Seu lava-rápido com link exclusivo. Clientes te encontram.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <CalendarClock className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Agendamento 24h</h4>
+                  <p className="text-cyan-100 text-[12px] leading-relaxed">Cliente agenda pelo celular. Você acorda com agenda cheia.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Car className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">Multi-Veículos</h4>
+                  <p className="text-cyan-100 text-[12px] leading-relaxed">Cliente cadastra todos os carros. Histórico completo.</p>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all">
+                  <Smartphone className="w-6 h-6 text-white mb-2" />
+                  <h4 className="text-white font-semibold text-[14px] mb-1">App para Cliente</h4>
+                  <p className="text-cyan-100 text-[12px] leading-relaxed">Clientes acompanham status do carro em tempo real.</p>
+                </div>
+              </div>
+              
+              {/* Valor gerado */}
+              <div className="mt-5 pt-5 border-t border-white/20 flex flex-wrap items-center gap-4 lg:gap-8">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-cyan-100 text-[12px] lg:text-[13px]"><strong className="text-white">24h</strong> recebendo agendamentos</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-cyan-100 text-[12px] lg:text-[13px]"><strong className="text-white">Link</strong> exclusivo</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white" />
+                  <span className="text-cyan-100 text-[12px] lg:text-[13px]"><strong className="text-white">+30%</strong> novos clientes</span>
                 </div>
               </div>
             </div>
 
-            {/* 4. Estoque Inteligente */}
-            <div className="group bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <Package className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Estoque Inteligente</h3>
-                  <p className="text-amber-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Alerta antes de acabar. Custo por produto em cada lavagem.
-                  </p>
-                </div>
-              </div>
-            </div>
+          </div>
 
-            {/* 5. Financeiro Integrado */}
-            <div className="group bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <Wallet className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Financeiro Integrado</h3>
-                  <p className="text-emerald-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Cada OS entra no caixa. Lucro real calculado automaticamente.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 6. Dashboard em Tempo Real */}
-            <div className="group bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
-                  <LayoutDashboard className="w-6 h-6 lg:w-7 lg:h-7 text-cyan-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Dashboard em Tempo Real</h3>
-                  <p className="text-slate-300 text-[13px] lg:text-[14px] leading-relaxed">
-                    Faturamento, ticket médio e OSs — tudo ao vivo.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 7. CRM de Clientes */}
-            <div className="group bg-gradient-to-br from-sky-500 to-blue-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">CRM de Clientes</h3>
-                  <p className="text-sky-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Histórico completo: veículos, serviços e gastos totais.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 8. Controle de Permissões */}
-            <div className="group bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 text-white relative overflow-hidden hover:shadow-lg transition-all">
-              <div className="flex items-start gap-4">
+          {/* BÔNUS: Equipe */}
+          <div className="mt-8 lg:mt-12 bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl lg:rounded-3xl p-5 lg:p-6 overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                   <ShieldCheck className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] lg:text-[18px] font-bold mb-1">Controle de Permissões</h3>
-                  <p className="text-rose-100 text-[13px] lg:text-[14px] leading-relaxed">
-                    Cada funcionário vê só o que precisa. Viaje tranquilo.
-                  </p>
+                <div>
+                  <h3 className="text-[16px] lg:text-[20px] font-bold text-white">+ Gestão de Equipe</h3>
+                  <p className="text-rose-100 text-[13px] lg:text-[14px]">Controle permissões, comissões e desempenho de cada funcionário. <strong>Viaje tranquilo.</strong></p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Stats de Valor */}
-          <div className="mt-10 lg:mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <div className="text-center p-4 lg:p-6">
-              <div className="text-[28px] lg:text-[40px] font-bold text-cyan-600 mb-1">-50%</div>
-              <p className="text-slate-500 text-[12px] lg:text-[14px]">Tempo gasto com gestão</p>
-            </div>
-            <div className="text-center p-4 lg:p-6">
-              <div className="text-[28px] lg:text-[40px] font-bold text-emerald-600 mb-1">+30%</div>
-              <p className="text-slate-500 text-[12px] lg:text-[14px]">Aumento no faturamento</p>
-            </div>
-            <div className="text-center p-4 lg:p-6">
-              <div className="text-[28px] lg:text-[40px] font-bold text-green-600 mb-1">24h</div>
-              <p className="text-slate-500 text-[12px] lg:text-[14px]">Agendamentos online</p>
-            </div>
-            <div className="text-center p-4 lg:p-6">
-              <div className="text-[28px] lg:text-[40px] font-bold text-violet-600 mb-1">100%</div>
-              <p className="text-slate-500 text-[12px] lg:text-[14px]">Controle pelo celular</p>
+              <div className="flex flex-wrap gap-3">
+                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Permissões por função</span>
+                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Comissões automáticas</span>
+                <span className="bg-white/20 text-white text-[11px] lg:text-[12px] font-medium px-3 py-1.5 rounded-full">Relatório de produtividade</span>
+              </div>
             </div>
           </div>
         </div>
