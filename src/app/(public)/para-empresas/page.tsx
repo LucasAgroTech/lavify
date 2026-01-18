@@ -341,15 +341,23 @@ export default function LandingPageEmpresas() {
             </div>
           )}
 
-          {/* GIF Mobile - Animação do App */}
+          {/* Vídeo Mobile - Animação do App */}
           {isMobile === true && (
             <div className="relative mb-8 w-full max-w-[320px] mx-auto">
               <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
-                <img
-                  src="/hero-mobile.gif"
-                  alt="Sistema Lavify em ação"
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  width={640}
+                  height={1386}
                   className="w-full h-auto"
-                />
+                  poster="/hero-mobile-poster.jpg"
+                >
+                  <source src="/hero-mobile.mp4" type="video/mp4" />
+                </video>
                 
                 {/* Badge flutuante */}
                 <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 z-10">
@@ -373,12 +381,13 @@ export default function LandingPageEmpresas() {
                       <Image
                         src={img}
                         alt={`Sistema Lavify em ação ${index + 1}`}
-                        width={1600}
-                        height={900}
+                        width={2860}
+                        height={1342}
                         sizes="(max-width: 1024px) 100vw, 896px"
                         className="w-full h-auto object-cover object-top"
                         priority={index === 0}
                         loading={index === 0 ? "eager" : "lazy"}
+                        quality={90}
                       />
                     </div>
                   ))}

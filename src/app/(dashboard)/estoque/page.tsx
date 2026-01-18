@@ -73,21 +73,21 @@ export default function EstoquePage() {
     setSalvando(true);
 
     try {
-      const res = await fetch("/api/produtos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+    const res = await fetch("/api/produtos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
           nome: formNome,
           quantidade: parseFloat(formQuantidade),
           unidade: formUnidade,
           custoPorUnidade: parseFloat(formCusto),
           pontoReposicao: parseFloat(formMinimo),
-        }),
-      });
+      }),
+    });
 
-      if (res.ok) {
-        await fetchProdutos();
-        setShowModal(false);
+    if (res.ok) {
+      await fetchProdutos();
+      setShowModal(false);
       }
     } catch (error) {
       console.error("Erro:", error);
@@ -337,174 +337,174 @@ export default function EstoquePage() {
 
       {/* ==================== DESKTOP VERSION ==================== */}
       <div className="hidden lg:block p-6 xl:p-8 min-h-screen bg-slate-50">
-        <div className="max-w-[1400px] mx-auto space-y-6">
-          
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800">Estoque</h1>
-              <p className="text-slate-500 text-sm mt-0.5">{produtos.length} produtos cadastrados</p>
-            </div>
-            <button
+      <div className="max-w-[1400px] mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Estoque</h1>
+            <p className="text-slate-500 text-sm mt-0.5">{produtos.length} produtos cadastrados</p>
+          </div>
+          <button
               onClick={abrirModal}
-              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Novo Produto
-            </button>
-          </div>
+            className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Novo Produto
+          </button>
+        </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-slate-800">{produtos.length}</p>
-                  <p className="text-sm text-slate-500">Produtos</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <Boxes className="w-5 h-5 text-slate-600" />
-                </div>
+        {/* Stats */}
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-bold text-slate-800">{produtos.length}</p>
+                <p className="text-sm text-slate-500">Produtos</p>
               </div>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">{formatCurrency(valorTotalEstoque)}</p>
-                  <p className="text-sm text-slate-500">Valor Total</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-emerald-600" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-slate-800">{produtos.filter(p => !p.estoqueBaixo).length}</p>
-                  <p className="text-sm text-slate-500">Em Estoque</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-cyan-600" />
-                </div>
-              </div>
-            </div>
-            <div className={`rounded-xl border p-4 ${produtosEstoqueBaixo.length > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-slate-200'}`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`text-2xl font-bold ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-800'}`}>{produtosEstoqueBaixo.length}</p>
-                  <p className={`text-sm ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-500'}`}>Estoque Baixo</p>
-                </div>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${produtosEstoqueBaixo.length > 0 ? 'bg-red-100' : 'bg-slate-100'}`}>
-                  <AlertTriangle className={`w-5 h-5 ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-400'}`} />
-                </div>
+              <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                <Boxes className="w-5 h-5 text-slate-600" />
               </div>
             </div>
           </div>
-
-          {/* Alerta de estoque baixo */}
-          {produtosEstoqueBaixo.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-bold text-emerald-600">{formatCurrency(valorTotalEstoque)}</p>
+                <p className="text-sm text-slate-500">Valor Total</p>
               </div>
-              <div className="flex-1">
-                <p className="font-medium text-red-800">
-                  {produtosEstoqueBaixo.length} produto{produtosEstoqueBaixo.length > 1 ? 's' : ''} abaixo do ponto de reposição
-                </p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {produtosEstoqueBaixo.map((produto) => (
-                    <span key={produto.id} className="text-xs bg-white text-red-700 px-2 py-1 rounded border border-red-200 font-medium">
-                      {produto.nome}: {produto.quantidade}{produto.unidade}
-                    </span>
-                  ))}
-                </div>
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
+          </div>
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-bold text-slate-800">{produtos.filter(p => !p.estoqueBaixo).length}</p>
+                <p className="text-sm text-slate-500">Em Estoque</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                <Package className="w-5 h-5 text-cyan-600" />
+              </div>
+            </div>
+          </div>
+          <div className={`rounded-xl border p-4 ${produtosEstoqueBaixo.length > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-slate-200'}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`text-2xl font-bold ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-800'}`}>{produtosEstoqueBaixo.length}</p>
+                <p className={`text-sm ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-500'}`}>Estoque Baixo</p>
+              </div>
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${produtosEstoqueBaixo.length > 0 ? 'bg-red-100' : 'bg-slate-100'}`}>
+                <AlertTriangle className={`w-5 h-5 ${produtosEstoqueBaixo.length > 0 ? 'text-red-600' : 'text-slate-400'}`} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Alerta de estoque baixo */}
+        {produtosEstoqueBaixo.length > 0 && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-red-800">
+                {produtosEstoqueBaixo.length} produto{produtosEstoqueBaixo.length > 1 ? 's' : ''} abaixo do ponto de reposição
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {produtosEstoqueBaixo.map((produto) => (
+                  <span key={produto.id} className="text-xs bg-white text-red-700 px-2 py-1 rounded border border-red-200 font-medium">
+                    {produto.nome}: {produto.quantidade}{produto.unidade}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tabela */}
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            {produtos.length === 0 ? (
+            <div className="text-center py-16">
+              <Package className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <h3 className="text-slate-700 font-medium">Nenhum produto cadastrado</h3>
+              <p className="text-slate-500 text-sm mt-1">Cadastre os produtos do seu estoque</p>
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-100 bg-slate-50">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Produto</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Quantidade</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Mínimo</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Nível</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Custo/Un</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Valor Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {produtos.map((produto) => {
+                  const percentual = Math.min((produto.quantidade / (produto.pontoReposicao * 2)) * 100, 100);
+                  return (
+                    <tr key={produto.id} className={`hover:bg-slate-50 transition-colors ${produto.estoqueBaixo ? 'bg-red-50/50' : ''}`}>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${produto.estoqueBaixo ? 'bg-red-100' : 'bg-emerald-100'}`}>
+                            <Package className={`w-5 h-5 ${produto.estoqueBaixo ? 'text-red-600' : 'text-emerald-600'}`} />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-slate-800">{produto.nome}</span>
+                            {produto.estoqueBaixo && (
+                              <span className="ml-2 text-[10px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded uppercase">
+                                Baixo
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className={`text-lg font-bold ${produto.estoqueBaixo ? 'text-red-600' : 'text-slate-800'}`}>
+                          {produto.quantidade}
+                        </span>
+                        <span className="text-slate-500 text-sm ml-1">{produto.unidade}</span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="text-slate-600">{produto.pontoReposicao}</span>
+                        <span className="text-slate-400 text-sm ml-1">{produto.unidade}</span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="w-24 mx-auto">
+                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${produto.estoqueBaixo ? 'bg-red-500' : 'bg-emerald-500'}`}
+                              style={{ width: `${percentual}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-slate-500 text-center mt-1">{Math.round(percentual)}%</p>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <span className="text-slate-600">{formatCurrency(produto.custoPorUnidade)}</span>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <span className="font-semibold text-slate-800">
+                          {formatCurrency(produto.quantidade * produto.custoPorUnidade)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           )}
 
-          {/* Tabela */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            {produtos.length === 0 ? (
-              <div className="text-center py-16">
-                <Package className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-slate-700 font-medium">Nenhum produto cadastrado</h3>
-                <p className="text-slate-500 text-sm mt-1">Cadastre os produtos do seu estoque</p>
-              </div>
-            ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50">
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Produto</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Quantidade</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Mínimo</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Nível</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Custo/Un</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Valor Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {produtos.map((produto) => {
-                    const percentual = Math.min((produto.quantidade / (produto.pontoReposicao * 2)) * 100, 100);
-                    return (
-                      <tr key={produto.id} className={`hover:bg-slate-50 transition-colors ${produto.estoqueBaixo ? 'bg-red-50/50' : ''}`}>
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${produto.estoqueBaixo ? 'bg-red-100' : 'bg-emerald-100'}`}>
-                              <Package className={`w-5 h-5 ${produto.estoqueBaixo ? 'text-red-600' : 'text-emerald-600'}`} />
-                            </div>
-                            <div>
-                              <span className="font-semibold text-slate-800">{produto.nome}</span>
-                              {produto.estoqueBaixo && (
-                                <span className="ml-2 text-[10px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded uppercase">
-                                  Baixo
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-center">
-                          <span className={`text-lg font-bold ${produto.estoqueBaixo ? 'text-red-600' : 'text-slate-800'}`}>
-                            {produto.quantidade}
-                          </span>
-                          <span className="text-slate-500 text-sm ml-1">{produto.unidade}</span>
-                        </td>
-                        <td className="py-4 px-4 text-center">
-                          <span className="text-slate-600">{produto.pontoReposicao}</span>
-                          <span className="text-slate-400 text-sm ml-1">{produto.unidade}</span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <div className="w-24 mx-auto">
-                            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full ${produto.estoqueBaixo ? 'bg-red-500' : 'bg-emerald-500'}`}
-                                style={{ width: `${percentual}%` }}
-                              />
-                            </div>
-                            <p className="text-xs text-slate-500 text-center mt-1">{Math.round(percentual)}%</p>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="text-slate-600">{formatCurrency(produto.custoPorUnidade)}</span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="font-semibold text-slate-800">
-                            {formatCurrency(produto.quantidade * produto.custoPorUnidade)}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-
-            {produtos.length > 0 && (
-              <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-sm text-slate-500">
-                <span>{produtos.length} produtos</span>
-                <span>Valor total em estoque: <strong className="text-emerald-600">{formatCurrency(valorTotalEstoque)}</strong></span>
-              </div>
-            )}
+          {produtos.length > 0 && (
+            <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-sm text-slate-500">
+              <span>{produtos.length} produtos</span>
+              <span>Valor total em estoque: <strong className="text-emerald-600">{formatCurrency(valorTotalEstoque)}</strong></span>
+            </div>
+          )}
           </div>
         </div>
       </div>
@@ -524,8 +524,8 @@ export default function EstoquePage() {
             <form id="mobile-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Nome do produto</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={formNome} 
                   onChange={(e) => setFormNome(e.target.value)} 
                   required
@@ -536,20 +536,20 @@ export default function EstoquePage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">Quantidade</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     step="0.01"
                     value={formQuantidade} 
                     onChange={(e) => setFormQuantidade(e.target.value)} 
                     required
                     className="w-full px-4 py-3 bg-slate-100 rounded-xl text-slate-800" 
-                    placeholder="5000" 
+                    placeholder="5000"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">Unidade</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={formUnidade} 
                     onChange={(e) => setFormUnidade(e.target.value)} 
                     required
@@ -561,26 +561,26 @@ export default function EstoquePage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">Custo/Un (R$)</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     step="0.01"
                     value={formCusto} 
                     onChange={(e) => setFormCusto(e.target.value)} 
                     required
                     className="w-full px-4 py-3 bg-slate-100 rounded-xl text-slate-800" 
-                    placeholder="0.05" 
+                    placeholder="0.05"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">Mínimo</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     step="0.01"
                     value={formMinimo} 
                     onChange={(e) => setFormMinimo(e.target.value)} 
                     required
                     className="w-full px-4 py-3 bg-slate-100 rounded-xl text-slate-800" 
-                    placeholder="1000" 
+                    placeholder="1000"
                   />
                 </div>
               </div>
@@ -685,11 +685,11 @@ export default function EstoquePage() {
                   className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm rounded-lg disabled:opacity-50 flex items-center gap-2"
                 >
                   {salvando && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Cadastrar
-                </button>
-              </div>
+                Cadastrar
+              </button>
             </div>
           </div>
+        </div>
         </>
       )}
     </div>
