@@ -34,14 +34,20 @@ export default function ParaEmpresasLayout({
   // Layout limpo sem header/footer do cliente - a página tem seus próprios
   return (
     <>
-      {/* Preload para recursos críticos do LCP - Desktop */}
+      {/* Preload para recursos críticos do LCP */}
+      <link
+        rel="preload"
+        href="/hero-mobile-poster.jpg"
+        as="image"
+        fetchPriority="high"
+      />
       <link
         rel="preload"
         href="/hero-1.webp"
         as="image"
         fetchPriority="high"
       />
-      {/* Preconnect para Vimeo - Mobile */}
+      {/* Preconnect para Vimeo (carrega quando clicar no vídeo) */}
       <link rel="preconnect" href="https://player.vimeo.com" />
       <link rel="preconnect" href="https://i.vimeocdn.com" />
       {children}

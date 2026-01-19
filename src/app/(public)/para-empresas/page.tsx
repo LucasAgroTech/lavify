@@ -341,24 +341,69 @@ export default function LandingPageEmpresas() {
             </div>
           )}
 
-          {/* Vídeo Mobile - Animação do App (Vimeo) */}
+          {/* Vídeo Mobile - Preview + Modal com Vimeo */}
           {isMobile === true && (
             <div className="relative mb-8 w-full max-w-[320px] mx-auto">
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 aspect-[9/16]">
-                <iframe
-                  src="https://player.vimeo.com/video/1155801555?autoplay=1&loop=1&muted=1&background=1&quality=720p"
-                  className="absolute inset-0 w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                  title="Lavify App Demo"
-                />
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
+                {/* Vídeo de preview (mudo, loop) */}
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  width={557}
+                  height={1205}
+                  className="w-full h-auto"
+                  poster="/hero-mobile-poster.jpg"
+                >
+                  <source src="/hero-mobile.mp4" type="video/mp4" />
+                </video>
+                
+                {/* Botão para abrir vídeo com áudio */}
+                <button
+                  onClick={() => setVideoAberto(true)}
+                  className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors group"
+                >
+                  <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                    <Play className="w-8 h-8 text-slate-900 ml-1" />
+                  </div>
+                </button>
                 
                 {/* Badge flutuante */}
                 <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 z-10">
                   <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   <span className="text-white text-[11px] font-medium">Visão do App</span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal do Vídeo com Áudio (Vimeo) */}
+          {videoAberto && (
+            <div 
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+              onClick={() => setVideoAberto(false)}
+            >
+              <button
+                onClick={() => setVideoAberto(false)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
+              >
+                <X className="w-6 h-6 text-white" />
+              </button>
+              
+              <div 
+                className="relative w-full max-w-sm aspect-[9/16] rounded-2xl overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <iframe
+                  src="https://player.vimeo.com/video/1155801555?autoplay=1&loop=1&quality=720p"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title="Lavify App Demo"
+                />
               </div>
             </div>
           )}
