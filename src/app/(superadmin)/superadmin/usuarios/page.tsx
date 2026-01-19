@@ -10,15 +10,27 @@ import {
   Building2,
   Mail,
   Phone,
-  Shield,
   UserCog,
   User,
   Wrench,
   ExternalLink,
+  Trash2,
+  AlertTriangle,
+  X,
+  TrendingUp,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 interface Usuario {
   id: string;
@@ -46,12 +58,33 @@ interface Stats {
   ativos: number;
 }
 
+interface UsuariosPorSemana {
+  semana: string;
+  quantidade: number;
+}
+
+interface StatsGerais {
+  usuarios: {
+    total: number;
+    novosUltimaSemana: number;
+    porSemana: UsuariosPorSemana[];
+  };
+}
+
 export default function SuperAdminUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [statsGerais, setStatsGerais] = useState<StatsGerais | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filtroRole, setFiltroRole] = useState("");
+  
+  // Estado para modal de deletar
+  const [modalDeletar, setModalDeletar] = useState<{
+    aberto: boolean;
+    usuario: Usuario | null;
+    deletando: boolean;
+  }>({ aberto: false, usuario: null, deletando: false });
 
   const fetchUsuarios = async () => {
     try {
@@ -72,9 +105,50 @@ export default function SuperAdminUsuarios() {
     }
   };
 
+  const fetchStatsGerais = async () => {
+    try {
+      const res = await fetch("/api/superadmin/stats");
+      if (res.ok) {
+        const data = await res.json();
+        setStatsGerais(data);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar stats:", error);
+    }
+  };
+
   useEffect(() => {
     fetchUsuarios();
+    fetchStatsGerais();
   }, [search, filtroRole]);
+
+  const handleDeletar = async (deletarLavaJato: boolean) => {
+    if (!modalDeletar.usuario) return;
+    
+    setModalDeletar((prev) => ({ ...prev, deletando: true }));
+    
+    try {
+      const res = await fetch(
+        `/api/superadmin/usuarios/${modalDeletar.usuario.id}?deletarLavaJato=${deletarLavaJato}`,
+        { method: "DELETE" }
+      );
+      
+      if (res.ok) {
+        // Atualizar lista
+        fetchUsuarios();
+        fetchStatsGerais();
+        setModalDeletar({ aberto: false, usuario: null, deletando: false });
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erro ao deletar");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      alert("Erro ao deletar usuário");
+    } finally {
+      setModalDeletar((prev) => ({ ...prev, deletando: false }));
+    }
+  };
 
   const getRoleInfo = (role: string) => {
     switch (role) {
@@ -177,6 +251,61 @@ export default function SuperAdminUsuarios() {
           <p className="text-slate-500 text-xs">Ativos</p>
         </div>
       </div>
+
+      {/* Gráfico de Usuários Novos por Semana */}
+      {statsGerais?.usuarios?.porSemana && (
+        <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              <h2 className="text-white font-semibold">Usuários Novos por Semana</h2>
+            </div>
+            <span className="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded-full">
+              +{statsGerais.usuarios.novosUltimaSemana} esta semana
+            </span>
+          </div>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={statsGerais.usuarios.porSemana}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis
+                  dataKey="semana"
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
+                  axisLine={{ stroke: "#475569" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
+                  axisLine={{ stroke: "#475569" }}
+                  tickLine={false}
+                  allowDecimals={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
+                    color: "#fff",
+                  }}
+                  labelStyle={{ color: "#94a3b8" }}
+                  formatter={(value: number) => [`${value} usuários`, "Novos"]}
+                />
+                <Bar
+                  dataKey="quantidade"
+                  fill="url(#gradientCyan)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <defs>
+                  <linearGradient id="gradientCyan" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#06b6d4" />
+                    <stop offset="100%" stopColor="#0891b2" />
+                  </linearGradient>
+                </defs>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-3 mb-6">
@@ -304,14 +433,23 @@ export default function SuperAdminUsuarios() {
                   </div>
                 </div>
 
-                {/* Data */}
-                <div className="text-right hidden sm:block">
-                  <p className="text-slate-500 text-xs">
-                    Criado em
-                  </p>
-                  <p className="text-slate-400 text-sm">
-                    {format(new Date(usuario.createdAt), "dd/MM/yyyy", { locale: ptBR })}
-                  </p>
+                {/* Data e Botão Deletar */}
+                <div className="flex items-center gap-3">
+                  <div className="text-right hidden sm:block">
+                    <p className="text-slate-500 text-xs">
+                      Criado em
+                    </p>
+                    <p className="text-slate-400 text-sm">
+                      {format(new Date(usuario.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setModalDeletar({ aberto: true, usuario, deletando: false })}
+                    className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    title="Remover usuário"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -325,6 +463,80 @@ export default function SuperAdminUsuarios() {
           </div>
         )}
       </div>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {modalDeletar.aberto && modalDeletar.usuario && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                </div>
+                <h3 className="text-white font-semibold">Remover Usuário</h3>
+              </div>
+              <button
+                onClick={() => setModalDeletar({ aberto: false, usuario: null, deletando: false })}
+                className="text-slate-500 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Conteúdo */}
+            <div className="mb-6">
+              <p className="text-slate-300 mb-3">
+                Você está prestes a remover <strong className="text-white">{modalDeletar.usuario.nome}</strong>
+              </p>
+              <div className="bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-sm">
+                <p className="text-slate-400">
+                  <span className="text-slate-500">Email:</span> {modalDeletar.usuario.email}
+                </p>
+                <p className="text-slate-400">
+                  <span className="text-slate-500">Lava-Jato:</span> {modalDeletar.usuario.lavaJato.nome}
+                </p>
+                <p className="text-slate-400">
+                  <span className="text-slate-500">Cargo:</span> {modalDeletar.usuario.role}
+                </p>
+              </div>
+            </div>
+
+            {/* Opções de Exclusão */}
+            <div className="space-y-3">
+              <button
+                onClick={() => handleDeletar(false)}
+                disabled={modalDeletar.deletando}
+                className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {modalDeletar.deletando ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
+                Remover Apenas Usuário
+              </button>
+              
+              <button
+                onClick={() => handleDeletar(true)}
+                disabled={modalDeletar.deletando}
+                className="w-full py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {modalDeletar.deletando ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+                Remover Lava-Jato Completo
+              </button>
+
+              <p className="text-xs text-center text-slate-500">
+                ⚠️ Remover o lava-jato apaga todos os dados: ordens, clientes, financeiro, etc.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

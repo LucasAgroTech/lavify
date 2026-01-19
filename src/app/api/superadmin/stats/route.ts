@@ -65,6 +65,46 @@ export async function GET() {
       where: { dataEntrada: { gte: seteDiasAtras } },
     });
 
+    // ========================================
+    // USUÁRIOS NOVOS POR SEMANA (últimas 8 semanas)
+    // ========================================
+    const usuariosPorSemana: { semana: string; quantidade: number }[] = [];
+    
+    for (let i = 7; i >= 0; i--) {
+      const inicioSemana = new Date();
+      inicioSemana.setDate(inicioSemana.getDate() - (i * 7) - inicioSemana.getDay());
+      inicioSemana.setHours(0, 0, 0, 0);
+      
+      const fimSemana = new Date(inicioSemana);
+      fimSemana.setDate(fimSemana.getDate() + 6);
+      fimSemana.setHours(23, 59, 59, 999);
+
+      const quantidade = await prisma.usuario.count({
+        where: {
+          createdAt: {
+            gte: inicioSemana,
+            lte: fimSemana,
+          },
+        },
+      });
+
+      // Formatar a semana como "DD/MM"
+      const semanaLabel = `${inicioSemana.getDate().toString().padStart(2, "0")}/${(inicioSemana.getMonth() + 1).toString().padStart(2, "0")}`;
+
+      usuariosPorSemana.push({
+        semana: semanaLabel,
+        quantidade,
+      });
+    }
+
+    // Usuários novos na última semana
+    const umaSemanaAtras = new Date();
+    umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
+    
+    const usuariosNovosUltimaSemana = await prisma.usuario.count({
+      where: { createdAt: { gte: umaSemanaAtras } },
+    });
+
     return NextResponse.json({
       lavajatos: {
         total: totalLavajatos,
@@ -72,7 +112,11 @@ export async function GET() {
         inativos: totalLavajatos - lavajatosAtivos,
         novosMes,
       },
-      usuarios: totalUsuarios,
+      usuarios: {
+        total: totalUsuarios,
+        novosUltimaSemana: usuariosNovosUltimaSemana,
+        porSemana: usuariosPorSemana,
+      },
       clientes: totalClientes,
       ordens: {
         total: totalOrdens,
