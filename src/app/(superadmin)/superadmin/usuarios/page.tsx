@@ -288,7 +288,7 @@ export default function SuperAdminUsuarios() {
                     color: "#fff",
                   }}
                   labelStyle={{ color: "#94a3b8" }}
-                  formatter={(value: number) => [`${value} usuários`, "Novos"]}
+                  formatter={(value) => [`${value as number} usuários`, "Novos"]}
                 />
                 <Bar
                   dataKey="quantidade"
