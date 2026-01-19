@@ -48,6 +48,7 @@ model LavaJato {
   ordens        OrdemServico[]
   financeiro    Financeiro[]
   agendamentos  Agendamento[]
+  leadInfo      LeadInfo?
   
   @@index([stripeCustomerId])
   @@index([plano])
@@ -114,6 +115,104 @@ model SessaoSuperAdmin {
   
   superAdminId  String
   superAdmin    SuperAdmin  @relation(fields: [superAdminId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// CRM - Gestão de Leads e Monitoramento
+// ============================================
+
+enum StatusLead {
+  NOVO              // Acabou de se cadastrar
+  CONTATO_INICIAL   // Primeiro contato feito
+  EM_NEGOCIACAO     // Em processo de venda
+  DEMONSTRACAO      // Agendou/fez demonstração
+  CONVERTIDO        // Virou cliente pagante
+  PERDIDO           // Desistiu/não tem interesse
+  INATIVO           // Sem atividade há muito tempo
+}
+
+model LeadInfo {
+  id              String      @id @default(uuid())
+  
+  // Relacionamento com LavaJato
+  lavaJatoId      String      @unique
+  lavaJato        LavaJato    @relation(fields: [lavaJatoId], references: [id], onDelete: Cascade)
+  
+  // Status do Lead
+  status          StatusLead  @default(NOVO)
+  temperatura     Int         @default(0) // 0-100 (quente/frio)
+  
+  // Checklist de Contato
+  whatsappEnviado     Boolean   @default(false)
+  whatsappRespondeu   Boolean   @default(false)
+  emailEnviado        Boolean   @default(false)
+  emailRespondeu      Boolean   @default(false)
+  ligacaoFeita        Boolean   @default(false)
+  ligacaoAtendeu      Boolean   @default(false)
+  demonstracaoAgendada Boolean  @default(false)
+  demonstracaoRealizada Boolean @default(false)
+  
+  // Datas importantes
+  dataUltimoContato   DateTime?
+  dataProximoContato  DateTime?
+  
+  // Anotações
+  notas               String?
+  motivoPerda         String?
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Histórico de interações
+  interacoes      LeadInteracao[]
+  
+  @@index([status])
+  @@index([dataProximoContato])
+}
+
+model LeadInteracao {
+  id              String      @id @default(uuid())
+  
+  leadInfoId      String
+  leadInfo        LeadInfo    @relation(fields: [leadInfoId], references: [id], onDelete: Cascade)
+  
+  tipo            String      // WHATSAPP, EMAIL, LIGACAO, REUNIAO, NOTA
+  descricao       String
+  resultado       String?     // POSITIVO, NEGATIVO, NEUTRO
+  
+  createdAt       DateTime    @default(now())
+  
+  @@index([leadInfoId])
+  @@index([createdAt])
+}
+
+// Log de Atividades do Sistema
+model AtividadeLog {
+  id              String      @id @default(uuid())
+  
+  // Quem fez
+  lavaJatoId      String?
+  usuarioId       String?
+  usuarioNome     String?
+  usuarioEmail    String?
+  
+  // O que fez
+  tipo            String      // LOGIN, LOGOUT, OS_CRIADA, OS_FINALIZADA, CLIENTE_CRIADO, etc.
+  descricao       String
+  metadata        String?     // JSON com dados extras
+  
+  // Onde fez
+  pagina          String?
+  ipAddress       String?
+  userAgent       String?
+  
+  createdAt       DateTime    @default(now())
+  
+  @@index([lavaJatoId])
+  @@index([usuarioId])
+  @@index([tipo])
+  @@index([createdAt])
 }
 
 // ============================================

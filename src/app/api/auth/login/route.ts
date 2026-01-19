@@ -9,6 +9,7 @@ import {
   resetRateLimit,
 } from "@/lib/rate-limit";
 import { validateLogin, sanitizeString } from "@/lib/validation";
+import { logAtividade } from "@/lib/activity-logger";
 
 // POST - Login
 export async function POST(request: NextRequest) {
@@ -116,6 +117,18 @@ export async function POST(request: NextRequest) {
 
     // 10. Cria sessão
     await createSession(usuario.id, usuario.lavaJatoId, usuario.role);
+
+    // 11. Log de atividade
+    logAtividade({
+      lavaJatoId: usuario.lavaJatoId,
+      usuarioId: usuario.id,
+      usuarioNome: usuario.nome,
+      usuarioEmail: usuario.email,
+      tipo: "LOGIN",
+      descricao: `${usuario.nome} fez login`,
+      ipAddress: clientIP,
+      userAgent: request.headers.get("user-agent") || undefined,
+    });
 
     return NextResponse.json(
       {
