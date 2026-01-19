@@ -21,7 +21,11 @@ interface Stats {
     inativos: number;
     novosMes: number;
   };
-  usuarios: number;
+  usuarios: {
+    total: number;
+    novosUltimaSemana: number;
+    porSemana: { semana: string; quantidade: number }[];
+  };
   clientes: number;
   ordens: {
     total: number;
@@ -74,9 +78,11 @@ export default function SuperAdminDashboard() {
     },
     {
       label: "Usuários",
-      value: stats?.usuarios || 0,
+      value: stats?.usuarios?.total || 0,
+      sub: `+${stats?.usuarios?.novosUltimaSemana || 0} esta semana`,
       icon: Users,
       cor: "from-violet-500 to-purple-600",
+      href: "/superadmin/usuarios",
     },
     {
       label: "Clientes Cadastrados",
