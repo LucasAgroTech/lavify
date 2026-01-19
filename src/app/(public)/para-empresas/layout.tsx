@@ -34,6 +34,16 @@ export default function ParaEmpresasLayout({
   // Layout limpo sem header/footer do cliente - a página tem seus próprios
   return (
     <>
+      {/* DNS-Prefetch e Preconnect para origens críticas - melhora LCP em ~300ms */}
+      <link rel="dns-prefetch" href="https://www.google.com" />
+      <link rel="preconnect" href="https://www.google.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      
       {/* Preload para recursos críticos do LCP */}
       <link
         rel="preload"
@@ -47,9 +57,13 @@ export default function ParaEmpresasLayout({
         as="image"
         fetchPriority="high"
       />
+      
       {/* Preconnect para Vimeo (carrega quando clicar no vídeo) */}
-      <link rel="preconnect" href="https://player.vimeo.com" />
-      <link rel="preconnect" href="https://i.vimeocdn.com" />
+      <link rel="dns-prefetch" href="https://player.vimeo.com" />
+      <link rel="preconnect" href="https://player.vimeo.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://i.vimeocdn.com" />
+      <link rel="preconnect" href="https://i.vimeocdn.com" crossOrigin="anonymous" />
+      
       {children}
     </>
   );

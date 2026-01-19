@@ -1,0 +1,21 @@
+# Navegadores modernos apenas - reduz polyfills em ~14KB
+# Suporte para ES6+ nativo (Array.prototype.at, flat, flatMap, Object.fromEntries, etc.)
+
+# Últimas 2 versões de navegadores modernos
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+
+# iOS Safari 14.5+ (suporte a ES2021)
+iOS >= 14.5
+
+# Android Chrome recente
+last 2 ChromeAndroid versions
+
+# Não suportar IE
+not IE 11
+not dead
+
+# Mínimo de 0.5% de uso global
+> 0.5%
