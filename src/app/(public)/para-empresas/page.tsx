@@ -341,23 +341,18 @@ export default function LandingPageEmpresas() {
             </div>
           )}
 
-          {/* Vídeo Mobile - Animação do App */}
+          {/* Vídeo Mobile - Animação do App (Vimeo) */}
           {isMobile === true && (
             <div className="relative mb-8 w-full max-w-[320px] mx-auto">
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  width={557}
-                  height={1205}
-                  className="w-full h-auto"
-                  poster="/hero-mobile-poster.jpg"
-                >
-                  <source src="/hero-mobile.mp4" type="video/mp4" />
-                </video>
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 border border-white/10 aspect-[9/16]">
+                <iframe
+                  src="https://player.vimeo.com/video/1155801555?autoplay=1&loop=1&muted=1&background=1&quality=720p"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title="Lavify App Demo"
+                />
                 
                 {/* Badge flutuante */}
                 <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 z-10">
