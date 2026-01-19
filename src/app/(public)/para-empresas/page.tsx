@@ -379,34 +379,6 @@ export default function LandingPageEmpresas() {
             </div>
           )}
 
-          {/* Modal do Vídeo com Áudio (Vimeo) */}
-          {videoAberto && (
-            <div 
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-              onClick={() => setVideoAberto(false)}
-            >
-              <button
-                onClick={() => setVideoAberto(false)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
-              >
-                <X className="w-6 h-6 text-white" />
-              </button>
-              
-              <div 
-                className="relative w-full max-w-sm aspect-[9/16] rounded-2xl overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <iframe
-                  src="https://player.vimeo.com/video/1155801555?autoplay=1&loop=1&quality=720p"
-                  className="absolute inset-0 w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  title="Lavify App Demo"
-                />
-              </div>
-            </div>
-          )}
 
           {/* Carrossel Desktop - Imagens Horizontais (só renderiza no desktop) */}
           {isMobile === false && (
@@ -1526,7 +1498,7 @@ export default function LandingPageEmpresas() {
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
-                src="https://player.vimeo.com/video/1155531716?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
+                src="https://player.vimeo.com/video/1155801555?autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0"
                 className="absolute inset-0 w-full h-full"
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 allowFullScreen
