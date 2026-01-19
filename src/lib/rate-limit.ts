@@ -16,17 +16,17 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 
 // Configurações
 const RATE_LIMIT_CONFIG = {
-  // Login
+  // Login - Mais tolerante para erros de digitação
   login: {
-    maxAttempts: 5,          // Máximo de tentativas
+    maxAttempts: 10,          // Máximo de tentativas
     windowMs: 15 * 60 * 1000, // Janela de 15 minutos
-    blockDurationMs: 30 * 60 * 1000, // Bloqueio de 30 minutos
+    blockDurationMs: 15 * 60 * 1000, // Bloqueio de 15 minutos
   },
-  // Registro
+  // Registro - Tolerante para erros de validação de senha
   register: {
-    maxAttempts: 3,          // Máximo de tentativas
-    windowMs: 60 * 60 * 1000, // Janela de 1 hora
-    blockDurationMs: 60 * 60 * 1000, // Bloqueio de 1 hora
+    maxAttempts: 15,          // Máximo de tentativas (usuário pode errar validações)
+    windowMs: 30 * 60 * 1000, // Janela de 30 minutos
+    blockDurationMs: 10 * 60 * 1000, // Bloqueio de 10 minutos
   },
   // API geral
   api: {
