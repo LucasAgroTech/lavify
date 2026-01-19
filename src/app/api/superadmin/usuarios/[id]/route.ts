@@ -42,12 +42,21 @@ export async function DELETE(
     if (deletarLavaJato || usuario.lavaJato._count.usuarios === 1) {
       // Deleta tudo relacionado ao lava-jato em cascata
       await prisma.$transaction(async (tx) => {
-        // Deletar itens de ordens primeiro
-        await tx.itemOrdem.deleteMany({
-          where: {
-            ordemServico: { lavaJatoId: usuario.lavaJatoId },
-          },
+        // Buscar IDs das ordens para deletar itens
+        const ordens = await tx.ordemServico.findMany({
+          where: { lavaJatoId: usuario.lavaJatoId },
+          select: { id: true },
         });
+        const ordensIds = ordens.map((o) => o.id);
+
+        // Deletar itens de ordens primeiro (se houver ordens)
+        if (ordensIds.length > 0) {
+          await tx.itemOrdem.deleteMany({
+            where: {
+              osId: { in: ordensIds },
+            },
+          });
+        }
 
         // Deletar ordens de serviço
         await tx.ordemServico.deleteMany({
@@ -59,10 +68,19 @@ export async function DELETE(
           where: { lavaJatoId: usuario.lavaJatoId },
         });
 
-        // Deletar veículos dos clientes
-        await tx.veiculo.deleteMany({
-          where: { cliente: { lavaJatoId: usuario.lavaJatoId } },
+        // Buscar IDs dos clientes para deletar veículos
+        const clientes = await tx.cliente.findMany({
+          where: { lavaJatoId: usuario.lavaJatoId },
+          select: { id: true },
         });
+        const clientesIds = clientes.map((c) => c.id);
+
+        // Deletar veículos dos clientes (se houver clientes)
+        if (clientesIds.length > 0) {
+          await tx.veiculo.deleteMany({
+            where: { clienteId: { in: clientesIds } },
+          });
+        }
 
         // Deletar clientes
         await tx.cliente.deleteMany({
