@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
 async function verificarSuperAdmin() {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("superadmin_token")?.value;
+    // O cookie é salvo como "superadmin_session" no login
+    const token = cookieStore.get("superadmin_session")?.value;
 
     if (!token) {
       console.log("[Blog Generate] Token não encontrado");

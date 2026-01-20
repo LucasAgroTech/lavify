@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 // Verificar autenticação de superadmin
 async function verificarSuperAdmin() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("superadmin_token")?.value;
+  const token = cookieStore.get("superadmin_session")?.value;
 
   if (!token) return null;
 
