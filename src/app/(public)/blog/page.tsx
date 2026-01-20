@@ -10,6 +10,8 @@ import {
   ChevronRight,
   Zap,
   MapPin,
+  PenLine,
+  Calendar,
 } from "lucide-react";
 import {
   todasPaginasSEO,
@@ -22,8 +24,28 @@ import {
 import { cidadesBrasil } from "@/lib/seo-cities";
 import { getAuthorForContent } from "@/lib/authors";
 import { AuthorBylineCompact } from "@/components/AuthorByline";
+import { prisma } from "@/lib/prisma";
+
+// Sempre buscar dados frescos do banco
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+
+// Buscar posts do banco de dados
+async function getPostsDoBanco() {
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: { status: "PUBLICADO" },
+      orderBy: { publicadoEm: "desc" },
+      take: 10,
+    });
+    return posts;
+  } catch (error) {
+    console.error("Erro ao buscar posts:", error);
+    return [];
+  }
+}
 
 export const metadata: Metadata = {
   title: "Blog e Guias para Lava Rápido | Lavify",
@@ -87,9 +109,12 @@ const categorias = [
 // Cidades populares para destaque
 const cidadesDestaque = cidadesBrasil.slice(0, 12);
 
-export default function BlogPage() {
+export default async function BlogPage() {
   // Autor do blog (E-E-A-T)
   const author = getAuthorForContent();
+  
+  // Buscar posts publicados do banco
+  const postsDoBanco = await getPostsDoBanco();
 
   // JSON-LD para a página de blog com autor real
   const blogJsonLd = {
@@ -113,17 +138,34 @@ export default function BlogPage() {
       jobTitle: author.cargo,
       sameAs: [author.redesSociais.linkedin].filter(Boolean),
     },
-    blogPost: todasPaginasSEO.slice(0, 10).map((pagina) => ({
-      "@type": "BlogPosting",
-      headline: pagina.h1,
-      description: pagina.descricaoMeta,
-      url: `${baseUrl}/${pagina.slug}`,
-      author: {
-        "@type": "Person",
-        name: author.nomeCompleto,
-        url: `${baseUrl}/autor/${author.slug}`,
-      },
-    })),
+    blogPost: [
+      // Posts do banco de dados (prioridade)
+      ...postsDoBanco.map((post) => ({
+        "@type": "BlogPosting",
+        headline: post.titulo,
+        description: post.metaDescricao,
+        url: `${baseUrl}/blog/${post.slug}`,
+        datePublished: post.publicadoEm?.toISOString(),
+        dateModified: post.atualizadoEm?.toISOString(),
+        author: {
+          "@type": "Person",
+          name: post.autorNome || author.nomeCompleto,
+          url: `${baseUrl}/autor/${author.slug}`,
+        },
+      })),
+      // Posts estáticos de SEO
+      ...todasPaginasSEO.slice(0, 10 - postsDoBanco.length).map((pagina) => ({
+        "@type": "BlogPosting",
+        headline: pagina.h1,
+        description: pagina.descricaoMeta,
+        url: `${baseUrl}/${pagina.slug}`,
+        author: {
+          "@type": "Person",
+          name: author.nomeCompleto,
+          url: `${baseUrl}/autor/${author.slug}`,
+        },
+      })),
+    ],
   };
 
   const breadcrumbJsonLd = {
@@ -212,10 +254,53 @@ export default function BlogPage() {
           </p>
 
           <div className="text-white/40 text-sm">
-            {todasPaginasSEO.length} artigos disponíveis
+            {todasPaginasSEO.length + postsDoBanco.length} artigos disponíveis
           </div>
         </div>
       </section>
+
+      {/* Posts do Blog (do banco de dados) */}
+      {postsDoBanco.length > 0 && (
+        <section className="py-12 bg-gradient-to-b from-cyan-900/20 to-transparent border-t border-cyan-500/20">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
+              <PenLine className="w-6 h-6 text-cyan-400" />
+              Artigos do Blog
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {postsDoBanco.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="group bg-slate-800 border border-cyan-500/20 rounded-2xl p-6 hover:border-cyan-500/50 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-cyan-500/10 transition-all"
+                >
+                  <span className="inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded bg-cyan-500/20 text-cyan-400 mb-3">
+                    {post.categoria || "Artigo"}
+                  </span>
+                  <h3 className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors mb-2 line-clamp-2">
+                    {post.titulo}
+                  </h3>
+                  <p className="text-white/50 text-sm line-clamp-2 mb-4">
+                    {post.metaDescricao}
+                  </p>
+                  <div className="flex items-center justify-between text-xs text-white/40">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {post.publicadoEm
+                        ? new Date(post.publicadoEm).toLocaleDateString("pt-BR")
+                        : "Recente"}
+                    </div>
+                    <div className="flex items-center gap-1 text-cyan-400 font-medium">
+                      Ler
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Artigos em Destaque */}
       <section className="py-12 bg-white/5">

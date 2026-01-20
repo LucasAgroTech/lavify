@@ -19,6 +19,11 @@ import {
 import { AuthorByline } from "@/components/AuthorByline";
 import { AuthorBox } from "@/components/AuthorBox";
 
+// Garante que a página seja sempre renderizada dinamicamente
+// e busque dados frescos do banco (não usa cache)
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{
     slug: string;
