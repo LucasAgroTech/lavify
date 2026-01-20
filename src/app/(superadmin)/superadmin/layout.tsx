@@ -14,6 +14,7 @@ import {
   Users,
   Target,
   BarChart3,
+  Sparkles,
 } from "lucide-react";
 
 interface SuperAdmin {
@@ -84,6 +85,7 @@ export default function SuperAdminLayout({
     { href: "/superadmin/crm", icon: Target, label: "CRM" },
     { href: "/superadmin/lavajatos", icon: Building2, label: "Lava-Jatos" },
     { href: "/superadmin/usuarios", icon: Users, label: "Usuários" },
+    { href: "/superadmin/blog", icon: Sparkles, label: "Blog IA" },
     { href: "/superadmin/admins", icon: Shield, label: "Super Admins" },
   ];
 
