@@ -25,6 +25,7 @@ export default function PublicLayoutClient({
     pathname?.startsWith("/sistema-lava-rapido") ||
     pathname?.startsWith("/solucoes") ||
     pathname?.startsWith("/guias") ||
+    pathname?.startsWith("/autor") ||
     seoKeywordSlugs.some(slug => pathname === `/${slug}`);
 
   // Se for landing page, renderiza só o conteúdo sem headers/footers
