@@ -93,7 +93,9 @@ export default function BlogEditorPage() {
   const carregarPosts = async () => {
     setLoadingPosts(true);
     try {
-      const res = await fetch("/api/superadmin/blog/posts");
+      const res = await fetch("/api/superadmin/blog/posts", {
+        credentials: "include",
+      });
       const data = await res.json();
       setPosts(data.posts || []);
     } catch (err) {
@@ -171,6 +173,7 @@ export default function BlogEditorPage() {
       const res = await fetch("/api/superadmin/blog/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           tema: promptPorCampo[campo] || promptPorCampo.secao?.replace("${contexto}", contexto) || contexto,
           modo: "sugestao",
@@ -243,6 +246,7 @@ export default function BlogEditorPage() {
       const res = await fetch("/api/superadmin/blog/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           titulo,
           metaDescricao: metaDescricao || titulo,
@@ -299,7 +303,10 @@ export default function BlogEditorPage() {
 
     setDeletingId(id);
     try {
-      await fetch(`/api/superadmin/blog/posts/${id}`, { method: "DELETE" });
+      await fetch(`/api/superadmin/blog/posts/${id}`, { 
+        method: "DELETE",
+        credentials: "include",
+      });
       setPosts(posts.filter((p) => p.id !== id));
     } catch (err) {
       console.error("Erro ao excluir:", err);
@@ -313,6 +320,7 @@ export default function BlogEditorPage() {
       await fetch(`/api/superadmin/blog/posts/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ status }),
       });
       carregarPosts();
