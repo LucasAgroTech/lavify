@@ -242,19 +242,6 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="mt-6">
-        <h2 className="text-white font-semibold mb-3">Ações Rápidas</h2>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/superadmin/lavajatos"
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium text-sm rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
-          >
-            <Building2 className="w-4 h-4" />
-            Gerenciar Lava-Jatos
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

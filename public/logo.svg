@@ -1,0 +1,51 @@
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente moderno -->
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ícone circular -->
+  <circle cx="100" cy="100" r="80" fill="url(#grad)"/>
+
+  <!-- Gota de água (corrigida e simétrica) -->
+  <path
+    d="
+      M100 40
+      C100 40, 60 90, 60 120
+      C60 150, 80 170, 100 170
+      C120 170, 140 150, 140 120
+      C140 90, 100 40, 100 40
+      Z
+    "
+    fill="white"
+  />
+
+  <!-- Reflexo sutil da gota -->
+  <path
+    d="
+      M90 70
+      C80 90, 75 105, 78 120
+      C80 130, 90 135, 95 132
+      C85 120, 85 95, 95 75
+      Z
+    "
+    fill="white"
+    opacity="0.35"
+  />
+
+  <!-- Texto Lavify -->
+  <text
+    x="220"
+    y="125"
+    font-family="Inter, Arial, sans-serif"
+    font-size="96"
+    font-weight="700"
+    fill="#0f172a"
+    letter-spacing="-1"
+  >
+    Lavify
+  </text>
+</svg>

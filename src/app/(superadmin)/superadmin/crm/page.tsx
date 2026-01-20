@@ -209,61 +209,61 @@ export default function CRMPage() {
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-6">
+      {/* Stats - Mobile First */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 sm:grid sm:grid-cols-6 sm:gap-3 sm:overflow-visible sm:pb-0 sm:mb-6 scrollbar-hide">
         <button
           onClick={() => setFiltroStatus("")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "" ? "bg-cyan-500/20 border-cyan-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-cyan-500`}
         >
-          <p className="text-xl font-bold text-white">{stats?.total || 0}</p>
-          <p className="text-slate-400 text-xs">Total</p>
+          <p className="text-lg sm:text-xl font-bold text-white">{stats?.total || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Total</p>
         </button>
         <button
           onClick={() => setFiltroStatus("NOVO")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "NOVO" ? "bg-blue-500/20 border-blue-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-blue-500`}
         >
-          <p className="text-xl font-bold text-blue-400">{stats?.novos || 0}</p>
-          <p className="text-slate-400 text-xs">Novos</p>
+          <p className="text-lg sm:text-xl font-bold text-blue-400">{stats?.novos || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Novos</p>
         </button>
         <button
           onClick={() => setFiltroStatus("EM_NEGOCIACAO")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "EM_NEGOCIACAO" ? "bg-amber-500/20 border-amber-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-amber-500`}
         >
-          <p className="text-xl font-bold text-amber-400">{stats?.emContato || 0}</p>
-          <p className="text-slate-400 text-xs">Em Contato</p>
+          <p className="text-lg sm:text-xl font-bold text-amber-400">{stats?.emContato || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Contato</p>
         </button>
         <button
           onClick={() => setFiltroStatus("CONVERTIDO")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "CONVERTIDO" ? "bg-green-500/20 border-green-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-green-500`}
         >
-          <p className="text-xl font-bold text-green-400">{stats?.convertidos || 0}</p>
-          <p className="text-slate-400 text-xs">Convertidos</p>
+          <p className="text-lg sm:text-xl font-bold text-green-400">{stats?.convertidos || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Pagos</p>
         </button>
         <button
           onClick={() => setFiltroStatus("PERDIDO")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "PERDIDO" ? "bg-red-500/20 border-red-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-red-500`}
         >
-          <p className="text-xl font-bold text-red-400">{stats?.perdidos || 0}</p>
-          <p className="text-slate-400 text-xs">Perdidos</p>
+          <p className="text-lg sm:text-xl font-bold text-red-400">{stats?.perdidos || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Perdidos</p>
         </button>
         <button
           onClick={() => setFiltroStatus("INATIVO")}
-          className={`p-3 rounded-xl text-center transition-all ${
+          className={`flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-center transition-all min-w-[70px] sm:min-w-0 ${
             filtroStatus === "INATIVO" ? "bg-slate-500/20 border-slate-500" : "bg-slate-800/50"
           } border border-slate-700 hover:border-slate-500`}
         >
-          <p className="text-xl font-bold text-slate-400">{stats?.inativos || 0}</p>
-          <p className="text-slate-400 text-xs">Inativos</p>
+          <p className="text-lg sm:text-xl font-bold text-slate-400">{stats?.inativos || 0}</p>
+          <p className="text-slate-400 text-[10px] sm:text-xs">Inativos</p>
         </button>
       </div>
 
@@ -287,84 +287,96 @@ export default function CRMPage() {
           return (
             <div
               key={lead.id}
-              className="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 hover:border-slate-600 transition-colors cursor-pointer"
+              className="bg-slate-800/50 border border-slate-700 rounded-2xl p-3 sm:p-4 hover:border-slate-600 transition-colors cursor-pointer"
               onClick={() => setLeadSelecionado(lead)}
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  {/* Header */}
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h3 className="text-white font-semibold truncate">{lead.nome}</h3>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${status.bg} ${status.color}`}>
-                      {status.label}
-                    </span>
-                    {lead.plano !== "STARTER" && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
-                        {lead.plano}
+              {/* Mobile Layout */}
+              <div className="flex flex-col gap-3">
+                {/* Header - Nome e Badges */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <h3 className="text-white font-semibold text-sm sm:text-base truncate">{lead.nome}</h3>
+                      {getTemperaturaIcon(lead.leadInfo.temperatura)}
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${status.bg} ${status.color}`}>
+                        {status.label}
                       </span>
-                    )}
-                    {getTemperaturaIcon(lead.leadInfo.temperatura)}
-                  </div>
-
-                  {/* Info do Dono */}
-                  {lead.dono && (
-                    <div className="flex items-center gap-4 text-sm text-slate-400 mb-2">
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5" />
-                        {lead.dono.nome}
-                      </span>
-                      {lead.dono.telefone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="w-3.5 h-3.5" />
-                          {lead.dono.telefone}
+                      {lead.plano !== "STARTER" && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
+                          {lead.plano}
                         </span>
                       )}
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3.5 h-3.5" />
-                        {lead.dono.email}
-                      </span>
                     </div>
-                  )}
-
-                  {/* Checklist resumido */}
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className={`flex items-center gap-1 ${lead.leadInfo.whatsappEnviado ? "text-green-400" : "text-slate-600"}`}>
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      WhatsApp
-                    </span>
-                    <span className={`flex items-center gap-1 ${lead.leadInfo.emailEnviado ? "text-green-400" : "text-slate-600"}`}>
-                      <Mail className="w-3.5 h-3.5" />
-                      Email
-                    </span>
-                    <span className={`flex items-center gap-1 ${lead.leadInfo.ligacaoFeita ? "text-green-400" : "text-slate-600"}`}>
-                      <Phone className="w-3.5 h-3.5" />
-                      Ligação
-                    </span>
-                    <span className={`flex items-center gap-1 ${lead.leadInfo.demonstracaoRealizada ? "text-green-400" : "text-slate-600"}`}>
-                      <Eye className="w-3.5 h-3.5" />
-                      Demo
-                    </span>
                   </div>
+                  
+                  {/* Botão WhatsApp direto na lista (mobile) */}
+                  {lead.dono?.telefone && (
+                    <a
+                      href={`https://wa.me/55${lead.dono.telefone.replace(/\D/g, "")}?text=${encodeURIComponent(
+                        `Olá ${lead.dono.nome}! Sou da equipe Lavify 🚗`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    </a>
+                  )}
                 </div>
 
-                {/* Stats e Atividade */}
-                <div className="text-right flex-shrink-0">
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
-                    <span>{lead.stats.ordens} OS</span>
-                    <span>{lead.stats.clientes} clientes</span>
+                {/* Info do Dono */}
+                {lead.dono && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-slate-400">
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{lead.dono.nome}</span>
+                    </span>
+                    {lead.dono.telefone && (
+                      <span className="flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                        {lead.dono.telefone}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1.5 hidden sm:flex">
+                      <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{lead.dono.email}</span>
+                    </span>
                   </div>
-                  {lead.ultimaAtividade && (
-                    <p className="text-xs text-slate-500 flex items-center gap-1 justify-end">
-                      <Activity className="w-3 h-3" />
-                      {formatDistanceToNow(new Date(lead.ultimaAtividade), {
-                        addSuffix: true,
-                        locale: ptBR,
-                      })}
-                    </p>
-                  )}
-                  <p className="text-xs text-slate-600 mt-1">
-                    Cadastro: {format(new Date(lead.createdAt), "dd/MM/yy")}
-                  </p>
+                )}
+
+                {/* Stats e Checklist */}
+                <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-700/50">
+                  {/* Checklist resumido */}
+                  <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs">
+                    <span className={`flex items-center gap-1 ${lead.leadInfo.whatsappEnviado ? "text-green-400" : "text-slate-600"}`}>
+                      <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">WhatsApp</span>
+                    </span>
+                    <span className={`flex items-center gap-1 ${lead.leadInfo.emailEnviado ? "text-green-400" : "text-slate-600"}`}>
+                      <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">Email</span>
+                    </span>
+                    <span className={`flex items-center gap-1 ${lead.leadInfo.ligacaoFeita ? "text-green-400" : "text-slate-600"}`}>
+                      <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">Ligação</span>
+                    </span>
+                    <span className={`flex items-center gap-1 ${lead.leadInfo.demonstracaoRealizada ? "text-green-400" : "text-slate-600"}`}>
+                      <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">Demo</span>
+                    </span>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500">
+                    <span>{lead.stats.ordens} OS</span>
+                    <span>{lead.stats.clientes} cli</span>
+                    <span className="hidden sm:inline">
+                      {format(new Date(lead.createdAt), "dd/MM/yy")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -382,11 +394,11 @@ export default function CRMPage() {
       {/* Modal de Detalhes do Lead */}
       {leadSelecionado && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 flex items-start justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/80 flex items-end sm:items-start justify-center sm:p-4 overflow-y-auto"
           onClick={() => setLeadSelecionado(null)}
         >
           <div
-            className="bg-slate-800 border border-slate-700 rounded-2xl max-w-2xl w-full my-8"
+            className="bg-slate-800 border-t sm:border border-slate-700 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl sm:my-8 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -397,12 +409,28 @@ export default function CRMPage() {
                   <p className="text-slate-400 text-sm">{leadSelecionado.dono.email}</p>
                 )}
               </div>
-              <button
-                onClick={() => setLeadSelecionado(null)}
-                className="text-slate-500 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Botão WhatsApp Business */}
+                {leadSelecionado.dono?.telefone && (
+                  <a
+                    href={`https://wa.me/55${leadSelecionado.dono.telefone.replace(/\D/g, "")}?text=${encodeURIComponent(
+                      `Olá ${leadSelecionado.dono.nome}! Sou da equipe Lavify. Vi que você cadastrou seu lava-rápido "${leadSelecionado.nome}" em nossa plataforma. Tudo bem?\n\nPosso te ajudar com alguma dúvida sobre o sistema? 🚗✨`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="hidden sm:inline">WhatsApp</span>
+                  </a>
+                )}
+                <button
+                  onClick={() => setLeadSelecionado(null)}
+                  className="text-slate-500 hover:text-white p-2"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             <div className="p-4 space-y-6">
@@ -447,7 +475,7 @@ export default function CRMPage() {
                   <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                   Checklist de Contato
                 </h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   {[
                     { key: "whatsappEnviado", label: "WhatsApp Enviado", icon: MessageCircle },
                     { key: "whatsappRespondeu", label: "WhatsApp Respondeu", icon: MessageCircle },
@@ -460,7 +488,7 @@ export default function CRMPage() {
                   ].map(({ key, label, icon: Icon }) => (
                     <label
                       key={key}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/50 cursor-pointer hover:bg-slate-900"
+                      className="flex items-center gap-2 p-2.5 sm:p-2 rounded-lg bg-slate-900/50 cursor-pointer hover:bg-slate-900 active:bg-slate-900"
                     >
                       <input
                         type="checkbox"
@@ -468,7 +496,7 @@ export default function CRMPage() {
                         onChange={(e) =>
                           atualizarLead(leadSelecionado.id, { [key]: e.target.checked })
                         }
-                        className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500"
+                        className="w-5 h-5 sm:w-4 sm:h-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500"
                       />
                       <Icon className="w-4 h-4 text-slate-500" />
                       <span className="text-sm text-slate-300">{label}</span>
@@ -531,11 +559,11 @@ export default function CRMPage() {
                   <Plus className="w-4 h-4 text-cyan-400" />
                   Adicionar Interação
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     value={novaInteracao.tipo}
                     onChange={(e) => setNovaInteracao({ ...novaInteracao, tipo: e.target.value })}
-                    className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm"
+                    className="px-3 py-2.5 sm:py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm"
                   >
                     <option value="">Tipo...</option>
                     <option value="WHATSAPP">WhatsApp</option>
@@ -544,20 +572,22 @@ export default function CRMPage() {
                     <option value="REUNIAO">Reunião</option>
                     <option value="NOTA">Nota</option>
                   </select>
-                  <input
-                    type="text"
-                    value={novaInteracao.descricao}
-                    onChange={(e) => setNovaInteracao({ ...novaInteracao, descricao: e.target.value })}
-                    placeholder="Descreva a interação..."
-                    className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm"
-                  />
-                  <button
-                    onClick={adicionarInteracao}
-                    disabled={salvando || !novaInteracao.tipo || !novaInteracao.descricao}
-                    className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg disabled:opacity-50"
-                  >
-                    {salvando ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </button>
+                  <div className="flex gap-2 flex-1">
+                    <input
+                      type="text"
+                      value={novaInteracao.descricao}
+                      onChange={(e) => setNovaInteracao({ ...novaInteracao, descricao: e.target.value })}
+                      placeholder="Descreva a interação..."
+                      className="flex-1 px-3 py-2.5 sm:py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm"
+                    />
+                    <button
+                      onClick={adicionarInteracao}
+                      disabled={salvando || !novaInteracao.tipo || !novaInteracao.descricao}
+                      className="px-4 py-2.5 sm:py-2 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg disabled:opacity-50 flex-shrink-0"
+                    >
+                      {salvando ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 
