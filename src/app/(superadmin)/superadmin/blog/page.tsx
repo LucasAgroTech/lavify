@@ -5,16 +5,11 @@ import Link from "next/link";
 import {
   Sparkles,
   FileText,
-  Copy,
-  Check,
   Loader2,
-  Wand2,
   Plus,
   Trash2,
   ChevronDown,
-  ChevronRight,
   ChevronUp,
-  BookOpen,
   Eye,
   Save,
   Upload,
@@ -22,14 +17,12 @@ import {
   LayoutList,
   PenLine,
   MessageSquareQuote,
-  GripVertical,
-  Lightbulb,
-  Zap,
   RotateCcw,
   List,
   Type,
   AlignLeft,
-  Tag,
+  Zap,
+  X,
 } from "lucide-react";
 
 interface Secao {
@@ -75,6 +68,7 @@ export default function BlogEditorPage() {
   // Estados de IA
   const [aiLoading, setAiLoading] = useState<string | null>(null);
   const [aiSuggestion, setAiSuggestion] = useState<{ field: string; text: string } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Estados gerais
   const [saving, setSaving] = useState(false);
@@ -158,46 +152,11 @@ export default function BlogEditorPage() {
     setFaq(faq.map((f) => (f.id === id ? { ...f, [field]: value } : f)));
   };
 
-  // IA - Melhorar texto
-  const melhorarTexto = async (campo: string, textoOriginal: string, instrucao: string) => {
-    if (!textoOriginal.trim()) return;
-
-    setAiLoading(campo);
-    setAiSuggestion(null);
-
-    try {
-      const res = await fetch("/api/superadmin/blog/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tema: `Melhore o seguinte texto para um blog de lava-rápido. ${instrucao}
-
-Texto original:
-${textoOriginal}
-
-Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
-          modo: "melhoria",
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.content) {
-        setAiSuggestion({ field: campo, text: data.content });
-      } else if (data.post?.introducao) {
-        setAiSuggestion({ field: campo, text: data.post.introducao });
-      }
-    } catch (err) {
-      console.error("Erro na IA:", err);
-    } finally {
-      setAiLoading(null);
-    }
-  };
-
   // IA - Gerar sugestões
   const gerarSugestao = async (campo: string, contexto: string) => {
     setAiLoading(campo);
     setAiSuggestion(null);
+    setAiError(null);
 
     try {
       const promptPorCampo: Record<string, string> = {
@@ -213,21 +172,27 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tema: promptPorCampo[campo] || contexto,
+          tema: promptPorCampo[campo] || promptPorCampo.secao?.replace("${contexto}", contexto) || contexto,
           modo: "sugestao",
         }),
       });
 
       const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data.error || "Erro na API");
+      }
+
       if (data.content) {
         setAiSuggestion({ field: campo, text: data.content });
-      } else if (data.post) {
-        const textoSugerido = data.post.introducao || data.post.titulo || JSON.stringify(data.post);
-        setAiSuggestion({ field: campo, text: textoSugerido });
+      } else if (data.error) {
+        throw new Error(data.error);
+      } else {
+        throw new Error("Resposta vazia da IA");
       }
     } catch (err) {
       console.error("Erro na IA:", err);
+      setAiError(err instanceof Error ? err.message : "Erro ao gerar sugestão");
     } finally {
       setAiLoading(null);
     }
@@ -304,7 +269,6 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
         setSuccessMessage("Rascunho salvo com sucesso!");
       }
 
-      // Limpar formulário após publicar
       if (status === "PUBLICADO") {
         setTimeout(() => {
           limparFormulario();
@@ -360,24 +324,18 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
   // Componente de botão IA
   const BotaoIA = ({
     campo,
-    acao,
     contexto = "",
     label = "IA",
   }: {
     campo: string;
-    acao: "sugerir" | "melhorar";
     contexto?: string;
     label?: string;
   }) => (
     <button
-      onClick={() =>
-        acao === "sugerir"
-          ? gerarSugestao(campo, contexto)
-          : melhorarTexto(campo, contexto, "Torne mais profissional e otimizado para SEO.")
-      }
+      onClick={() => gerarSugestao(campo, contexto)}
       disabled={aiLoading === campo}
       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 rounded-lg transition-colors disabled:opacity-50"
-      title={acao === "sugerir" ? "Gerar sugestão com IA" : "Melhorar com IA"}
+      title="Gerar sugestão com IA"
     >
       {aiLoading === campo ? (
         <Loader2 className="w-3 h-3 animate-spin" />
@@ -389,17 +347,17 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
   );
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      {/* Header Fixo */}
-      <div className="sticky top-16 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-slate-900 p-6">
+      {/* Header da Página */}
+      <div className="max-w-6xl mx-auto mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-              <PenLine className="w-5 h-5 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <PenLine className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Editor de Blog</h1>
-              <p className="text-xs text-slate-400">Redija posts otimizados para SEO 2026</p>
+              <h1 className="text-2xl font-bold text-white">Editor de Blog</h1>
+              <p className="text-sm text-slate-400">Redija posts otimizados para SEO 2026</p>
             </div>
           </div>
 
@@ -433,60 +391,28 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
               )}
             </button>
           </div>
-
-          {/* Ações do Editor */}
-          {activeTab === "editor" && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowPreview(!showPreview)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  showPreview
-                    ? "bg-cyan-600 text-white"
-                    : "bg-slate-700 text-slate-300 hover:text-white"
-                }`}
-              >
-                <Eye className="w-4 h-4" />
-                Preview
-              </button>
-              <button
-                onClick={() => handleSalvar("RASCUNHO")}
-                disabled={saving || !titulo.trim()}
-                className="flex items-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium disabled:opacity-50"
-              >
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Rascunho
-              </button>
-              <button
-                onClick={() => handleSalvar("PUBLICADO")}
-                disabled={publishing || !titulo.trim()}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 disabled:opacity-50"
-              >
-                {publishing ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Upload className="w-4 h-4" />
-                )}
-                Publicar
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Mensagens */}
-      {(error || successMessage || publishedUrl) && (
-        <div className="max-w-6xl mx-auto px-6 pt-4">
+      {(error || successMessage || publishedUrl || aiError) && (
+        <div className="max-w-6xl mx-auto mb-4 space-y-2">
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm mb-4">
+            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
               {error}
             </div>
           )}
+          {aiError && (
+            <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 text-sm flex items-center justify-between">
+              <span>⚠️ Erro na IA: {aiError}</span>
+              <button onClick={() => setAiError(null)} className="text-amber-300 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
           {successMessage && (
-            <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-green-400 text-sm mb-4 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Check className="w-5 h-5" />
-                {successMessage}
-              </span>
+            <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-green-400 text-sm flex items-center justify-between">
+              <span>✅ {successMessage}</span>
               {publishedUrl && (
                 <Link
                   href={publishedUrl}
@@ -514,7 +440,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                 onClick={() => setAiSuggestion(null)}
                 className="text-slate-400 hover:text-white"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
             <div className="bg-slate-900 rounded-xl p-4 mb-4 max-h-60 overflow-y-auto">
@@ -540,7 +466,53 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
 
       {/* Tab: Editor */}
       {activeTab === "editor" && (
-        <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Ações do Editor */}
+          <div className="flex items-center justify-between mb-6 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowPreview(!showPreview)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  showPreview
+                    ? "bg-cyan-600 text-white"
+                    : "bg-slate-700 text-slate-300 hover:text-white"
+                }`}
+              >
+                <Eye className="w-4 h-4" />
+                Preview
+              </button>
+              <button
+                onClick={limparFormulario}
+                className="flex items-center gap-2 px-3 py-2 text-slate-400 hover:text-white text-sm"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Limpar
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleSalvar("RASCUNHO")}
+                disabled={saving || !titulo.trim()}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Salvar Rascunho
+              </button>
+              <button
+                onClick={() => handleSalvar("PUBLICADO")}
+                disabled={publishing || !titulo.trim()}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 disabled:opacity-50"
+              >
+                {publishing ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                Publicar
+              </button>
+            </div>
+          </div>
+
           <div className={`grid ${showPreview ? "lg:grid-cols-2" : "grid-cols-1"} gap-6`}>
             {/* Formulário */}
             <div className="space-y-6">
@@ -555,7 +527,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-slate-300">Título (H1) *</label>
-                    <BotaoIA campo="titulo" acao="sugerir" contexto={titulo || "gestão de lava-rápido"} label="Sugerir" />
+                    <BotaoIA campo="titulo" contexto={titulo || "gestão de lava-rápido"} label="Sugerir" />
                   </div>
                   <input
                     type="text"
@@ -573,12 +545,12 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                       Meta Descrição
                       <span className="text-slate-500 ml-2">({metaDescricao.length}/160)</span>
                     </label>
-                    <BotaoIA campo="meta" acao="sugerir" contexto={titulo} label="Gerar" />
+                    <BotaoIA campo="meta" contexto={titulo} label="Gerar" />
                   </div>
                   <textarea
                     value={metaDescricao}
                     onChange={(e) => setMetaDescricao(e.target.value.slice(0, 160))}
-                    placeholder="Aprenda técnicas práticas para organizar seu lava-rápido e aumentar a produtividade da equipe..."
+                    placeholder="Aprenda técnicas práticas para organizar seu lava-rápido..."
                     className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
                     rows={2}
                   />
@@ -603,7 +575,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-sm font-medium text-slate-300">Palavras-chave</label>
-                      <BotaoIA campo="keywords" acao="sugerir" contexto={titulo} label="Gerar" />
+                      <BotaoIA campo="keywords" contexto={titulo} label="Gerar" />
                     </div>
                     <input
                       type="text"
@@ -623,22 +595,17 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                     <AlignLeft className="w-5 h-5 text-emerald-400" />
                     <h2 className="text-lg font-semibold text-white">Introdução</h2>
                   </div>
-                  <div className="flex gap-2">
-                    <BotaoIA campo="introducao" acao="sugerir" label="Gerar" />
-                    {introducao && (
-                      <BotaoIA campo="introducao" acao="melhorar" contexto={introducao} label="Melhorar" />
-                    )}
-                  </div>
+                  <BotaoIA campo="introducao" contexto={titulo} label="Gerar com IA" />
                 </div>
                 <textarea
                   value={introducao}
                   onChange={(e) => setIntroducao(e.target.value)}
-                  placeholder="Escreva uma introdução que responda à pergunta principal do leitor logo no primeiro parágrafo (Answer-First)..."
+                  placeholder="Escreva uma introdução que responda à pergunta principal do leitor..."
                   className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
                   rows={5}
                 />
                 <p className="text-xs text-slate-500 mt-2">
-                  💡 Use primeira pessoa: &quot;Em nossa experiência...&quot;, &quot;Percebemos que...&quot;
+                  💡 Use primeira pessoa: &quot;Em nossa experiência...&quot;
                 </p>
               </div>
 
@@ -664,9 +631,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                       key={secao.id}
                       className="border border-slate-600 rounded-xl overflow-hidden"
                     >
-                      {/* Header da Seção */}
                       <div className="flex items-center gap-2 px-4 py-3 bg-slate-700/50">
-                        <GripVertical className="w-4 h-4 text-slate-500" />
                         <span className="w-6 h-6 rounded-full bg-slate-600 flex items-center justify-center text-xs text-slate-300">
                           {index + 1}
                         </span>
@@ -677,55 +642,47 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                           placeholder="Título da seção (H2)"
                           className="flex-1 bg-transparent text-white placeholder-slate-400 focus:outline-none"
                         />
-                        <div className="flex items-center gap-1">
-                          <BotaoIA
-                            campo={`secao-${secao.id}`}
-                            acao="sugerir"
-                            contexto={secao.titulo || titulo}
-                            label="IA"
-                          />
+                        <BotaoIA
+                          campo={`secao-${secao.id}`}
+                          contexto={secao.titulo || titulo}
+                          label="IA"
+                        />
+                        <button
+                          onClick={() => moverSecao(secao.id, "up")}
+                          disabled={index === 0}
+                          className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => moverSecao(secao.id, "down")}
+                          disabled={index === secoes.length - 1}
+                          className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => toggleSecaoCollapse(secao.id)}
+                          className="p-1 text-slate-400 hover:text-white"
+                        >
+                          {secao.collapsed ? "+" : "−"}
+                        </button>
+                        {secoes.length > 1 && (
                           <button
-                            onClick={() => moverSecao(secao.id, "up")}
-                            disabled={index === 0}
-                            className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
+                            onClick={() => removerSecao(secao.id)}
+                            className="p-1 text-slate-400 hover:text-red-400"
                           >
-                            <ChevronUp className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => moverSecao(secao.id, "down")}
-                            disabled={index === secoes.length - 1}
-                            className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => toggleSecaoCollapse(secao.id)}
-                            className="p-1 text-slate-400 hover:text-white"
-                          >
-                            {secao.collapsed ? (
-                              <ChevronRight className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
-                          </button>
-                          {secoes.length > 1 && (
-                            <button
-                              onClick={() => removerSecao(secao.id)}
-                              className="p-1 text-slate-400 hover:text-red-400"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
+                        )}
                       </div>
 
-                      {/* Conteúdo da Seção */}
                       {!secao.collapsed && (
                         <div className="p-4">
                           <textarea
                             value={secao.conteudo}
                             onChange={(e) => atualizarSecao(secao.id, "conteudo", e.target.value)}
-                            placeholder="Conteúdo da seção... Use parágrafos, listas e exemplos práticos."
+                            placeholder="Conteúdo da seção..."
                             className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
                             rows={6}
                           />
@@ -796,7 +753,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                     <Zap className="w-5 h-5 text-rose-400" />
                     <h2 className="text-lg font-semibold text-white">Conclusão</h2>
                   </div>
-                  <BotaoIA campo="conclusao" acao="sugerir" label="Gerar" />
+                  <BotaoIA campo="conclusao" contexto={titulo} label="Gerar" />
                 </div>
                 <textarea
                   value={conclusao}
@@ -806,20 +763,11 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                   rows={4}
                 />
               </div>
-
-              {/* Botão Limpar */}
-              <button
-                onClick={limparFormulario}
-                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white text-sm"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Limpar formulário
-              </button>
             </div>
 
             {/* Preview */}
             {showPreview && (
-              <div className="lg:sticky lg:top-32 lg:self-start">
+              <div className="lg:sticky lg:top-6 lg:self-start">
                 <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
                   <div className="px-4 py-3 bg-slate-700/50 border-b border-slate-600 flex items-center gap-2">
                     <Eye className="w-4 h-4 text-cyan-400" />
@@ -843,12 +791,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                         {secoes.filter((s) => s.titulo || s.conteudo).map((secao, i) => (
                           <div key={secao.id} className="mb-6">
                             {secao.titulo && (
-                              <h2 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded bg-violet-500/20 flex items-center justify-center text-xs text-violet-400">
-                                  {i + 1}
-                                </span>
-                                {secao.titulo}
-                              </h2>
+                              <h2 className="text-lg font-semibold text-white mb-2">{secao.titulo}</h2>
                             )}
                             {secao.conteudo && (
                               <p className="text-sm text-slate-400 whitespace-pre-wrap">
@@ -873,18 +816,6 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
                             <p className="text-sm text-slate-300 whitespace-pre-wrap">{conclusao}</p>
                           </div>
                         )}
-                        {palavrasChave && (
-                          <div className="mt-4 flex flex-wrap gap-1">
-                            {palavrasChave.split(",").map((kw, i) => (
-                              <span
-                                key={i}
-                                className="px-2 py-0.5 text-xs bg-slate-700 text-slate-400 rounded"
-                              >
-                                {kw.trim()}
-                              </span>
-                            ))}
-                          </div>
-                        )}
                       </>
                     ) : (
                       <div className="text-center py-8">
@@ -904,7 +835,7 @@ Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
 
       {/* Tab: Posts */}
       {activeTab === "posts" && (
-        <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="max-w-6xl mx-auto">
           <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
             {loadingPosts ? (
               <div className="p-12 text-center">
