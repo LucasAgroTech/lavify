@@ -105,14 +105,14 @@ function FloatingInput({
           setFocused(false);
           props.onBlur?.(e);
         }}
-        className={`w-full pl-12 pr-${tooltip ? "20" : "4"} py-4 pt-6 rounded-xl border-2 bg-white text-slate-800 placeholder:text-transparent focus:outline-none transition-all ${
+        className={`w-full pl-12 ${tooltip ? "pr-20" : "pr-4"} py-4 pt-6 rounded-xl border-2 bg-white text-slate-800 focus:outline-none transition-all ${
           error
             ? "border-red-300 focus:border-red-500"
             : success
             ? "border-green-300 focus:border-green-500"
             : "border-slate-200 focus:border-cyan-500"
         }`}
-        placeholder={label}
+        placeholder=" "
       />
       <label
         className={`absolute left-12 transition-all pointer-events-none ${
@@ -563,10 +563,10 @@ export default function RegistroPage() {
                         name="senha"
                         value={form.senha}
                         onChange={handleChange}
-                        placeholder="Senha"
+                        placeholder=" "
                         required
                         minLength={6}
-                        className={`w-full pl-12 pr-12 py-4 pt-6 rounded-xl border-2 bg-white text-slate-800 placeholder:text-transparent focus:outline-none transition-all ${
+                        className={`w-full pl-12 pr-12 py-4 pt-6 rounded-xl border-2 bg-white text-slate-800 focus:outline-none transition-all ${
                           fieldErrors.senha
                             ? "border-red-300 focus:border-red-500"
                             : form.senha.length >= 6
