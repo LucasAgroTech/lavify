@@ -622,13 +622,13 @@ export default function RegistroPage() {
                 )}
 
                 {/* Botões */}
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
                   {step > 1 && (
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={() => setStep(1)}
-                      className="flex-1"
+                      className="w-full sm:w-auto sm:flex-1"
                       icon={<ArrowLeft className="w-4 h-4" />}
                     >
                       Voltar
@@ -637,7 +637,7 @@ export default function RegistroPage() {
                   <Button
                     type="submit"
                     disabled={loading || Object.keys(fieldErrors).length > 0}
-                    className="flex-1 py-3"
+                    className="w-full sm:flex-1 py-3"
                     size="lg"
                   >
                     {step === 1 ? (
@@ -671,7 +671,7 @@ export default function RegistroPage() {
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4 mr-2" />
-                        Criar Conta Grátis
+                        Criar Conta
                       </>
                     )}
                   </Button>
