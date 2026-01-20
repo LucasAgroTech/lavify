@@ -16,6 +16,8 @@ import {
   BarChart3,
   Sparkles,
   Activity,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface SuperAdmin {
@@ -33,7 +35,8 @@ export default function SuperAdminLayout({
   const pathname = usePathname();
   const [superAdmin, setSuperAdmin] = useState<SuperAdmin | null>(null);
   const [loading, setLoading] = useState(true);
-  const [menuAberto, setMenuAberto] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Não aplicar layout nas páginas públicas (login e setup)
   const isPublicPage = pathname === "/superadmin/login" || pathname === "/superadmin/setup";
@@ -92,107 +95,168 @@ export default function SuperAdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-slate-800/95 backdrop-blur-sm border-b border-slate-700">
-        <div className="h-full px-4 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg">
+    <div className="min-h-screen bg-slate-900 flex">
+      {/* Sidebar Desktop */}
+      <aside
+        className={`hidden md:flex flex-col fixed left-0 top-0 h-full bg-slate-800 border-r border-slate-700 z-50 transition-all duration-300 ${
+          sidebarCollapsed ? "w-16" : "w-56"
+        }`}
+      >
+        {/* Logo */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700">
+          {!sidebarCollapsed && (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg">
+                <Shield className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">Super Admin</p>
+                <p className="text-slate-500 text-xs">Lavify</p>
+              </div>
+            </div>
+          )}
+          {sidebarCollapsed && (
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg mx-auto">
               <Shield className="w-5 h-5 text-white" />
             </div>
-            <div className="hidden sm:block">
-              <p className="text-white font-bold text-lg">Super Admin</p>
-              <p className="text-slate-400 text-xs -mt-0.5">Lavify Control Panel</p>
-            </div>
-          </div>
+          )}
+        </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+        {/* Menu */}
+        <nav className="flex-1 py-4 overflow-y-auto">
+          <div className="space-y-1 px-2">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive
                       ? "bg-red-500/20 text-red-400"
                       : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-                  }`}
+                  } ${sidebarCollapsed ? "justify-center" : ""}`}
+                  title={sidebarCollapsed ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
-                  {item.label}
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
+                  {!sidebarCollapsed && <span>{item.label}</span>}
                 </Link>
               );
             })}
-          </nav>
+          </div>
+        </nav>
 
-          {/* User + Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-white text-sm font-medium">{superAdmin?.nome}</p>
-              <p className="text-slate-400 text-xs">{superAdmin?.email}</p>
+        {/* User + Collapse Button */}
+        <div className="border-t border-slate-700 p-3">
+          {!sidebarCollapsed && superAdmin && (
+            <div className="mb-3 px-2">
+              <p className="text-white text-sm font-medium truncate">{superAdmin.nome}</p>
+              <p className="text-slate-500 text-xs truncate">{superAdmin.email}</p>
             </div>
+          )}
 
+          <div className="flex items-center gap-2">
             <button
               onClick={handleLogout}
-              className="hidden md:flex items-center gap-2 px-3 py-2 bg-slate-700/50 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg text-sm transition-colors"
+              className={`flex items-center gap-2 px-3 py-2 bg-slate-700/50 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-xl text-sm transition-colors ${
+                sidebarCollapsed ? "w-full justify-center" : "flex-1"
+              }`}
+              title="Sair"
             >
               <LogOut className="w-4 h-4" />
-              <span className="hidden lg:inline">Sair</span>
+              {!sidebarCollapsed && <span>Sair</span>}
             </button>
 
-            {/* Mobile menu button */}
             <button
-              onClick={() => setMenuAberto(!menuAberto)}
-              className="md:hidden p-2 text-slate-400 hover:text-white"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-2 bg-slate-700/50 hover:bg-slate-600 text-slate-400 hover:text-white rounded-xl transition-colors"
+              title={sidebarCollapsed ? "Expandir" : "Recolher"}
             >
-              {menuAberto ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarCollapsed ? (
+                <ChevronRight className="w-4 h-4" />
+              ) : (
+                <ChevronLeft className="w-4 h-4" />
+              )}
             </button>
           </div>
         </div>
+      </aside>
+
+      {/* Mobile Header */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-slate-800/95 backdrop-blur-sm border-b border-slate-700">
+        <div className="h-full px-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center">
+              <Shield className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-white font-bold text-sm">Super Admin</span>
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-slate-400 hover:text-white"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </header>
 
-      {/* Mobile Menu */}
-      {menuAberto && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMenuAberto(false)} />
-          <div className="absolute top-16 left-0 right-0 bg-slate-800 border-b border-slate-700 p-4 space-y-2">
-            {menuItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMenuAberto(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-red-500/20 text-red-400"
-                      : "text-slate-300 hover:bg-slate-700"
-                  }`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </Link>
-              );
-            })}
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              Sair
-            </button>
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="absolute top-14 left-0 right-0 bottom-0 bg-slate-800 overflow-y-auto">
+            <nav className="p-4 space-y-2">
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-red-500/20 text-red-400"
+                        : "text-slate-300 hover:bg-slate-700"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="p-4 border-t border-slate-700">
+              {superAdmin && (
+                <div className="mb-4">
+                  <p className="text-white font-medium">{superAdmin.nome}</p>
+                  <p className="text-slate-500 text-sm">{superAdmin.email}</p>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+                Sair
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Content */}
-      <main className="pt-16 min-h-screen">
+      <main
+        className={`flex-1 min-h-screen transition-all duration-300 ${
+          sidebarCollapsed ? "md:ml-16" : "md:ml-56"
+        } pt-14 md:pt-0`}
+      >
         {children}
       </main>
     </div>
   );
 }
-

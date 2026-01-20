@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { getPerformanceReport, getMemoryUsage } from "@/lib/performance-monitor";
+
+// Força Node.js runtime (não Edge)
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 // Verificar autenticação de superadmin
 async function verificarSuperAdmin() {
@@ -27,9 +30,16 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    // Dados do sistema
-    const memory = getMemoryUsage();
-    const report = getPerformanceReport();
+    // Dados do sistema - cálculo direto
+    const memUsage = process.memoryUsage();
+    const memory = {
+      heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024 * 100) / 100,
+      heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024 * 100) / 100,
+      rss: Math.round(memUsage.rss / 1024 / 1024 * 100) / 100,
+      external: Math.round(memUsage.external / 1024 / 1024 * 100) / 100,
+    };
+    
+    const uptime = process.uptime();
 
     // Contagens do banco
     const [
@@ -76,11 +86,9 @@ export async function GET() {
       alerts.push("⚠️ Heap quase cheio. Possível memory leak.");
     }
 
-    if (report.highMemoryAlerts.length > 0) {
-      alerts.push(
-        `🔍 ${report.highMemoryAlerts.length} função(ões) com alto uso de memória detectadas.`
-      );
-    }
+    // Métricas de funções (simplificado - sem monitor externo)
+    const highMemoryAlerts: Array<{ name: string; count: number; avgMemory: number }> = [];
+    const topMemoryFunctions: Array<{ name: string; avgMemory: number; avgDuration: number; count: number }> = [];
 
     // Recomendações
     const recommendations: string[] = [];
@@ -136,10 +144,10 @@ export async function GET() {
             : "Eco (512MB)",
       },
       performance: {
-        uptime: `${Math.floor(report.uptime / 3600)}h ${Math.floor((report.uptime % 3600) / 60)}m`,
-        metricsCollected: report.totalMetrics,
-        topMemoryFunctions: report.functionStats.slice(0, 5),
-        highMemoryAlerts: report.highMemoryAlerts,
+        uptime: `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m`,
+        metricsCollected: 0,
+        topMemoryFunctions,
+        highMemoryAlerts,
       },
       alerts,
       recommendations,
