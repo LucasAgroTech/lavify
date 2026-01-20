@@ -141,7 +141,7 @@ const organizationJsonLd = {
   name: "Lavify",
   alternateName: "Lavify - Sistema para Lava Rápido",
   url: siteUrl,
-  logo: `${siteUrl}/icon.svg`,
+  logo: `${siteUrl}/lavify.png`,
   description: "Empresa brasileira especializada em software de gestão para lava rápidos e lava jatos.",
   foundingDate: "2024",
   sameAs: [

@@ -221,7 +221,7 @@ export function generateArticleWithAuthorSchema(
       url: baseUrl,
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/icon.svg`,
+        url: `${baseUrl}/lavify.png`,
       },
     },
     mainEntityOfPage: {

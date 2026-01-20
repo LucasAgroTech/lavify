@@ -128,7 +128,7 @@ export default async function BlogPage() {
       name: "Lavify",
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/icon.svg`,
+        url: `${baseUrl}/lavify.png`,
       },
     },
     author: {
