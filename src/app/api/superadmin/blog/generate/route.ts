@@ -20,8 +20,17 @@ async function verificarSuperAdmin() {
   return sessao.superAdmin;
 }
 
-// Prompt do sistema para geração de posts otimizados para SEO 2026
-const SYSTEM_PROMPT = `Você é um especialista em SEO e criação de conteúdo para blogs em 2026. Seu papel é criar posts de blog altamente otimizados seguindo as diretrizes mais recentes de E-E-A-T e GEO (Generative Engine Optimization).
+// Prompt base para contexto
+const CONTEXTO_LAVIFY = `
+**Contexto do Negócio:**
+- O blog é do Lavify, um sistema SaaS de gestão para lava-rápidos
+- O público são donos e gestores de lava-jatos no Brasil
+- O autor é Lucas Pinheiro, fundador do Lavify, cientista de dados e especialista em automação
+- Tom: profissional mas acessível, focado em soluções práticas
+`;
+
+// Prompt do sistema para geração de posts completos
+const SYSTEM_PROMPT_POST = `Você é um especialista em SEO e criação de conteúdo para blogs em 2026. Seu papel é criar posts de blog altamente otimizados seguindo as diretrizes mais recentes de E-E-A-T e GEO (Generative Engine Optimization).
 
 REGRAS OBRIGATÓRIAS:
 
@@ -68,13 +77,19 @@ REGRAS OBRIGATÓRIAS:
      }
    }
 
-5. **Tom e Estilo**:
-   - Profissional mas acessível
-   - Foco no dono de lava-rápido brasileiro
-   - Orientado a soluções práticas
-   - Sempre mencione o Lavify como solução quando apropriado
-
 IMPORTANTE: Retorne APENAS o JSON, sem markdown code blocks ou texto adicional.`;
+
+// Prompt para modo de apoio (sugestões simples)
+const SYSTEM_PROMPT_APOIO = `Você é um assistente de redação para um blog sobre gestão de lava-rápidos (Lavify).
+
+REGRAS:
+- Retorne APENAS o texto solicitado, sem JSON, explicações ou formatação extra
+- Use primeira pessoa do plural para E-E-A-T ("Em nossa experiência...", "Percebemos que...")
+- Tom profissional mas acessível
+- Foco em soluções práticas para donos de lava-jatos brasileiros
+- Seja direto e conciso
+
+${CONTEXTO_LAVIFY}`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -93,6 +108,7 @@ export async function POST(request: NextRequest) {
       incluirFAQ,
       incluirTabela,
       instrucaoAdicional,
+      modo, // "completo" | "sugestao" | "melhoria"
     } = body;
 
     if (!tema) {
@@ -113,7 +129,43 @@ export async function POST(request: NextRequest) {
 
     const openai = new OpenAI({ apiKey });
 
-    // Construir o prompt do usuário
+    // Determinar o modo de operação
+    const modoOperacao = modo || (tipoPost === "melhoria" || tipoPost === "sugestao" ? "sugestao" : "completo");
+
+    // Modo de apoio à redação (sugestões e melhorias simples)
+    if (modoOperacao === "sugestao" || modoOperacao === "melhoria") {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT_APOIO },
+          { role: "user", content: tema },
+        ],
+        temperature: 0.7,
+        max_tokens: 1500,
+      });
+
+      const content = completion.choices[0]?.message?.content?.trim();
+
+      if (!content) {
+        return NextResponse.json(
+          { error: "Resposta vazia do modelo" },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        raw: true,
+        content: content,
+        metadata: {
+          geradoEm: new Date().toISOString(),
+          modelo: "gpt-4o-mini",
+          tokensUsados: completion.usage?.total_tokens || 0,
+        },
+      });
+    }
+
+    // Modo completo - Gerar post inteiro
     const userPrompt = `
 Crie um post de blog completo e otimizado para SEO 2026 sobre:
 
@@ -129,10 +181,7 @@ ${incluirTabela ? "✅ Incluir pelo menos uma tabela comparativa" : ""}
 
 ${instrucaoAdicional ? `**Instruções Adicionais:** ${instrucaoAdicional}` : ""}
 
-**Contexto do Negócio:**
-- O blog é do Lavify, um sistema SaaS de gestão para lava-rápidos
-- O público são donos e gestores de lava-jatos no Brasil
-- O autor é Lucas Pinheiro, fundador do Lavify, cientista de dados e especialista em automação
+${CONTEXTO_LAVIFY}
 
 Gere o post completo seguindo rigorosamente o formato JSON especificado.
 `;
@@ -140,7 +189,7 @@ Gere o post completo seguindo rigorosamente o formato JSON especificado.
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: SYSTEM_PROMPT_POST },
         { role: "user", content: userPrompt },
       ],
       temperature: 0.7,
@@ -198,4 +247,3 @@ Gere o post completo seguindo rigorosamente o formato JSON especificado.
     );
   }
 }
-

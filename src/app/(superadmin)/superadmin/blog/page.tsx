@@ -9,51 +9,40 @@ import {
   Check,
   Loader2,
   Wand2,
-  ListChecks,
-  Table,
-  MessageSquareQuote,
-  RefreshCw,
+  Plus,
+  Trash2,
   ChevronDown,
   ChevronRight,
+  ChevronUp,
   BookOpen,
-  Code2,
   Eye,
-  Lightbulb,
+  Save,
   Upload,
-  Archive,
   ExternalLink,
-  Trash2,
-  Calendar,
   LayoutList,
   PenLine,
+  MessageSquareQuote,
+  GripVertical,
+  Lightbulb,
+  Zap,
+  RotateCcw,
+  List,
+  Type,
+  AlignLeft,
+  Tag,
 } from "lucide-react";
 
-interface PostGerado {
+interface Secao {
+  id: string;
   titulo: string;
-  metaDescricao: string;
-  introducao: string;
-  secoes: {
-    titulo: string;
-    conteudo: string;
-    tipoConteudo?: string;
-  }[];
-  faq?: {
-    pergunta: string;
-    resposta: string;
-  }[];
-  conclusao: string;
-  palavrasChave: string[];
-  topicCluster?: {
-    pillarPage: string;
-    artigosRelacionados: string[];
-  };
+  conteudo: string;
+  collapsed?: boolean;
 }
 
-interface Metadata {
-  geradoEm: string;
-  modelo: string;
-  tema: string;
-  tokensUsados: number;
+interface FaqItem {
+  id: string;
+  pergunta: string;
+  resposta: string;
 }
 
 interface BlogPostDB {
@@ -67,48 +56,40 @@ interface BlogPostDB {
   createdAt: string;
 }
 
-export default function BlogGeneratorPage() {
+export default function BlogEditorPage() {
   // Tabs
-  const [activeTab, setActiveTab] = useState<"gerar" | "posts">("gerar");
+  const [activeTab, setActiveTab] = useState<"editor" | "posts">("editor");
 
-  // Gerador
-  const [tema, setTema] = useState("");
-  const [tipoPost, setTipoPost] = useState("guia");
+  // Editor - Campos do Post
+  const [titulo, setTitulo] = useState("");
+  const [metaDescricao, setMetaDescricao] = useState("");
+  const [categoria, setCategoria] = useState("guia");
   const [palavrasChave, setPalavrasChave] = useState("");
-  const [tomEscrita, setTomEscrita] = useState("profissional");
-  const [tamanhoPost, setTamanhoPost] = useState("medio");
-  const [incluirFAQ, setIncluirFAQ] = useState(true);
-  const [incluirTabela, setIncluirTabela] = useState(true);
-  const [instrucaoAdicional, setInstrucaoAdicional] = useState("");
+  const [introducao, setIntroducao] = useState("");
+  const [secoes, setSecoes] = useState<Secao[]>([
+    { id: "1", titulo: "", conteudo: "", collapsed: false },
+  ]);
+  const [faq, setFaq] = useState<FaqItem[]>([]);
+  const [conclusao, setConclusao] = useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [postGerado, setPostGerado] = useState<PostGerado | null>(null);
-  const [metadata, setMetadata] = useState<Metadata | null>(null);
-  const [rawContent, setRawContent] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"preview" | "json" | "markdown">("preview");
-  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
+  // Estados de IA
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
+  const [aiSuggestion, setAiSuggestion] = useState<{ field: string; text: string } | null>(null);
 
-  // Publicação
+  // Estados gerais
+  const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Lista de posts
   const [posts, setPosts] = useState<BlogPostDB[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const temasRapidos = [
-    "Como organizar o pátio do lava-rápido para aumentar produtividade",
-    "Guia completo de precificação para serviços de estética automotiva",
-    "Como fidelizar clientes no lava-jato: programa de pontos e cashback",
-    "Gestão de estoque para lava rápido: produtos essenciais e controle",
-    "WhatsApp no lava-jato: automatização e atendimento profissional",
-    "Como calcular o lucro real do seu lava rápido",
-  ];
-
-  // Carregar posts quando mudar para a aba de posts
+  // Carregar posts
   useEffect(() => {
     if (activeTab === "posts") {
       carregarPosts();
@@ -128,98 +109,225 @@ export default function BlogGeneratorPage() {
     }
   };
 
-  const handleGerarPost = async () => {
-    if (!tema.trim()) {
-      setError("Por favor, informe um tema para o post");
-      return;
-    }
+  // Funções de Seções
+  const adicionarSecao = () => {
+    setSecoes([
+      ...secoes,
+      { id: Date.now().toString(), titulo: "", conteudo: "", collapsed: false },
+    ]);
+  };
 
-    setLoading(true);
-    setError(null);
-    setPostGerado(null);
-    setRawContent(null);
-    setPublishedUrl(null);
+  const removerSecao = (id: string) => {
+    if (secoes.length > 1) {
+      setSecoes(secoes.filter((s) => s.id !== id));
+    }
+  };
+
+  const atualizarSecao = (id: string, field: "titulo" | "conteudo", value: string) => {
+    setSecoes(secoes.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+  };
+
+  const toggleSecaoCollapse = (id: string) => {
+    setSecoes(secoes.map((s) => (s.id === id ? { ...s, collapsed: !s.collapsed } : s)));
+  };
+
+  const moverSecao = (id: string, direcao: "up" | "down") => {
+    const index = secoes.findIndex((s) => s.id === id);
+    if (
+      (direcao === "up" && index === 0) ||
+      (direcao === "down" && index === secoes.length - 1)
+    )
+      return;
+
+    const newSecoes = [...secoes];
+    const newIndex = direcao === "up" ? index - 1 : index + 1;
+    [newSecoes[index], newSecoes[newIndex]] = [newSecoes[newIndex], newSecoes[index]];
+    setSecoes(newSecoes);
+  };
+
+  // Funções de FAQ
+  const adicionarFaq = () => {
+    setFaq([...faq, { id: Date.now().toString(), pergunta: "", resposta: "" }]);
+  };
+
+  const removerFaq = (id: string) => {
+    setFaq(faq.filter((f) => f.id !== id));
+  };
+
+  const atualizarFaq = (id: string, field: "pergunta" | "resposta", value: string) => {
+    setFaq(faq.map((f) => (f.id === id ? { ...f, [field]: value } : f)));
+  };
+
+  // IA - Melhorar texto
+  const melhorarTexto = async (campo: string, textoOriginal: string, instrucao: string) => {
+    if (!textoOriginal.trim()) return;
+
+    setAiLoading(campo);
+    setAiSuggestion(null);
 
     try {
       const res = await fetch("/api/superadmin/blog/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tema,
-          tipoPost,
-          palavrasChave,
-          tomEscrita,
-          tamanhoPost,
-          incluirFAQ,
-          incluirTabela,
-          instrucaoAdicional,
+          tema: `Melhore o seguinte texto para um blog de lava-rápido. ${instrucao}
+
+Texto original:
+${textoOriginal}
+
+Retorne APENAS o texto melhorado, sem explicações ou JSON.`,
+          modo: "melhoria",
         }),
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || "Erro ao gerar post");
-      }
-
-      if (data.raw) {
-        setRawContent(data.content);
-      } else {
-        setPostGerado(data.post);
-        setMetadata(data.metadata);
-        setExpandedSections(new Set(data.post.secoes.map((_: unknown, i: number) => i)));
+      if (data.content) {
+        setAiSuggestion({ field: campo, text: data.content });
+      } else if (data.post?.introducao) {
+        setAiSuggestion({ field: campo, text: data.post.introducao });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao gerar post");
+      console.error("Erro na IA:", err);
     } finally {
-      setLoading(false);
+      setAiLoading(null);
     }
   };
 
-  const handlePublicar = async (status: "RASCUNHO" | "PUBLICADO") => {
-    if (!postGerado) return;
+  // IA - Gerar sugestões
+  const gerarSugestao = async (campo: string, contexto: string) => {
+    setAiLoading(campo);
+    setAiSuggestion(null);
 
-    setPublishing(true);
+    try {
+      const promptPorCampo: Record<string, string> = {
+        titulo: `Sugira 3 títulos SEO otimizados para um post de blog sobre: ${contexto || "gestão de lava-rápido"}. Formato: apenas os títulos, um por linha.`,
+        meta: `Crie uma meta descrição SEO (150-160 caracteres) para um post sobre: ${titulo || contexto}`,
+        introducao: `Escreva uma introdução E-E-A-T (primeira pessoa, com experiência) para um post sobre: ${titulo}. Máximo 3 parágrafos.`,
+        secao: `Sugira o conteúdo para uma seção de blog sobre: ${contexto}. Use parágrafos, listas quando apropriado. Máximo 400 palavras.`,
+        conclusao: `Escreva uma conclusão com CTA para o Lavify sobre: ${titulo}. Máximo 2 parágrafos.`,
+        keywords: `Sugira 8-10 palavras-chave SEO para um post sobre: ${titulo || contexto}. Formato: palavras separadas por vírgula.`,
+      };
+
+      const res = await fetch("/api/superadmin/blog/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tema: promptPorCampo[campo] || contexto,
+          modo: "sugestao",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.content) {
+        setAiSuggestion({ field: campo, text: data.content });
+      } else if (data.post) {
+        const textoSugerido = data.post.introducao || data.post.titulo || JSON.stringify(data.post);
+        setAiSuggestion({ field: campo, text: textoSugerido });
+      }
+    } catch (err) {
+      console.error("Erro na IA:", err);
+    } finally {
+      setAiLoading(null);
+    }
+  };
+
+  const aplicarSugestao = (campo: string, texto: string) => {
+    switch (campo) {
+      case "titulo":
+        setTitulo(texto.split("\n")[0].replace(/^\d+\.\s*/, "").trim());
+        break;
+      case "meta":
+        setMetaDescricao(texto.slice(0, 160));
+        break;
+      case "introducao":
+        setIntroducao(texto);
+        break;
+      case "conclusao":
+        setConclusao(texto);
+        break;
+      case "keywords":
+        setPalavrasChave(texto);
+        break;
+      default:
+        if (campo.startsWith("secao-")) {
+          const secaoId = campo.replace("secao-", "");
+          atualizarSecao(secaoId, "conteudo", texto);
+        }
+    }
+    setAiSuggestion(null);
+  };
+
+  // Salvar/Publicar
+  const handleSalvar = async (status: "RASCUNHO" | "PUBLICADO") => {
+    if (!titulo.trim()) {
+      setError("O título é obrigatório");
+      return;
+    }
+
+    if (status === "PUBLICADO") {
+      setPublishing(true);
+    } else {
+      setSaving(true);
+    }
     setError(null);
+    setSuccessMessage(null);
 
     try {
       const res = await fetch("/api/superadmin/blog/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          titulo: postGerado.titulo,
-          metaDescricao: postGerado.metaDescricao,
-          introducao: postGerado.introducao,
-          secoes: postGerado.secoes,
-          conclusao: postGerado.conclusao,
-          palavrasChave: postGerado.palavrasChave,
-          categoria: tipoPost,
-          faq: postGerado.faq,
-          pillarPage: postGerado.topicCluster?.pillarPage,
-          artigosRelacionados: postGerado.topicCluster?.artigosRelacionados,
+          titulo,
+          metaDescricao: metaDescricao || titulo,
+          introducao,
+          secoes: secoes.map((s) => ({ titulo: s.titulo, conteudo: s.conteudo })),
+          conclusao,
+          palavrasChave: palavrasChave.split(",").map((k) => k.trim()).filter(Boolean),
+          categoria,
+          faq: faq.filter((f) => f.pergunta && f.resposta),
           status,
-          modeloIA: metadata?.modelo,
-          tokensUsados: metadata?.tokensUsados,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Erro ao publicar");
+        throw new Error(data.error || "Erro ao salvar");
       }
 
-      setPublishedUrl(data.url);
-      
-      // Recarregar lista de posts
-      if (activeTab === "posts") {
-        carregarPosts();
+      if (status === "PUBLICADO") {
+        setPublishedUrl(data.url);
+        setSuccessMessage("Post publicado com sucesso!");
+      } else {
+        setSuccessMessage("Rascunho salvo com sucesso!");
+      }
+
+      // Limpar formulário após publicar
+      if (status === "PUBLICADO") {
+        setTimeout(() => {
+          limparFormulario();
+        }, 3000);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao publicar");
+      setError(err instanceof Error ? err.message : "Erro ao salvar");
     } finally {
+      setSaving(false);
       setPublishing(false);
     }
+  };
+
+  const limparFormulario = () => {
+    setTitulo("");
+    setMetaDescricao("");
+    setIntroducao("");
+    setSecoes([{ id: "1", titulo: "", conteudo: "", collapsed: false }]);
+    setFaq([]);
+    setConclusao("");
+    setPalavrasChave("");
+    setPublishedUrl(null);
+    setSuccessMessage(null);
   };
 
   const handleExcluir = async (id: string) => {
@@ -227,13 +335,8 @@ export default function BlogGeneratorPage() {
 
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/superadmin/blog/posts/${id}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        setPosts(posts.filter((p) => p.id !== id));
-      }
+      await fetch(`/api/superadmin/blog/posts/${id}`, { method: "DELETE" });
+      setPosts(posts.filter((p) => p.id !== id));
     } catch (err) {
       console.error("Erro ao excluir:", err);
     } finally {
@@ -241,573 +344,655 @@ export default function BlogGeneratorPage() {
     }
   };
 
-  const handleAtualizarStatus = async (id: string, status: "PUBLICADO" | "RASCUNHO" | "ARQUIVADO") => {
+  const handleAtualizarStatus = async (id: string, status: string) => {
     try {
-      const res = await fetch(`/api/superadmin/blog/posts/${id}`, {
+      await fetch(`/api/superadmin/blog/posts/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-
-      if (res.ok) {
-        carregarPosts();
-      }
+      carregarPosts();
     } catch (err) {
-      console.error("Erro ao atualizar status:", err);
+      console.error("Erro ao atualizar:", err);
     }
   };
 
-  const copiarParaClipboard = async (texto: string, id: string) => {
-    await navigator.clipboard.writeText(texto);
-    setCopied(id);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const gerarMarkdown = () => {
-    if (!postGerado) return "";
-
-    let md = `# ${postGerado.titulo}\n\n`;
-    md += `> ${postGerado.metaDescricao}\n\n`;
-    md += `${postGerado.introducao}\n\n`;
-
-    postGerado.secoes.forEach((secao) => {
-      md += `## ${secao.titulo}\n\n${secao.conteudo}\n\n`;
-    });
-
-    if (postGerado.faq && postGerado.faq.length > 0) {
-      md += `## Perguntas Frequentes\n\n`;
-      postGerado.faq.forEach((item) => {
-        md += `### ${item.pergunta}\n\n${item.resposta}\n\n`;
-      });
-    }
-
-    md += `## Conclusão\n\n${postGerado.conclusao}\n\n`;
-    md += `---\n\n**Palavras-chave:** ${postGerado.palavrasChave.join(", ")}\n`;
-
-    return md;
-  };
-
-  const toggleSection = (index: number) => {
-    const newSet = new Set(expandedSections);
-    if (newSet.has(index)) {
-      newSet.delete(index);
-    } else {
-      newSet.add(index);
-    }
-    setExpandedSections(newSet);
-  };
+  // Componente de botão IA
+  const BotaoIA = ({
+    campo,
+    acao,
+    contexto = "",
+    label = "IA",
+  }: {
+    campo: string;
+    acao: "sugerir" | "melhorar";
+    contexto?: string;
+    label?: string;
+  }) => (
+    <button
+      onClick={() =>
+        acao === "sugerir"
+          ? gerarSugestao(campo, contexto)
+          : melhorarTexto(campo, contexto, "Torne mais profissional e otimizado para SEO.")
+      }
+      disabled={aiLoading === campo}
+      className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 rounded-lg transition-colors disabled:opacity-50"
+      title={acao === "sugerir" ? "Gerar sugestão com IA" : "Melhorar com IA"}
+    >
+      {aiLoading === campo ? (
+        <Loader2 className="w-3 h-3 animate-spin" />
+      ) : (
+        <Sparkles className="w-3 h-3" />
+      )}
+      {label}
+    </button>
+  );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
-            <Sparkles className="w-6 h-6 text-white" />
+    <div className="min-h-screen bg-slate-900">
+      {/* Header Fixo */}
+      <div className="sticky top-16 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <PenLine className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white">Editor de Blog</h1>
+              <p className="text-xs text-slate-400">Redija posts otimizados para SEO 2026</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">
-              Blog com IA
-            </h1>
-            <p className="text-slate-400 text-sm">
-              Gere e publique posts otimizados para SEO 2026
-            </p>
+
+          {/* Tabs */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab("editor")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                activeTab === "editor"
+                  ? "bg-violet-600 text-white"
+                  : "bg-slate-800 text-slate-400 hover:text-white"
+              }`}
+            >
+              <PenLine className="w-4 h-4" />
+              Editor
+            </button>
+            <button
+              onClick={() => setActiveTab("posts")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                activeTab === "posts"
+                  ? "bg-violet-600 text-white"
+                  : "bg-slate-800 text-slate-400 hover:text-white"
+              }`}
+            >
+              <LayoutList className="w-4 h-4" />
+              Posts
+              {posts.length > 0 && (
+                <span className="px-1.5 py-0.5 text-xs bg-white/20 rounded-full">
+                  {posts.length}
+                </span>
+              )}
+            </button>
           </div>
+
+          {/* Ações do Editor */}
+          {activeTab === "editor" && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowPreview(!showPreview)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  showPreview
+                    ? "bg-cyan-600 text-white"
+                    : "bg-slate-700 text-slate-300 hover:text-white"
+                }`}
+              >
+                <Eye className="w-4 h-4" />
+                Preview
+              </button>
+              <button
+                onClick={() => handleSalvar("RASCUNHO")}
+                disabled={saving || !titulo.trim()}
+                className="flex items-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Rascunho
+              </button>
+              <button
+                onClick={() => handleSalvar("PUBLICADO")}
+                disabled={publishing || !titulo.trim()}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-green-500/30 disabled:opacity-50"
+              >
+                {publishing ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                Publicar
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setActiveTab("gerar")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors ${
-            activeTab === "gerar"
-              ? "bg-violet-600 text-white"
-              : "bg-slate-800 text-slate-400 hover:text-white"
-          }`}
-        >
-          <PenLine className="w-4 h-4" />
-          Gerar Post
-        </button>
-        <button
-          onClick={() => setActiveTab("posts")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors ${
-            activeTab === "posts"
-              ? "bg-violet-600 text-white"
-              : "bg-slate-800 text-slate-400 hover:text-white"
-          }`}
-        >
-          <LayoutList className="w-4 h-4" />
-          Posts Publicados
-          {posts.length > 0 && (
-            <span className="px-1.5 py-0.5 text-xs bg-white/20 rounded-full">
-              {posts.length}
-            </span>
+      {/* Mensagens */}
+      {(error || successMessage || publishedUrl) && (
+        <div className="max-w-6xl mx-auto px-6 pt-4">
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm mb-4">
+              {error}
+            </div>
           )}
-        </button>
-      </div>
-
-      {/* Tab: Lista de Posts */}
-      {activeTab === "posts" && (
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-          {loadingPosts ? (
-            <div className="p-12 text-center">
-              <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
-              <p className="text-slate-400">Carregando posts...</p>
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="p-12 text-center">
-              <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Nenhum post ainda
-              </h3>
-              <p className="text-slate-400 text-sm mb-4">
-                Gere seu primeiro post na aba &quot;Gerar Post&quot;
-              </p>
-              <button
-                onClick={() => setActiveTab("gerar")}
-                className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-medium"
-              >
-                Criar Post
-              </button>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-700">
-              {/* Header da tabela */}
-              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-900/50 text-xs font-semibold text-slate-400 uppercase tracking-wide">
-                <div className="col-span-5">Título</div>
-                <div className="col-span-2">Categoria</div>
-                <div className="col-span-2">Status</div>
-                <div className="col-span-2">Data</div>
-                <div className="col-span-1">Ações</div>
-              </div>
-
-              {/* Lista de posts */}
-              {posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-700/30 transition-colors"
+          {successMessage && (
+            <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-green-400 text-sm mb-4 flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Check className="w-5 h-5" />
+                {successMessage}
+              </span>
+              {publishedUrl && (
+                <Link
+                  href={publishedUrl}
+                  target="_blank"
+                  className="flex items-center gap-1 text-green-300 hover:text-green-200"
                 >
-                  <div className="col-span-5">
-                    <h3 className="font-medium text-white line-clamp-1">
-                      {post.titulo}
-                    </h3>
-                    <p className="text-xs text-slate-500 line-clamp-1">
-                      /blog/{post.slug}
-                    </p>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="px-2 py-1 text-xs bg-slate-700 text-slate-300 rounded-lg capitalize">
-                      {post.categoria}
-                    </span>
-                  </div>
-                  <div className="col-span-2">
-                    <select
-                      value={post.status}
-                      onChange={(e) => handleAtualizarStatus(post.id, e.target.value as "PUBLICADO" | "RASCUNHO" | "ARQUIVADO")}
-                      className={`px-2 py-1 text-xs rounded-lg border-0 cursor-pointer ${
-                        post.status === "PUBLICADO"
-                          ? "bg-green-500/20 text-green-400"
-                          : post.status === "RASCUNHO"
-                          ? "bg-amber-500/20 text-amber-400"
-                          : "bg-slate-600 text-slate-400"
-                      }`}
-                    >
-                      <option value="RASCUNHO">Rascunho</option>
-                      <option value="PUBLICADO">Publicado</option>
-                      <option value="ARQUIVADO">Arquivado</option>
-                    </select>
-                  </div>
-                  <div className="col-span-2 text-sm text-slate-400">
-                    {post.publicadoEm
-                      ? new Date(post.publicadoEm).toLocaleDateString("pt-BR")
-                      : new Date(post.createdAt).toLocaleDateString("pt-BR")}
-                  </div>
-                  <div className="col-span-1 flex items-center gap-1">
-                    {post.status === "PUBLICADO" && (
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        target="_blank"
-                        className="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
-                        title="Ver post"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => handleExcluir(post.id)}
-                      disabled={deletingId === post.id}
-                      className="p-2 text-slate-400 hover:text-red-400 transition-colors disabled:opacity-50"
-                      title="Excluir"
-                    >
-                      {deletingId === post.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                  Ver post <ExternalLink className="w-4 h-4" />
+                </Link>
+              )}
             </div>
           )}
         </div>
       )}
 
-      {/* Tab: Gerador */}
-      {activeTab === "gerar" && (
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Formulário */}
-          <div className="space-y-6">
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Wand2 className="w-5 h-5 text-violet-400" />
-                Configuração do Post
-              </h2>
+      {/* Sugestão de IA (Modal flutuante) */}
+      {aiSuggestion && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-violet-400" />
+                Sugestão da IA
+              </h3>
+              <button
+                onClick={() => setAiSuggestion(null)}
+                className="text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="bg-slate-900 rounded-xl p-4 mb-4 max-h-60 overflow-y-auto">
+              <p className="text-slate-300 text-sm whitespace-pre-wrap">{aiSuggestion.text}</p>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setAiSuggestion(null)}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm"
+              >
+                Descartar
+              </button>
+              <button
+                onClick={() => aplicarSugestao(aiSuggestion.field, aiSuggestion.text)}
+                className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-sm font-medium"
+              >
+                Aplicar Sugestão
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-              {/* Tema */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Tema do Post *
-                </label>
-                <textarea
-                  value={tema}
-                  onChange={(e) => setTema(e.target.value)}
-                  placeholder="Ex: Como organizar o pátio do lava-rápido para maximizar produtividade"
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
-                  rows={3}
-                />
+      {/* Tab: Editor */}
+      {activeTab === "editor" && (
+        <div className="max-w-6xl mx-auto px-6 py-6">
+          <div className={`grid ${showPreview ? "lg:grid-cols-2" : "grid-cols-1"} gap-6`}>
+            {/* Formulário */}
+            <div className="space-y-6">
+              {/* Título e Meta */}
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Type className="w-5 h-5 text-cyan-400" />
+                  <h2 className="text-lg font-semibold text-white">Título e SEO</h2>
+                </div>
+
+                {/* Título */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-slate-300">Título (H1) *</label>
+                    <BotaoIA campo="titulo" acao="sugerir" contexto={titulo || "gestão de lava-rápido"} label="Sugerir" />
+                  </div>
+                  <input
+                    type="text"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                    placeholder="Como Organizar o Pátio do Lava-Rápido para Aumentar Produtividade"
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  />
+                </div>
+
+                {/* Meta Descrição */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-slate-300">
+                      Meta Descrição
+                      <span className="text-slate-500 ml-2">({metaDescricao.length}/160)</span>
+                    </label>
+                    <BotaoIA campo="meta" acao="sugerir" contexto={titulo} label="Gerar" />
+                  </div>
+                  <textarea
+                    value={metaDescricao}
+                    onChange={(e) => setMetaDescricao(e.target.value.slice(0, 160))}
+                    placeholder="Aprenda técnicas práticas para organizar seu lava-rápido e aumentar a produtividade da equipe..."
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                    rows={2}
+                  />
+                </div>
+
+                {/* Categoria e Palavras-chave */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Categoria</label>
+                    <select
+                      value={categoria}
+                      onChange={(e) => setCategoria(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    >
+                      <option value="guia">📚 Guia</option>
+                      <option value="tutorial">🎯 Tutorial</option>
+                      <option value="comparativo">⚖️ Comparativo</option>
+                      <option value="lista">📋 Lista</option>
+                      <option value="case">📊 Case</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm font-medium text-slate-300">Palavras-chave</label>
+                      <BotaoIA campo="keywords" acao="sugerir" contexto={titulo} label="Gerar" />
+                    </div>
+                    <input
+                      type="text"
+                      value={palavrasChave}
+                      onChange={(e) => setPalavrasChave(e.target.value)}
+                      placeholder="lava rapido, gestão, produtividade"
+                      className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Temas Rápidos */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-slate-400 mb-2">
-                  💡 Sugestões
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {temasRapidos.slice(0, 3).map((t, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setTema(t)}
-                      className="px-3 py-1.5 text-xs bg-slate-700 hover:bg-violet-600/30 text-slate-300 hover:text-violet-300 rounded-lg transition-colors border border-slate-600 hover:border-violet-500/50"
+              {/* Introdução */}
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <AlignLeft className="w-5 h-5 text-emerald-400" />
+                    <h2 className="text-lg font-semibold text-white">Introdução</h2>
+                  </div>
+                  <div className="flex gap-2">
+                    <BotaoIA campo="introducao" acao="sugerir" label="Gerar" />
+                    {introducao && (
+                      <BotaoIA campo="introducao" acao="melhorar" contexto={introducao} label="Melhorar" />
+                    )}
+                  </div>
+                </div>
+                <textarea
+                  value={introducao}
+                  onChange={(e) => setIntroducao(e.target.value)}
+                  placeholder="Escreva uma introdução que responda à pergunta principal do leitor logo no primeiro parágrafo (Answer-First)..."
+                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                  rows={5}
+                />
+                <p className="text-xs text-slate-500 mt-2">
+                  💡 Use primeira pessoa: &quot;Em nossa experiência...&quot;, &quot;Percebemos que...&quot;
+                </p>
+              </div>
+
+              {/* Seções */}
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <List className="w-5 h-5 text-amber-400" />
+                    <h2 className="text-lg font-semibold text-white">Seções do Conteúdo</h2>
+                  </div>
+                  <button
+                    onClick={adicionarSecao}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Adicionar
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {secoes.map((secao, index) => (
+                    <div
+                      key={secao.id}
+                      className="border border-slate-600 rounded-xl overflow-hidden"
                     >
-                      {t.slice(0, 35)}...
-                    </button>
+                      {/* Header da Seção */}
+                      <div className="flex items-center gap-2 px-4 py-3 bg-slate-700/50">
+                        <GripVertical className="w-4 h-4 text-slate-500" />
+                        <span className="w-6 h-6 rounded-full bg-slate-600 flex items-center justify-center text-xs text-slate-300">
+                          {index + 1}
+                        </span>
+                        <input
+                          type="text"
+                          value={secao.titulo}
+                          onChange={(e) => atualizarSecao(secao.id, "titulo", e.target.value)}
+                          placeholder="Título da seção (H2)"
+                          className="flex-1 bg-transparent text-white placeholder-slate-400 focus:outline-none"
+                        />
+                        <div className="flex items-center gap-1">
+                          <BotaoIA
+                            campo={`secao-${secao.id}`}
+                            acao="sugerir"
+                            contexto={secao.titulo || titulo}
+                            label="IA"
+                          />
+                          <button
+                            onClick={() => moverSecao(secao.id, "up")}
+                            disabled={index === 0}
+                            className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
+                          >
+                            <ChevronUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => moverSecao(secao.id, "down")}
+                            disabled={index === secoes.length - 1}
+                            className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
+                          >
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => toggleSecaoCollapse(secao.id)}
+                            className="p-1 text-slate-400 hover:text-white"
+                          >
+                            {secao.collapsed ? (
+                              <ChevronRight className="w-4 h-4" />
+                            ) : (
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </button>
+                          {secoes.length > 1 && (
+                            <button
+                              onClick={() => removerSecao(secao.id)}
+                              className="p-1 text-slate-400 hover:text-red-400"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Conteúdo da Seção */}
+                      {!secao.collapsed && (
+                        <div className="p-4">
+                          <textarea
+                            value={secao.conteudo}
+                            onChange={(e) => atualizarSecao(secao.id, "conteudo", e.target.value)}
+                            placeholder="Conteúdo da seção... Use parágrafos, listas e exemplos práticos."
+                            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                            rows={6}
+                          />
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
 
-              {/* Grid de opções */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Tipo
-                  </label>
-                  <select
-                    value={tipoPost}
-                    onChange={(e) => setTipoPost(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+              {/* FAQ */}
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <MessageSquareQuote className="w-5 h-5 text-violet-400" />
+                    <h2 className="text-lg font-semibold text-white">FAQ (Opcional)</h2>
+                  </div>
+                  <button
+                    onClick={adicionarFaq}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm"
                   >
-                    <option value="guia">📚 Guia</option>
-                    <option value="tutorial">🎯 Tutorial</option>
-                    <option value="comparativo">⚖️ Comparativo</option>
-                    <option value="lista">📋 Lista</option>
-                  </select>
+                    <Plus className="w-4 h-4" />
+                    Adicionar
+                  </button>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Tamanho
-                  </label>
-                  <select
-                    value={tamanhoPost}
-                    onChange={(e) => setTamanhoPost(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  >
-                    <option value="curto">Curto (~800)</option>
-                    <option value="medio">Médio (~1500)</option>
-                    <option value="longo">Longo (~2500)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Opções */}
-              <div className="flex flex-wrap gap-4 mb-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={incluirFAQ}
-                    onChange={(e) => setIncluirFAQ(e.target.checked)}
-                    className="w-4 h-4 rounded bg-slate-700 border-slate-600 text-violet-500"
-                  />
-                  <span className="text-sm text-slate-300 flex items-center gap-1">
-                    <MessageSquareQuote className="w-4 h-4" />
-                    FAQ
-                  </span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={incluirTabela}
-                    onChange={(e) => setIncluirTabela(e.target.checked)}
-                    className="w-4 h-4 rounded bg-slate-700 border-slate-600 text-violet-500"
-                  />
-                  <span className="text-sm text-slate-300 flex items-center gap-1">
-                    <Table className="w-4 h-4" />
-                    Tabela
-                  </span>
-                </label>
-              </div>
-
-              {/* Botão Gerar */}
-              <button
-                onClick={handleGerarPost}
-                disabled={loading || !tema.trim()}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold rounded-xl hover:from-violet-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-violet-500/30"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Gerando...
-                  </>
+                {faq.length === 0 ? (
+                  <p className="text-slate-500 text-sm text-center py-4">
+                    Adicione perguntas frequentes para melhorar o SEO
+                  </p>
                 ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    Gerar com IA
-                  </>
-                )}
-              </button>
-
-              {error && (
-                <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-            </div>
-
-            {/* Dicas */}
-            <div className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 border border-violet-500/20 rounded-2xl p-5">
-              <h3 className="text-sm font-semibold text-violet-300 mb-3 flex items-center gap-2">
-                <Lightbulb className="w-4 h-4" />
-                SEO 2026
-              </h3>
-              <ul className="space-y-1.5 text-xs text-slate-400">
-                <li>• <strong className="text-slate-300">E-E-A-T:</strong> Experiência real do autor</li>
-                <li>• <strong className="text-slate-300">GEO:</strong> Estrutura para LLMs</li>
-                <li>• <strong className="text-slate-300">Answer-First:</strong> Resposta no início</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Preview/Resultado */}
-          <div className="space-y-4">
-            {(postGerado || rawContent) && (
-              <>
-                {/* Tabs de Visualização */}
-                <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl p-1">
-                  <button
-                    onClick={() => setViewMode("preview")}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewMode === "preview"
-                        ? "bg-violet-600 text-white"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    <Eye className="w-4 h-4" />
-                    Preview
-                  </button>
-                  <button
-                    onClick={() => setViewMode("markdown")}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewMode === "markdown"
-                        ? "bg-violet-600 text-white"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    <FileText className="w-4 h-4" />
-                    MD
-                  </button>
-                  <button
-                    onClick={() => setViewMode("json")}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewMode === "json"
-                        ? "bg-violet-600 text-white"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    <Code2 className="w-4 h-4" />
-                    JSON
-                  </button>
-                </div>
-
-                {/* Conteúdo Preview */}
-                <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden max-h-[50vh] overflow-y-auto">
-                  {rawContent ? (
-                    <div className="p-6">
-                      <pre className="text-sm text-slate-300 whitespace-pre-wrap">
-                        {rawContent}
-                      </pre>
-                    </div>
-                  ) : postGerado && viewMode === "preview" ? (
-                    <div className="divide-y divide-slate-700">
-                      {/* Título */}
-                      <div className="p-5">
-                        <h2 className="text-lg font-bold text-white mb-2">
-                          {postGerado.titulo}
-                        </h2>
-                        <p className="text-sm text-slate-400">
-                          {postGerado.metaDescricao}
-                        </p>
-                      </div>
-
-                      {/* Introdução */}
-                      <div className="p-5">
-                        <h3 className="text-xs font-semibold text-violet-400 mb-2 uppercase">
-                          Introdução
-                        </h3>
-                        <p className="text-sm text-slate-300 line-clamp-4">
-                          {postGerado.introducao}
-                        </p>
-                      </div>
-
-                      {/* Seções colapsáveis */}
-                      {postGerado.secoes.slice(0, 3).map((secao, index) => (
-                        <div key={index}>
+                  <div className="space-y-4">
+                    {faq.map((item, index) => (
+                      <div key={item.id} className="border border-slate-600 rounded-xl p-4">
+                        <div className="flex items-start gap-2 mb-3">
+                          <span className="text-violet-400 font-bold">Q{index + 1}:</span>
+                          <input
+                            type="text"
+                            value={item.pergunta}
+                            onChange={(e) => atualizarFaq(item.id, "pergunta", e.target.value)}
+                            placeholder="Pergunta frequente..."
+                            className="flex-1 bg-transparent text-white placeholder-slate-400 focus:outline-none"
+                          />
                           <button
-                            onClick={() => toggleSection(index)}
-                            className="w-full flex items-center justify-between p-4 hover:bg-slate-700/30"
+                            onClick={() => removerFaq(item.id)}
+                            className="text-slate-400 hover:text-red-400"
                           >
-                            <span className="text-sm font-medium text-white">
-                              {secao.titulo}
-                            </span>
-                            {expandedSections.has(index) ? (
-                              <ChevronDown className="w-4 h-4 text-slate-400" />
-                            ) : (
-                              <ChevronRight className="w-4 h-4 text-slate-400" />
-                            )}
+                            <Trash2 className="w-4 h-4" />
                           </button>
-                          {expandedSections.has(index) && (
-                            <div className="px-5 pb-4 text-xs text-slate-400 line-clamp-6">
-                              {secao.conteudo}
-                            </div>
-                          )}
                         </div>
-                      ))}
-
-                      {/* Palavras-chave */}
-                      <div className="p-4 bg-slate-900/50">
-                        <div className="flex flex-wrap gap-1">
-                          {postGerado.palavrasChave.slice(0, 5).map((kw, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-0.5 text-xs bg-violet-500/20 text-violet-300 rounded"
-                            >
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
+                        <textarea
+                          value={item.resposta}
+                          onChange={(e) => atualizarFaq(item.id, "resposta", e.target.value)}
+                          placeholder="Resposta..."
+                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none text-sm"
+                          rows={2}
+                        />
                       </div>
-                    </div>
-                  ) : postGerado && viewMode === "markdown" ? (
-                    <div className="p-4">
-                      <button
-                        onClick={() => copiarParaClipboard(gerarMarkdown(), "md")}
-                        className="mb-3 flex items-center gap-2 px-3 py-1.5 text-xs bg-violet-600 hover:bg-violet-500 text-white rounded-lg"
-                      >
-                        {copied === "md" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                        Copiar
-                      </button>
-                      <pre className="text-xs text-slate-300 whitespace-pre-wrap font-mono">
-                        {gerarMarkdown().slice(0, 2000)}...
-                      </pre>
-                    </div>
-                  ) : postGerado && viewMode === "json" ? (
-                    <div className="p-4">
-                      <button
-                        onClick={() => copiarParaClipboard(JSON.stringify(postGerado, null, 2), "json")}
-                        className="mb-3 flex items-center gap-2 px-3 py-1.5 text-xs bg-violet-600 hover:bg-violet-500 text-white rounded-lg"
-                      >
-                        {copied === "json" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                        Copiar
-                      </button>
-                      <pre className="text-xs text-slate-300 font-mono">
-                        {JSON.stringify(postGerado, null, 2).slice(0, 2000)}...
-                      </pre>
-                    </div>
-                  ) : null}
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Conclusão */}
+              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-rose-400" />
+                    <h2 className="text-lg font-semibold text-white">Conclusão</h2>
+                  </div>
+                  <BotaoIA campo="conclusao" acao="sugerir" label="Gerar" />
+                </div>
+                <textarea
+                  value={conclusao}
+                  onChange={(e) => setConclusao(e.target.value)}
+                  placeholder="Conclusão com CTA para o Lavify..."
+                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                  rows={4}
+                />
+              </div>
+
+              {/* Botão Limpar */}
+              <button
+                onClick={limparFormulario}
+                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white text-sm"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Limpar formulário
+              </button>
+            </div>
+
+            {/* Preview */}
+            {showPreview && (
+              <div className="lg:sticky lg:top-32 lg:self-start">
+                <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+                  <div className="px-4 py-3 bg-slate-700/50 border-b border-slate-600 flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-cyan-400" />
+                    <span className="text-sm font-medium text-white">Preview</span>
+                  </div>
+                  <div className="p-6 max-h-[70vh] overflow-y-auto">
+                    {titulo ? (
+                      <>
+                        <span className="inline-block px-2 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded mb-3 capitalize">
+                          {categoria}
+                        </span>
+                        <h1 className="text-xl font-bold text-white mb-3">{titulo}</h1>
+                        {metaDescricao && (
+                          <p className="text-sm text-slate-400 mb-4 italic">{metaDescricao}</p>
+                        )}
+                        {introducao && (
+                          <div className="text-sm text-slate-300 mb-6 whitespace-pre-wrap">
+                            {introducao}
+                          </div>
+                        )}
+                        {secoes.filter((s) => s.titulo || s.conteudo).map((secao, i) => (
+                          <div key={secao.id} className="mb-6">
+                            {secao.titulo && (
+                              <h2 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded bg-violet-500/20 flex items-center justify-center text-xs text-violet-400">
+                                  {i + 1}
+                                </span>
+                                {secao.titulo}
+                              </h2>
+                            )}
+                            {secao.conteudo && (
+                              <p className="text-sm text-slate-400 whitespace-pre-wrap">
+                                {secao.conteudo}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                        {faq.filter((f) => f.pergunta).length > 0 && (
+                          <div className="mb-6">
+                            <h2 className="text-lg font-semibold text-white mb-3">FAQ</h2>
+                            {faq.filter((f) => f.pergunta).map((f) => (
+                              <div key={f.id} className="mb-3">
+                                <p className="text-sm font-medium text-violet-300">{f.pergunta}</p>
+                                <p className="text-sm text-slate-400">{f.resposta}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {conclusao && (
+                          <div className="p-4 bg-violet-500/10 border border-violet-500/20 rounded-xl">
+                            <p className="text-sm text-slate-300 whitespace-pre-wrap">{conclusao}</p>
+                          </div>
+                        )}
+                        {palavrasChave && (
+                          <div className="mt-4 flex flex-wrap gap-1">
+                            {palavrasChave.split(",").map((kw, i) => (
+                              <span
+                                key={i}
+                                className="px-2 py-0.5 text-xs bg-slate-700 text-slate-400 rounded"
+                              >
+                                {kw.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-center py-8">
+                        <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                        <p className="text-slate-500 text-sm">
+                          Comece a escrever para ver o preview
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Posts */}
+      {activeTab === "posts" && (
+        <div className="max-w-6xl mx-auto px-6 py-6">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+            {loadingPosts ? (
+              <div className="p-12 text-center">
+                <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-3" />
+                <p className="text-slate-400">Carregando posts...</p>
+              </div>
+            ) : posts.length === 0 ? (
+              <div className="p-12 text-center">
+                <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-white mb-2">Nenhum post ainda</h3>
+                <p className="text-slate-400 text-sm mb-4">
+                  Comece a escrever seu primeiro post no Editor
+                </p>
+                <button
+                  onClick={() => setActiveTab("editor")}
+                  className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-medium"
+                >
+                  Ir para o Editor
+                </button>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-700">
+                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-900/50 text-xs font-semibold text-slate-400 uppercase">
+                  <div className="col-span-5">Título</div>
+                  <div className="col-span-2">Categoria</div>
+                  <div className="col-span-2">Status</div>
+                  <div className="col-span-2">Data</div>
+                  <div className="col-span-1">Ações</div>
                 </div>
 
-                {/* Botões de Ação */}
-                {postGerado && !publishedUrl && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => handlePublicar("RASCUNHO")}
-                      disabled={publishing}
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
-                    >
-                      {publishing ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Archive className="w-4 h-4" />
-                      )}
-                      Salvar Rascunho
-                    </button>
-                    <button
-                      onClick={() => handlePublicar("PUBLICADO")}
-                      disabled={publishing}
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-green-500/30 disabled:opacity-50"
-                    >
-                      {publishing ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Upload className="w-4 h-4" />
-                      )}
-                      Publicar Agora
-                    </button>
-                  </div>
-                )}
-
-                {/* URL Publicada */}
-                {publishedUrl && (
-                  <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
-                    <div className="flex items-center gap-2 text-green-400 mb-2">
-                      <Check className="w-5 h-5" />
-                      <span className="font-semibold">Post publicado!</span>
+                {posts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-700/30"
+                  >
+                    <div className="col-span-5">
+                      <h3 className="font-medium text-white line-clamp-1">{post.titulo}</h3>
+                      <p className="text-xs text-slate-500">/blog/{post.slug}</p>
                     </div>
-                    <Link
-                      href={publishedUrl}
-                      target="_blank"
-                      className="inline-flex items-center gap-2 text-sm text-green-300 hover:text-green-200"
-                    >
-                      {publishedUrl}
-                      <ExternalLink className="w-4 h-4" />
-                    </Link>
+                    <div className="col-span-2">
+                      <span className="px-2 py-1 text-xs bg-slate-700 text-slate-300 rounded-lg capitalize">
+                        {post.categoria}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <select
+                        value={post.status}
+                        onChange={(e) => handleAtualizarStatus(post.id, e.target.value)}
+                        className={`px-2 py-1 text-xs rounded-lg border-0 cursor-pointer ${
+                          post.status === "PUBLICADO"
+                            ? "bg-green-500/20 text-green-400"
+                            : post.status === "RASCUNHO"
+                            ? "bg-amber-500/20 text-amber-400"
+                            : "bg-slate-600 text-slate-400"
+                        }`}
+                      >
+                        <option value="RASCUNHO">Rascunho</option>
+                        <option value="PUBLICADO">Publicado</option>
+                        <option value="ARQUIVADO">Arquivado</option>
+                      </select>
+                    </div>
+                    <div className="col-span-2 text-sm text-slate-400">
+                      {new Date(post.publicadoEm || post.createdAt).toLocaleDateString("pt-BR")}
+                    </div>
+                    <div className="col-span-1 flex items-center gap-1">
+                      {post.status === "PUBLICADO" && (
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          target="_blank"
+                          className="p-2 text-slate-400 hover:text-cyan-400"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => handleExcluir(post.id)}
+                        disabled={deletingId === post.id}
+                        className="p-2 text-slate-400 hover:text-red-400 disabled:opacity-50"
+                      >
+                        {deletingId === post.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
-                )}
-
-                {/* Regenerar */}
-                <button
-                  onClick={handleGerarPost}
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
-                >
-                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-                  Regenerar
-                </button>
-              </>
-            )}
-
-            {/* Empty State */}
-            {!postGerado && !rawContent && !loading && (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-12 text-center">
-                <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Pronto para criar
-                </h3>
-                <p className="text-slate-400 text-sm">
-                  Preencha o tema e clique em &quot;Gerar com IA&quot;
-                </p>
+                ))}
               </div>
             )}
           </div>

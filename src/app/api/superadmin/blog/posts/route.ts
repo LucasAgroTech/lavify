@@ -89,9 +89,9 @@ export async function POST(request: NextRequest) {
       tokensUsados,
     } = body;
 
-    if (!titulo || !introducao || !secoes) {
+    if (!titulo) {
       return NextResponse.json(
-        { error: "Campos obrigatórios: titulo, introducao, secoes" },
+        { error: "O título é obrigatório" },
         { status: 400 }
       );
     }
@@ -108,19 +108,19 @@ export async function POST(request: NextRequest) {
         slug,
         titulo,
         metaDescricao: metaDescricao || titulo,
-        introducao,
-        conteudo: JSON.stringify(secoes),
+        introducao: introducao || "",
+        conteudo: secoes ? JSON.stringify(secoes) : "[]",
         conclusao: conclusao || "",
         palavrasChave: palavrasChave || [],
         categoria: categoria || "guia",
-        faq: faq ? JSON.stringify(faq) : null,
+        faq: faq && faq.length > 0 ? JSON.stringify(faq) : null,
         pillarPage,
         artigosRelacionados: artigosRelacionados || [],
         status: status === "PUBLICADO" ? "PUBLICADO" : "RASCUNHO",
         publicadoEm: status === "PUBLICADO" ? new Date() : null,
-        geradoPorIA: true,
-        modeloIA: modeloIA || "gpt-4o",
-        tokensUsados: tokensUsados || 0,
+        geradoPorIA: false, // Redação manual
+        modeloIA: modeloIA || null,
+        tokensUsados: tokensUsados || null,
       },
     });
 
