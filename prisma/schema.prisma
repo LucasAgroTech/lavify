@@ -448,3 +448,56 @@ model Financeiro {
   @@index([lavaJatoId])
   @@index([data])
 }
+
+// ============================================
+// BLOG - Posts gerados por IA e publicados
+// ============================================
+
+enum StatusPost {
+  RASCUNHO
+  PUBLICADO
+  ARQUIVADO
+}
+
+model BlogPost {
+  id              String      @id @default(uuid())
+  slug            String      @unique
+  
+  // Conteúdo principal
+  titulo          String
+  metaDescricao   String
+  introducao      String      @db.Text
+  conteudo        String      @db.Text    // JSON com seções
+  conclusao       String      @db.Text
+  
+  // SEO
+  palavrasChave   String[]
+  categoria       String      @default("guia")
+  
+  // FAQ (JSON)
+  faq             String?     @db.Text
+  
+  // Topic Cluster
+  pillarPage      String?
+  artigosRelacionados String[]
+  
+  // Autor (E-E-A-T)
+  autorId         String      @default("lucas-pinheiro")
+  autorNome       String      @default("Lucas Pinheiro")
+  
+  // Status e datas
+  status          StatusPost  @default(RASCUNHO)
+  publicadoEm     DateTime?
+  atualizadoEm    DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  
+  // Metadados de geração
+  geradoPorIA     Boolean     @default(true)
+  modeloIA        String?
+  tokensUsados    Int?
+  
+  @@index([status])
+  @@index([categoria])
+  @@index([publicadoEm])
+  @@index([slug])
+}

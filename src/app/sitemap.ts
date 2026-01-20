@@ -139,12 +139,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Erro ao gerar sitemap de lava jatos:", error);
   }
 
+  // ═══════════════════════════════════════════════════════════════════
+  // POSTS DO BLOG (dinâmicos do banco de dados)
+  // ═══════════════════════════════════════════════════════════════════
+  let blogPostPages: MetadataRoute.Sitemap = [];
+  
+  try {
+    const blogPosts = await prisma.blogPost.findMany({
+      where: { status: "PUBLICADO" },
+      select: { slug: true, publicadoEm: true, atualizadoEm: true },
+      orderBy: { publicadoEm: "desc" },
+    });
+
+    blogPostPages = blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.atualizadoEm || post.publicadoEm || new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    }));
+  } catch (error) {
+    console.error("Erro ao gerar sitemap de blog posts:", error);
+  }
+
   return [
     ...staticPages, 
     ...keywordPages, 
     ...cidadePages, 
     ...solucoesPages,
     ...guiasPages,
-    ...lavaJatoPages
+    ...lavaJatoPages,
+    ...blogPostPages,
   ];
 }

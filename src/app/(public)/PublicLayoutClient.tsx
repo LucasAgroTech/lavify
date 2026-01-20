@@ -22,6 +22,7 @@ export default function PublicLayoutClient({
   const isLandingPage = 
     pathname === "/para-empresas" || 
     pathname === "/blog" ||
+    pathname?.startsWith("/blog/") ||
     pathname?.startsWith("/sistema-lava-rapido") ||
     pathname?.startsWith("/solucoes") ||
     pathname?.startsWith("/guias") ||
