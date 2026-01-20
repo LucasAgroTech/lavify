@@ -15,7 +15,6 @@ import {
   Target,
   BarChart3,
   Sparkles,
-  Activity,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -86,7 +85,6 @@ export default function SuperAdminLayout({
   const menuItems = [
     { href: "/superadmin", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/superadmin/metricas", icon: BarChart3, label: "Métricas" },
-    { href: "/superadmin/performance", icon: Activity, label: "Performance" },
     { href: "/superadmin/crm", icon: Target, label: "CRM" },
     { href: "/superadmin/lavajatos", icon: Building2, label: "Lava-Jatos" },
     { href: "/superadmin/usuarios", icon: Users, label: "Usuários" },

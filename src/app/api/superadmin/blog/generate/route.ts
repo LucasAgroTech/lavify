@@ -3,21 +3,41 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 
+// Força runtime Node.js
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 // Verificar autenticação de superadmin
 async function verificarSuperAdmin() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("superadmin_token")?.value;
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("superadmin_token")?.value;
 
-  if (!token) return null;
+    if (!token) {
+      console.log("[Blog Generate] Token não encontrado");
+      return null;
+    }
 
-  const sessao = await prisma.sessaoSuperAdmin.findUnique({
-    where: { token },
-    include: { superAdmin: true },
-  });
+    const sessao = await prisma.sessaoSuperAdmin.findUnique({
+      where: { token },
+      include: { superAdmin: true },
+    });
 
-  if (!sessao || sessao.expiresAt < new Date()) return null;
+    if (!sessao) {
+      console.log("[Blog Generate] Sessão não encontrada para token");
+      return null;
+    }
 
-  return sessao.superAdmin;
+    if (sessao.expiresAt < new Date()) {
+      console.log("[Blog Generate] Sessão expirada");
+      return null;
+    }
+
+    return sessao.superAdmin;
+  } catch (error) {
+    console.error("[Blog Generate] Erro ao verificar auth:", error);
+    return null;
+  }
 }
 
 // Prompt base para contexto
