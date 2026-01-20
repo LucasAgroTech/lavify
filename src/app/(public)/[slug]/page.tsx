@@ -8,14 +8,17 @@ import {
 } from "@/lib/seo-keywords";
 import type { PaginaSEO } from "@/lib/seo-keywords";
 import {
+  getAuthorForContent,
+  generateArticleWithAuthorSchema,
+} from "@/lib/authors";
+import { AuthorByline } from "@/components/AuthorByline";
+import { AuthorBox } from "@/components/AuthorBox";
+import {
   CheckCircle,
   ArrowRight,
   Play,
   Star,
   Zap,
-  Shield,
-  Clock,
-  Smartphone,
   LayoutDashboard,
   Calendar,
   MessageCircle,
@@ -503,6 +506,10 @@ export default async function PaginaSEO({ params }: PageProps) {
   const conteudo = getConteudoPorTipo(pagina);
   const paginasRelacionadas = getPaginasRelacionadas(slug, 4);
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+  
+  // Autor do artigo (E-E-A-T)
+  const author = getAuthorForContent(pagina.tipo);
+  const dataPublicacao = "2026-01-01";
 
   // JSON-LD Schema - SoftwareApplication
   const jsonLd = {
@@ -554,31 +561,17 @@ export default async function PaginaSEO({ params }: PageProps) {
     ]
   };
 
-  // Article Schema - Para páginas de conteúdo/guias
-  const articleLd = pagina.tipo === "guia" ? {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: pagina.h1,
-    description: pagina.descricaoMeta,
-    author: {
-      "@type": "Organization",
-      name: "Lavify"
+  // Article Schema com Autor (E-E-A-T) - Para todas as páginas de conteúdo
+  const articleLd = generateArticleWithAuthorSchema(
+    {
+      titulo: pagina.h1,
+      descricao: pagina.descricaoMeta,
+      slug: pagina.slug,
+      dataPublicacao,
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Lavify",
-      logo: {
-        "@type": "ImageObject",
-        url: `${baseUrl}/icon.svg`
-      }
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${baseUrl}/${pagina.slug}`
-    },
-    datePublished: "2026-01-01",
-    dateModified: new Date().toISOString().split("T")[0]
-  } : null;
+    author,
+    baseUrl
+  );
 
   // HowTo Schema - Para páginas do tipo "problema" (como fazer)
   const howToLd = pagina.tipo === "problema" && pagina.slug.startsWith("como-") ? {
@@ -683,12 +676,10 @@ export default async function PaginaSEO({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
-      {articleLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
       {howToLd && (
         <script
           type="application/ld+json"
@@ -746,6 +737,15 @@ export default async function PaginaSEO({ params }: PageProps) {
           <p className="text-lg md:text-xl text-white/60 mb-8 max-w-3xl mx-auto">
             {pagina.descricaoMeta}
           </p>
+
+          {/* Byline do Autor - E-E-A-T */}
+          <div className="flex justify-center mb-8">
+            <AuthorByline
+              author={author}
+              dataPublicacao={dataPublicacao}
+              tempoLeitura={5}
+            />
+          </div>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
@@ -920,6 +920,13 @@ export default async function PaginaSEO({ params }: PageProps) {
               </p>
             </details>
           </div>
+        </div>
+      </section>
+
+      {/* Box do Autor - E-E-A-T */}
+      <section className="py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          <AuthorBox author={author} />
         </div>
       </section>
 

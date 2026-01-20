@@ -20,6 +20,8 @@ import {
   paginasLongTail,
 } from "@/lib/seo-keywords";
 import { cidadesBrasil } from "@/lib/seo-cities";
+import { getAuthorForContent } from "@/lib/authors";
+import { AuthorBylineCompact } from "@/components/AuthorByline";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
@@ -86,7 +88,10 @@ const categorias = [
 const cidadesDestaque = cidadesBrasil.slice(0, 12);
 
 export default function BlogPage() {
-  // JSON-LD para a página de blog
+  // Autor do blog (E-E-A-T)
+  const author = getAuthorForContent();
+
+  // JSON-LD para a página de blog com autor real
   const blogJsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -101,14 +106,22 @@ export default function BlogPage() {
         url: `${baseUrl}/icon.svg`,
       },
     },
+    author: {
+      "@type": "Person",
+      name: author.nomeCompleto,
+      url: `${baseUrl}/autor/${author.slug}`,
+      jobTitle: author.cargo,
+      sameAs: [author.redesSociais.linkedin].filter(Boolean),
+    },
     blogPost: todasPaginasSEO.slice(0, 10).map((pagina) => ({
       "@type": "BlogPosting",
       headline: pagina.h1,
       description: pagina.descricaoMeta,
       url: `${baseUrl}/${pagina.slug}`,
       author: {
-        "@type": "Organization",
-        name: "Lavify",
+        "@type": "Person",
+        name: author.nomeCompleto,
+        url: `${baseUrl}/autor/${author.slug}`,
       },
     })),
   };
@@ -230,9 +243,12 @@ export default function BlogPage() {
                   <p className="text-white/50 text-sm line-clamp-2 mb-4">
                     {pagina.descricaoMeta}
                   </p>
-                  <div className="flex items-center gap-1 text-cyan-400 text-sm font-medium">
-                    Ler artigo
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center justify-between">
+                    <AuthorBylineCompact author={author} />
+                    <div className="flex items-center gap-1 text-cyan-400 text-sm font-medium">
+                      Ler
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
                 </Link>
               ))}

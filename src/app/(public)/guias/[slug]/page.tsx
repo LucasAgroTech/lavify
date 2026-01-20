@@ -6,7 +6,6 @@ import {
   ArrowRight, 
   ChevronDown,
   FileText,
-  Download,
   BookOpen,
   Calculator,
   ClipboardList,
@@ -16,6 +15,12 @@ import {
 import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getProblemaBySlug, problemasLavaJato, ProblemaSEO } from "@/lib/seo-problems";
 import { getConteudoRico } from "@/data/seo-guias-content";
+import {
+  getAuthorForContent,
+  generateArticleWithAuthorSchema,
+} from "@/lib/authors";
+import { AuthorByline } from "@/components/AuthorByline";
+import { AuthorBox } from "@/components/AuthorBox";
 
 // Função para converter markdown simples em HTML
 function processarMarkdown(texto: string): string {
@@ -159,23 +164,22 @@ export default async function GuiaPage({ params }: PageProps) {
     ? cidadesBrasil.filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug).slice(0, 6)
     : [];
 
-  // JSON-LD
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: conteudo.titulo,
-    description: conteudo.introducao,
-    author: {
-      "@type": "Organization",
-      name: "Lavify"
+  // Autor do artigo (E-E-A-T)
+  const author = getAuthorForContent("guia");
+  const dataPublicacao = "2026-01-01";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+
+  // JSON-LD com Autor (E-E-A-T)
+  const jsonLd = generateArticleWithAuthorSchema(
+    {
+      titulo: conteudo.titulo,
+      descricao: conteudo.introducao,
+      slug: `guias/${slug}`,
+      dataPublicacao,
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Lavify"
-    },
-    datePublished: "2024-01-01",
-    dateModified: new Date().toISOString().split('T')[0]
-  };
+    author,
+    baseUrl
+  );
 
   return (
     <>
@@ -241,7 +245,7 @@ export default async function GuiaPage({ params }: PageProps) {
             </p>
 
             {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-white/50">
+            <div className="flex flex-wrap items-center gap-6 text-sm text-white/50 mb-8">
               <span className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
                 {conteudo.secoes?.length || 3} seções
@@ -251,6 +255,13 @@ export default async function GuiaPage({ params }: PageProps) {
                 Atualizado {new Date().getFullYear()}
               </span>
             </div>
+
+            {/* Byline do Autor - E-E-A-T */}
+            <AuthorByline
+              author={author}
+              dataPublicacao={dataPublicacao}
+              tempoLeitura={7}
+            />
           </div>
         </section>
 
@@ -363,8 +374,13 @@ export default async function GuiaPage({ params }: PageProps) {
               </div>
             )}
 
+            {/* Box do Autor - E-E-A-T */}
+            <div className="mt-12 mb-12">
+              <AuthorBox author={author} />
+            </div>
+
             {/* CTA Box */}
-            <div className="mt-12 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-8 text-center">
+            <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
                 Automatize seu Lava Jato com o Lavify
               </h3>
