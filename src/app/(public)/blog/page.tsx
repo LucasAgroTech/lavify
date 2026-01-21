@@ -18,7 +18,6 @@ import {
   paginasProblemas,
   paginasFuncionalidades,
   paginasComparativos,
-  paginasGuias,
   paginasLongTail,
 } from "@/lib/seo-keywords";
 import { cidadesBrasil } from "@/lib/seo-cities";
@@ -81,7 +80,7 @@ export const metadata: Metadata = {
   },
 };
 
-// Categorias com ícones
+// Categorias com ícones (sem guias - agora estão na seção dedicada /guias/)
 const categorias = [
   {
     id: "problema",
@@ -106,14 +105,6 @@ const categorias = [
     icon: Scale,
     cor: "from-violet-500 to-purple-600",
     paginas: [...paginasComparativos, ...paginasLongTail.filter(p => p.tipo === "comparativo")],
-  },
-  {
-    id: "guia",
-    titulo: "Guias Completos",
-    descricao: "Aprenda do zero ao avançado",
-    icon: BookOpen,
-    cor: "from-emerald-500 to-green-600",
-    paginas: paginasGuias,
   },
 ];
 
