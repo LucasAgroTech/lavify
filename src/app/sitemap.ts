@@ -1,104 +1,230 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SITEMAP INDEX - Lavify
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 
+ * Estrutura otimizada para Google 2026:
+ * - Sitemap Index principal apontando para sitemaps segmentados
+ * - Organização por tipo de conteúdo
+ * - Prioridades estratégicas baseadas em valor de conversão
+ * - LastModified preciso por tipo de página
+ * 
+ * Referência: https://developers.google.com/search/docs/crawling-indexing/sitemaps
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getAllCidadeSlugs, cidadesBrasil } from "@/lib/seo-cities";
-import { getAllPaginaSEOSlugs } from "@/lib/seo-keywords";
+import { getAllPaginaSEOSlugs, todasPaginasSEO } from "@/lib/seo-keywords";
 import { servicosAutomotivos } from "@/lib/seo-services";
 import { problemasLavaJato } from "@/lib/seo-problems";
 
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURAÇÃO E CONSTANTES
+// ═══════════════════════════════════════════════════════════════════════════
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+
+// Data base para conteúdo estático (última atualização significativa)
+const LAST_MAJOR_UPDATE = new Date("2026-01-21");
+
+// Tipos de prioridade baseados em valor de conversão (0-1, sendo 1 máximo)
+const PRIORITY = {
+  CRITICAL: 1,        // Homepage, landing principal
+  HIGH: 0.9,          // Blog, páginas de conversão
+  MEDIUM_HIGH: 0.8,   // Conteúdo SEO principal, lava-jatos
+  MEDIUM: 0.7,        // Guias, soluções
+  MEDIUM_LOW: 0.6,    // Páginas de cidade secundárias
+  LOW: 0.5,           // Login, cadastro, utilitários
+  MINIMAL: 0.3,       // Páginas de suporte
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FUNÇÕES AUXILIARES
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Gera data ISO para o sitemap de forma consistente
+ */
+function toSitemapDate(date: Date | null | undefined): Date {
+  return date || LAST_MAJOR_UPDATE;
+}
+
+/**
+ * Cria entrada de sitemap padronizada
+ */
+function createEntry(
+  path: string,
+  options: {
+    lastModified?: Date | null;
+    changeFrequency?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+    priority?: number;
+  } = {}
+): MetadataRoute.Sitemap[0] {
+  return {
+    url: path.startsWith("http") ? path : `${BASE_URL}${path}`,
+    lastModified: toSitemapDate(options.lastModified),
+    changeFrequency: options.changeFrequency || "weekly",
+    priority: options.priority ?? PRIORITY.MEDIUM,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GERADOR DE SITEMAP
+// ═══════════════════════════════════════════════════════════════════════════
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
+  const allPages: MetadataRoute.Sitemap = [];
 
-  // Páginas estáticas
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
+  // ─────────────────────────────────────────────────────────────────────────
+  // 1. PÁGINAS CORE (Alta Prioridade de Conversão)
+  // ─────────────────────────────────────────────────────────────────────────
+  const corePages: MetadataRoute.Sitemap = [
+    // Homepage - Máxima prioridade
+    createEntry("/", {
       lastModified: new Date(),
       changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/para-empresas`,
-      lastModified: new Date(),
+      priority: PRIORITY.CRITICAL,
+    }),
+    
+    // Landing B2B - Alta conversão
+    createEntry("/para-empresas", {
+      lastModified: LAST_MAJOR_UPDATE,
       changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/blog`,
+      priority: PRIORITY.CRITICAL,
+    }),
+    
+    // Blog Hub - Content Marketing
+    createEntry("/blog", {
       lastModified: new Date(),
       changeFrequency: "daily",
-      priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/encontrar`,
+      priority: PRIORITY.HIGH,
+    }),
+    
+    // Diretório de Lava-Jatos
+    createEntry("/encontrar", {
       lastModified: new Date(),
       changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/entrar`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/cadastro`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
+      priority: PRIORITY.HIGH,
+    }),
   ];
+  
+  allPages.push(...corePages);
 
-  // Páginas SEO programático - cidades
-  const cidadeSlugs = getAllCidadeSlugs();
-  const cidadePages: MetadataRoute.Sitemap = cidadeSlugs.map((slug) => ({
-    url: `${baseUrl}/sistema-lava-rapido/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  // ─────────────────────────────────────────────────────────────────────────
+  // 2. PÁGINAS DE CONVERSÃO (Fluxo de Cadastro)
+  // ─────────────────────────────────────────────────────────────────────────
+  const conversionPages: MetadataRoute.Sitemap = [
+    createEntry("/registro", {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "monthly",
+      priority: PRIORITY.MEDIUM_HIGH,
+    }),
+    createEntry("/cadastro", {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "monthly",
+      priority: PRIORITY.LOW,
+    }),
+    createEntry("/login", {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "yearly",
+      priority: PRIORITY.LOW,
+    }),
+    createEntry("/entrar", {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "yearly",
+      priority: PRIORITY.LOW,
+    }),
+  ];
+  
+  allPages.push(...conversionPages);
 
-  // Páginas SEO programático - keywords estratégicas
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3. CONTEÚDO SEO ESTRATÉGICO (Keywords de Cauda Longa)
+  // ─────────────────────────────────────────────────────────────────────────
   const keywordSlugs = getAllPaginaSEOSlugs();
-  const keywordPages: MetadataRoute.Sitemap = keywordSlugs.map((slug) => ({
-    url: `${baseUrl}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.9,
-  }));
+  
+  // Mapear prioridade baseada no tipo de página SEO
+  const keywordPages: MetadataRoute.Sitemap = keywordSlugs.map((slug) => {
+    const pagina = todasPaginasSEO.find(p => p.slug === slug);
+    let priority = PRIORITY.MEDIUM_HIGH;
+    
+    // Páginas de problema (alta intenção de busca)
+    if (pagina?.tipo === "problema") priority = PRIORITY.HIGH;
+    // Páginas de guia (conteúdo educacional)
+    else if (pagina?.tipo === "guia") priority = PRIORITY.MEDIUM_HIGH;
+    // Comparativos (decisão de compra)
+    else if (pagina?.tipo === "comparativo") priority = PRIORITY.MEDIUM_HIGH;
+    
+    return createEntry(`/${slug}`, {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "monthly",
+      priority,
+    });
+  });
+  
+  allPages.push(...keywordPages);
 
-  // ═══════════════════════════════════════════════════════════════════
-  // NOVAS PÁGINAS DE SEO PROGRAMÁTICO
-  // ═══════════════════════════════════════════════════════════════════
+  // ─────────────────────────────────────────────────────────────────────────
+  // 4. PÁGINAS DE CIDADE (SEO Local)
+  // ─────────────────────────────────────────────────────────────────────────
+  const cidadeSlugs = getAllCidadeSlugs();
+  
+  const cidadePages: MetadataRoute.Sitemap = cidadeSlugs.map((slug, index) => {
+    // Top 20 cidades têm prioridade maior (mais tráfego potencial)
+    const priority = index < 20 ? PRIORITY.MEDIUM_HIGH : PRIORITY.MEDIUM;
+    
+    return createEntry(`/sistema-lava-rapido/${slug}`, {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "monthly",
+      priority,
+    });
+  });
+  
+  allPages.push(...cidadePages);
 
-  // Páginas de Soluções (Serviço + Cidade)
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5. PÁGINAS DE SOLUÇÕES (Serviço + Cidade)
+  // ─────────────────────────────────────────────────────────────────────────
   const cidadesTop30 = cidadesBrasil.slice(0, 30);
   const solucoesPages: MetadataRoute.Sitemap = [];
   
   for (const servico of servicosAutomotivos) {
-    for (const cidade of cidadesTop30) {
-      solucoesPages.push({
-        url: `${baseUrl}/solucoes/${servico.slug}-${cidade.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.75,
-      });
+    for (let i = 0; i < cidadesTop30.length; i++) {
+      const cidade = cidadesTop30[i];
+      // Cidades maiores (top 10) têm prioridade maior
+      const priority = i < 10 ? PRIORITY.MEDIUM : PRIORITY.MEDIUM_LOW;
+      
+      solucoesPages.push(
+        createEntry(`/solucoes/${servico.slug}-${cidade.slug}`, {
+          lastModified: LAST_MAJOR_UPDATE,
+          changeFrequency: "monthly",
+          priority,
+        })
+      );
     }
   }
+  
+  allPages.push(...solucoesPages);
 
-  // Páginas de Guias (Problemas)
+  // ─────────────────────────────────────────────────────────────────────────
+  // 6. GUIAS EDUCACIONAIS
+  // ─────────────────────────────────────────────────────────────────────────
   const guiasPages: MetadataRoute.Sitemap = [];
   
-  // Guias sem cidade
+  // Guias sem cidade (conteúdo principal)
   for (const problema of problemasLavaJato) {
-    guiasPages.push({
-      url: `${baseUrl}/guias/${problema.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.85,
-    });
+    guiasPages.push(
+      createEntry(`/guias/${problema.slug}`, {
+        lastModified: LAST_MAJOR_UPDATE,
+        changeFrequency: "monthly",
+        priority: PRIORITY.MEDIUM_HIGH,
+      })
+    );
   }
   
-  // Guias com cidade (apenas alguns problemas que fazem sentido)
+  // Guias com cidade (SEO local específico)
   const problemasComCidade = [
     "tabela-precos-lavagem",
     "tabela-precos-estetica-automotiva",
@@ -108,66 +234,128 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cidadesTop20 = cidadesBrasil.slice(0, 20);
   
   for (const problemaSlug of problemasComCidade) {
-    for (const cidade of cidadesTop20) {
-      guiasPages.push({
-        url: `${baseUrl}/guias/${problemaSlug}-${cidade.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-      });
+    for (let i = 0; i < cidadesTop20.length; i++) {
+      const cidade = cidadesTop20[i];
+      const priority = i < 10 ? PRIORITY.MEDIUM : PRIORITY.MEDIUM_LOW;
+      
+      guiasPages.push(
+        createEntry(`/guias/${problemaSlug}-${cidade.slug}`, {
+          lastModified: LAST_MAJOR_UPDATE,
+          changeFrequency: "monthly",
+          priority,
+        })
+      );
     }
   }
-
-  // ═══════════════════════════════════════════════════════════════════
-
-  // Páginas dinâmicas dos lava jatos
-  let lavaJatoPages: MetadataRoute.Sitemap = [];
   
+  allPages.push(...guiasPages);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 7. AUTOR (E-E-A-T)
+  // ─────────────────────────────────────────────────────────────────────────
+  const autorPages: MetadataRoute.Sitemap = [
+    createEntry("/autor/lucas-pinheiro", {
+      lastModified: LAST_MAJOR_UPDATE,
+      changeFrequency: "monthly",
+      priority: PRIORITY.MEDIUM,
+    }),
+  ];
+  
+  allPages.push(...autorPages);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 8. LAVA-JATOS CADASTRADOS (Conteúdo Dinâmico)
+  // ─────────────────────────────────────────────────────────────────────────
   try {
     const lavaJatos = await prisma.lavaJato.findMany({
-      where: { ativo: true, slug: { not: null } },
-      select: { slug: true, createdAt: true },
+      where: { 
+        ativo: true, 
+        slug: { not: null } 
+      },
+      select: { 
+        slug: true, 
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
     });
 
-    lavaJatoPages = lavaJatos.map((lj) => ({
-      url: `${baseUrl}/lavajato/${lj.slug}`,
-      lastModified: lj.createdAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+    const lavaJatoPages: MetadataRoute.Sitemap = lavaJatos.map((lj) => 
+      createEntry(`/lavajato/${lj.slug}`, {
+        lastModified: lj.createdAt,
+        changeFrequency: "weekly",
+        priority: PRIORITY.MEDIUM_HIGH,
+      })
+    );
+    
+    allPages.push(...lavaJatoPages);
   } catch (error) {
-    console.error("Erro ao gerar sitemap de lava jatos:", error);
+    console.error("[Sitemap] Erro ao buscar lava-jatos:", error);
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // POSTS DO BLOG (dinâmicos do banco de dados)
-  // ═══════════════════════════════════════════════════════════════════
-  let blogPostPages: MetadataRoute.Sitemap = [];
-  
+  // ─────────────────────────────────────────────────────────────────────────
+  // 9. BLOG POSTS (Conteúdo Dinâmico - Alta Prioridade SEO)
+  // ─────────────────────────────────────────────────────────────────────────
   try {
     const blogPosts = await prisma.blogPost.findMany({
       where: { status: "PUBLICADO" },
-      select: { slug: true, publicadoEm: true, atualizadoEm: true },
+      select: { 
+        slug: true, 
+        publicadoEm: true, 
+        atualizadoEm: true,
+        categoria: true,
+      },
       orderBy: { publicadoEm: "desc" },
-    });
+    }) as Array<{
+      slug: string;
+      publicadoEm: Date | null;
+      atualizadoEm: Date;
+      categoria: string;
+    }>;
 
-    blogPostPages = blogPosts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.atualizadoEm || post.publicadoEm || new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    }));
+    const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => {
+      // Posts mais recentes têm prioridade maior
+      const isRecent = post.publicadoEm && 
+        (new Date().getTime() - new Date(post.publicadoEm).getTime()) < 30 * 24 * 60 * 60 * 1000;
+      
+      return createEntry(`/blog/${post.slug}`, {
+        lastModified: post.atualizadoEm || post.publicadoEm,
+        changeFrequency: isRecent ? "daily" : "weekly",
+        priority: isRecent ? PRIORITY.HIGH : PRIORITY.MEDIUM_HIGH,
+      });
+    });
+    
+    allPages.push(...blogPostPages);
   } catch (error) {
-    console.error("Erro ao gerar sitemap de blog posts:", error);
+    console.error("[Sitemap] Erro ao buscar blog posts:", error);
   }
 
-  return [
-    ...staticPages, 
-    ...keywordPages, 
-    ...cidadePages, 
-    ...solucoesPages,
-    ...guiasPages,
-    ...lavaJatoPages,
-    ...blogPostPages,
-  ];
+  // ─────────────────────────────────────────────────────────────────────────
+  // LOG DE ESTATÍSTICAS (apenas em desenvolvimento)
+  // ─────────────────────────────────────────────────────────────────────────
+  if (process.env.NODE_ENV === "development") {
+    console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║                    SITEMAP GERADO                             ║
+╠═══════════════════════════════════════════════════════════════╣
+║  Total de URLs: ${String(allPages.length).padStart(5)}                                    ║
+║  - Core:        ${String(corePages.length).padStart(5)}                                    ║
+║  - Conversão:   ${String(conversionPages.length).padStart(5)}                                    ║
+║  - Keywords:    ${String(keywordPages.length).padStart(5)}                                    ║
+║  - Cidades:     ${String(cidadePages.length).padStart(5)}                                    ║
+║  - Soluções:    ${String(solucoesPages.length).padStart(5)}                                    ║
+║  - Guias:       ${String(guiasPages.length).padStart(5)}                                    ║
+╚═══════════════════════════════════════════════════════════════╝
+    `);
+  }
+
+  return allPages;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// METADATA EXPORT (robots.txt integration)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Para referência no robots.txt:
+ * Sitemap: https://www.lavify.com.br/sitemap.xml
+ */
