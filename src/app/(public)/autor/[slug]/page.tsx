@@ -12,7 +12,6 @@ import {
   getAllAuthorSlugs,
   generateAuthorPersonSchema,
 } from "@/lib/authors";
-import { todasPaginasSEO } from "@/lib/seo-keywords";
 import { problemasLavaJato } from "@/lib/seo-problems";
 import { AuthorBoxFeatured } from "@/components/AuthorBox";
 
@@ -109,19 +108,16 @@ export default async function AuthorPage({ params }: PageProps) {
     ],
   };
 
-  // Artigos do autor (todos os artigos são atribuídos ao autor)
-  const artigos = [
-    ...todasPaginasSEO.slice(0, 12),
-    ...problemasLavaJato.slice(0, 6).map((p) => ({
-      slug: `guias/${p.slug}`,
-      titulo: p.tituloCompleto,
-      h1: p.titulo,
-      descricaoMeta: p.descricao,
-      tipo: "guia" as const,
-      keywords: p.keywords,
-      prioridade: 4,
-    })),
-  ];
+  // Artigos do autor (guias enriquecidos)
+  const artigos = problemasLavaJato.map((p) => ({
+    slug: `guias/${p.slug}`,
+    titulo: p.tituloCompleto,
+    h1: p.titulo,
+    descricaoMeta: p.descricao,
+    tipo: "guia" as const,
+    keywords: p.keywords,
+    prioridade: 4,
+  }));
 
   // Categorias únicas
   const categorias = [...new Set(artigos.map((a) => a.tipo))];

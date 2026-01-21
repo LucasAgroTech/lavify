@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Droplets, Search, Calendar, CircleUser } from "lucide-react";
-import { getAllPaginaSEOSlugs } from "@/lib/seo-keywords";
 
 export default function PublicLayoutClient({
   children,
@@ -15,9 +14,6 @@ export default function PublicLayoutClient({
   // Função para verificar se o link está ativo
   const isActive = (path: string) => pathname === path;
 
-  // Slugs das páginas SEO de keywords
-  const seoKeywordSlugs = getAllPaginaSEOSlugs();
-
   // Páginas que usam layout próprio (landing pages B2B e SEO programático)
   const isLandingPage = 
     pathname === "/para-empresas" || 
@@ -26,8 +22,7 @@ export default function PublicLayoutClient({
     pathname?.startsWith("/sistema-lava-rapido") ||
     pathname?.startsWith("/solucoes") ||
     pathname?.startsWith("/guias") ||
-    pathname?.startsWith("/autor") ||
-    seoKeywordSlugs.some(slug => pathname === `/${slug}`);
+    pathname?.startsWith("/autor");
 
   // Se for landing page, renderiza só o conteúdo sem headers/footers
   if (isLandingPage) {

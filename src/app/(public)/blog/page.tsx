@@ -2,24 +2,13 @@ import { Metadata } from "next";
 import Link from "next/link";
 import {
   BookOpen,
-  Lightbulb,
-  Scale,
-  Rocket,
   ArrowRight,
   Droplets,
   ChevronRight,
-  Zap,
   MapPin,
   PenLine,
   Calendar,
 } from "lucide-react";
-import {
-  todasPaginasSEO,
-  paginasProblemas,
-  paginasFuncionalidades,
-  paginasComparativos,
-  paginasLongTail,
-} from "@/lib/seo-keywords";
 import { cidadesBrasil } from "@/lib/seo-cities";
 import { problemasLavaJato } from "@/lib/seo-problems";
 import { getAuthorForContent } from "@/lib/authors";
@@ -80,34 +69,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Categorias com ícones (sem guias - agora estão na seção dedicada /guias/)
-const categorias = [
-  {
-    id: "problema",
-    titulo: "Como Resolver",
-    descricao: "Soluções para problemas do dia a dia",
-    icon: Lightbulb,
-    cor: "from-amber-500 to-orange-600",
-    paginas: paginasProblemas,
-  },
-  {
-    id: "funcionalidade",
-    titulo: "Funcionalidades",
-    descricao: "Conheça as ferramentas do sistema",
-    icon: Rocket,
-    cor: "from-cyan-500 to-blue-600",
-    paginas: [...paginasFuncionalidades, ...paginasLongTail.filter(p => p.tipo === "funcionalidade")],
-  },
-  {
-    id: "comparativo",
-    titulo: "Comparativos",
-    descricao: "Escolha a melhor opção",
-    icon: Scale,
-    cor: "from-violet-500 to-purple-600",
-    paginas: [...paginasComparativos, ...paginasLongTail.filter(p => p.tipo === "comparativo")],
-  },
-];
-
 // Cidades populares para destaque
 const cidadesDestaque = cidadesBrasil.slice(0, 12);
 
@@ -141,7 +102,7 @@ export default async function BlogPage() {
       sameAs: [author.redesSociais.linkedin].filter(Boolean),
     },
     blogPost: [
-      // Posts do banco de dados (prioridade)
+      // Posts do banco de dados
       ...postsDoBanco.map((post) => ({
         "@type": "BlogPosting",
         headline: post.titulo,
@@ -155,12 +116,12 @@ export default async function BlogPage() {
           url: `${baseUrl}/autor/${author.slug}`,
         },
       })),
-      // Posts estáticos de SEO
-      ...todasPaginasSEO.slice(0, 10 - postsDoBanco.length).map((pagina) => ({
+      // Guias enriquecidos
+      ...problemasLavaJato.slice(0, 10).map((guia) => ({
         "@type": "BlogPosting",
-        headline: pagina.h1,
-        description: pagina.descricaoMeta,
-        url: `${baseUrl}/${pagina.slug}`,
+        headline: guia.tituloCompleto,
+        description: guia.descricao,
+        url: `${baseUrl}/guias/${guia.slug}`,
         author: {
           "@type": "Person",
           name: author.nomeCompleto,
@@ -188,6 +149,8 @@ export default async function BlogPage() {
       },
     ],
   };
+
+  const totalConteudos = postsDoBanco.length + problemasLavaJato.length;
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -256,7 +219,7 @@ export default async function BlogPage() {
           </p>
 
           <div className="text-white/40 text-sm">
-            {todasPaginasSEO.length + postsDoBanco.length} artigos disponíveis
+            {totalConteudos} artigos disponíveis
           </div>
         </div>
       </section>
@@ -302,83 +265,7 @@ export default async function BlogPage() {
         </section>
       )}
 
-      {/* Artigos em Destaque */}
-      <section className="py-12 bg-white/5">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
-            <Zap className="w-6 h-6 text-amber-400" />
-            Em Destaque
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {todasPaginasSEO
-              .filter((p) => p.prioridade === 5)
-              .slice(0, 6)
-              .map((pagina) => (
-                <Link
-                  key={pagina.slug}
-                  href={`/${pagina.slug}`}
-                  className="group bg-slate-800 border border-white/10 rounded-2xl p-6 hover:border-cyan-500/30 hover:bg-slate-800/80 transition-all"
-                >
-                  <span className="inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded bg-cyan-500/20 text-cyan-400 mb-3">
-                    {pagina.tipo}
-                  </span>
-                  <h3 className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors mb-2">
-                    {pagina.h1.split(":")[0]}
-                  </h3>
-                  <p className="text-white/50 text-sm line-clamp-2 mb-4">
-                    {pagina.descricaoMeta}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <AuthorBylineCompact author={author} />
-                    <div className="flex items-center gap-1 text-cyan-400 text-sm font-medium">
-                      Ler
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Categorias */}
-      {categorias.map((categoria) => (
-        <section key={categoria.id} className="py-12 border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-3 mb-8">
-              <div
-                className={`w-10 h-10 rounded-xl bg-gradient-to-br ${categoria.cor} flex items-center justify-center`}
-              >
-                <categoria.icon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">{categoria.titulo}</h2>
-                <p className="text-white/50 text-sm">{categoria.descricao}</p>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {categoria.paginas.map((pagina) => (
-                <Link
-                  key={pagina.slug}
-                  href={`/${pagina.slug}`}
-                  className="group p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-cyan-500/30 transition-all"
-                >
-                  <h3 className="font-medium text-white group-hover:text-cyan-400 transition-colors line-clamp-2 text-sm">
-                    {pagina.h1.split(":")[0]}
-                  </h3>
-                  <div className="flex items-center gap-1 mt-2 text-cyan-400 text-xs">
-                    Ler
-                    <ChevronRight className="w-3 h-3" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      ))}
-
-      {/* Guias Práticos (páginas /guias/[slug]) */}
+      {/* Guias Práticos (páginas /guias/[slug] - com conteúdo enriquecido) */}
       <section className="py-12 bg-gradient-to-b from-emerald-900/20 to-transparent border-t border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-8">
@@ -388,13 +275,13 @@ export default async function BlogPage() {
             <div>
               <h2 className="text-xl font-bold">Guias Práticos para Lava Jato</h2>
               <p className="text-white/50 text-sm">
-                {problemasLavaJato.length} guias completos e atualizados
+                {problemasLavaJato.length} guias completos com conteúdo especializado
               </p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {problemasLavaJato.slice(0, 12).map((guia) => (
+            {problemasLavaJato.map((guia) => (
               <Link
                 key={guia.slug}
                 href={`/guias/${guia.slug}`}
@@ -414,22 +301,10 @@ export default async function BlogPage() {
               </Link>
             ))}
           </div>
-
-          {problemasLavaJato.length > 12 && (
-            <div className="mt-6 text-center">
-              <Link
-                href="/guias/como-abrir-lava-jato"
-                className="inline-flex items-center gap-1 text-emerald-400 text-sm font-medium hover:text-emerald-300"
-              >
-                Ver todos os {problemasLavaJato.length} guias
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Páginas por Cidade */}
+      {/* Páginas por Cidade (com conteúdo enriquecido) */}
       <section className="py-12 bg-slate-800/50 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-8">
@@ -439,7 +314,7 @@ export default async function BlogPage() {
             <div>
               <h2 className="text-xl font-bold">Por Cidade</h2>
               <p className="text-white/50 text-sm">
-                Sistema para lava rápido em sua cidade
+                Sistema para lava rápido em {cidadesBrasil.length} cidades
               </p>
             </div>
           </div>
@@ -518,4 +393,3 @@ export default async function BlogPage() {
     </div>
   );
 }
-

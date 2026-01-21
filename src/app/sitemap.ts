@@ -16,7 +16,6 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getAllCidadeSlugs, cidadesBrasil } from "@/lib/seo-cities";
-import { getAllPaginaSEOSlugs, todasPaginasSEO } from "@/lib/seo-keywords";
 import { servicosAutomotivos } from "@/lib/seo-services";
 import { problemasLavaJato } from "@/lib/seo-problems";
 
@@ -141,33 +140,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   allPages.push(...conversionPages);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 3. CONTEÚDO SEO ESTRATÉGICO (Keywords de Cauda Longa)
-  // ─────────────────────────────────────────────────────────────────────────
-  const keywordSlugs = getAllPaginaSEOSlugs();
-  
-  // Mapear prioridade baseada no tipo de página SEO
-  const keywordPages: MetadataRoute.Sitemap = keywordSlugs.map((slug) => {
-    const pagina = todasPaginasSEO.find(p => p.slug === slug);
-    let priority = PRIORITY.MEDIUM_HIGH;
-    
-    // Páginas de problema (alta intenção de busca)
-    if (pagina?.tipo === "problema") priority = PRIORITY.HIGH;
-    // Páginas de guia (conteúdo educacional)
-    else if (pagina?.tipo === "guia") priority = PRIORITY.MEDIUM_HIGH;
-    // Comparativos (decisão de compra)
-    else if (pagina?.tipo === "comparativo") priority = PRIORITY.MEDIUM_HIGH;
-    
-    return createEntry(`/${slug}`, {
-      lastModified: LAST_MAJOR_UPDATE,
-      changeFrequency: "monthly",
-      priority,
-    });
-  });
-  
-  allPages.push(...keywordPages);
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // 4. PÁGINAS DE CIDADE (SEO Local)
+  // 3. PÁGINAS DE CIDADE (SEO Local)
   // ─────────────────────────────────────────────────────────────────────────
   const cidadeSlugs = getAllCidadeSlugs();
   
@@ -185,7 +158,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   allPages.push(...cidadePages);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 5. PÁGINAS DE SOLUÇÕES (Serviço + Cidade)
+  // 4. PÁGINAS DE SOLUÇÕES (Serviço + Cidade)
   // ─────────────────────────────────────────────────────────────────────────
   const cidadesTop30 = cidadesBrasil.slice(0, 30);
   const solucoesPages: MetadataRoute.Sitemap = [];
@@ -209,7 +182,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   allPages.push(...solucoesPages);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 6. GUIAS EDUCACIONAIS
+  // 5. GUIAS EDUCACIONAIS (com conteúdo enriquecido)
   // ─────────────────────────────────────────────────────────────────────────
   const guiasPages: MetadataRoute.Sitemap = [];
   
@@ -251,7 +224,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   allPages.push(...guiasPages);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 7. AUTOR (E-E-A-T)
+  // 6. AUTOR (E-E-A-T)
   // ─────────────────────────────────────────────────────────────────────────
   const autorPages: MetadataRoute.Sitemap = [
     createEntry("/autor/lucas-pinheiro", {
@@ -264,7 +237,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   allPages.push(...autorPages);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 8. LAVA-JATOS CADASTRADOS (Conteúdo Dinâmico)
+  // 7. LAVA-JATOS CADASTRADOS (Conteúdo Dinâmico)
   // ─────────────────────────────────────────────────────────────────────────
   try {
     const lavaJatos = await prisma.lavaJato.findMany({
@@ -293,7 +266,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 9. BLOG POSTS (Conteúdo Dinâmico - Alta Prioridade SEO)
+  // 8. BLOG POSTS (Conteúdo Dinâmico - Alta Prioridade SEO)
   // ─────────────────────────────────────────────────────────────────────────
   try {
     const blogPosts = await prisma.blogPost.findMany({
@@ -340,7 +313,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 ║  Total de URLs: ${String(allPages.length).padStart(5)}                                    ║
 ║  - Core:        ${String(corePages.length).padStart(5)}                                    ║
 ║  - Conversão:   ${String(conversionPages.length).padStart(5)}                                    ║
-║  - Keywords:    ${String(keywordPages.length).padStart(5)}                                    ║
 ║  - Cidades:     ${String(cidadePages.length).padStart(5)}                                    ║
 ║  - Soluções:    ${String(solucoesPages.length).padStart(5)}                                    ║
 ║  - Guias:       ${String(guiasPages.length).padStart(5)}                                    ║
