@@ -2,49 +2,24 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { 
-  CheckCircle, 
   ArrowRight, 
-  Play, 
-  Star, 
-  MessageCircle,
-  Calendar,
-  LayoutDashboard,
-  Package,
-  Users,
-  TrendingUp,
-  Shield,
-  Clock,
   ChevronDown,
   MapPin,
-  Smartphone
+  ExternalLink
 } from "lucide-react";
-import { getCidadeBySlug, getAllCidadeSlugs, CidadeSEO, cidadesBrasil } from "@/lib/seo-cities";
-import { getConteudoCidade, ConteudoSEO } from "@/data/seo-content";
-import { getPaginasDestaque } from "@/lib/seo-keywords";
-
-// Função para converter markdown simples em HTML
-function processarMarkdown(texto: string): string {
-  if (!texto) return "";
-  return texto
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/__(.+?)__/g, '<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    .replace(/_([^_]+)_/g, '<em>$1</em>')
-    .replace(/\n\n/g, '<br/><br/>')
-    .replace(/\n/g, '<br/>');
-}
+import { getCidadeBySlug, getAllCidadeSlugs, cidadesBrasil } from "@/lib/seo-cities";
 
 interface PageProps {
   params: Promise<{ cidade: string }>;
 }
 
-// Gerar páginas estáticas para todas as cidades
+// Gerar páginas estáticas
 export async function generateStaticParams() {
   const slugs = getAllCidadeSlugs();
   return slugs.map((cidade) => ({ cidade }));
 }
 
-// Gerar metadata dinâmica para SEO
+// Gerar metadata dinâmica
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { cidade: cidadeSlug } = await params;
   const cidade = getCidadeBySlug(cidadeSlug);
@@ -54,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `Sistema para Lava Rápido em ${cidade.nome} | Lavify`;
-  const description = `Sistema completo para gestão de lava jato em ${cidade.nome}, ${cidade.uf}. Controle pátio, agendamentos, estoque e financeiro pelo celular. Teste grátis!`;
+  const description = `Sistema de gestão para lava jato em ${cidade.nome}, ${cidade.uf}. Controle pátio, agendamentos e financeiro. Teste grátis!`;
 
   return {
     title,
@@ -63,8 +38,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `sistema para lava rápido ${cidade.nome}`,
       `sistema para lava jato ${cidade.nome}`,
       `software lava jato ${cidade.uf}`,
-      `gestão lava rápido ${cidade.nome}`,
-      `controle lava jato ${cidade.nome}`,
       ...cidade.keywords,
     ],
     openGraph: {
@@ -74,27 +47,109 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       locale: "pt_BR",
       siteName: "Lavify",
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
     alternates: {
       canonical: `/sistema-lava-rapido/${cidade.slug}`,
     },
   };
 }
 
-// Ícones para os benefícios
-const iconsBeneficios = [LayoutDashboard, Calendar, MessageCircle, Package, Users, TrendingUp];
-
-// Estatísticas fixas
-const estatisticas = [
-  { valor: "-50%", label: "Tempo em gestão" },
-  { valor: "+30%", label: "Aumento no faturamento" },
-  { valor: "24h", label: "Agendamentos online" },
-  { valor: "100%", label: "Controle pelo celular" },
-];
+// Conteúdo ÚNICO por região (não se repete entre cidades da mesma região)
+const conteudoPorRegiao: Record<string, {
+  contexto: string;
+  diferenciais: string[];
+  faq: { pergunta: string; resposta: string }[];
+}> = {
+  "Sudeste": {
+    contexto: "No Sudeste, a concorrência entre lava jatos é intensa. O diferencial está em oferecer uma experiência profissional: agendamento online, aviso automático quando o carro está pronto e controle de fidelidade. O Lavify coloca essas ferramentas na sua mão.",
+    diferenciais: [
+      "Kanban visual para alto volume de carros",
+      "WhatsApp automático reduz ligações e filas",
+      "Agendamento online 24h para competir com grandes redes"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema aguenta alto volume de carros?",
+        resposta: "Sim. O Lavify foi projetado para alto volume. O Kanban suporta dezenas de carros simultâneos."
+      },
+      {
+        pergunta: "Ajuda a competir com grandes redes?",
+        resposta: "Sim. Agendamento online, fidelidade digital e WhatsApp automático - as mesmas ferramentas das grandes redes."
+      }
+    ]
+  },
+  "Sul": {
+    contexto: "O cliente do Sul valoriza qualidade e profissionalismo. Ele percebe quando o atendimento é organizado, quando você lembra do carro dele e quando o serviço é entregue no prazo. O Lavify permite esse nível de profissionalismo.",
+    diferenciais: [
+      "Histórico detalhado por veículo e cliente",
+      "Checklist de entrada para garantir qualidade",
+      "Programa de fidelidade para clientes recorrentes"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema mantém histórico dos clientes?",
+        resposta: "Sim. Histórico completo por veículo mostra todos os serviços anteriores e preferências do cliente."
+      },
+      {
+        pergunta: "Funciona no frio quando o movimento cai?",
+        resposta: "Sim. O programa de fidelidade e remarketing por WhatsApp ajudam a manter clientes voltando."
+      }
+    ]
+  },
+  "Nordeste": {
+    contexto: "O Nordeste é a região que mais cresce em número de veículos. Com o clima quente e poeira constante, a demanda por lavagem é frequente. O Lavify é leve, funciona bem no 4G e tem planos acessíveis.",
+    diferenciais: [
+      "Sistema leve que funciona no 4G",
+      "Planos acessíveis para qualquer porte",
+      "Agendamento para lavagens frequentes"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema funciona bem com internet móvel?",
+        resposta: "Sim. O Lavify é otimizado para conexões mais lentas. Interface leve que carrega rápido no 4G."
+      },
+      {
+        pergunta: "Os planos são acessíveis?",
+        resposta: "Sim. Comece grátis por 7 dias e depois escolha o plano que se encaixa no seu faturamento."
+      }
+    ]
+  },
+  "Centro-Oeste": {
+    contexto: "O Centro-Oeste tem características únicas: caminhonetes do agronegócio, frotas de fazendas e o trânsito das capitais. O Lavify permite diferenciar preços por tipo de veículo e gerenciar frotas corporativas.",
+    diferenciais: [
+      "Categorias de preço por tipo de veículo",
+      "Gestão de frotas corporativas",
+      "Kanban para organizar picos de movimento"
+    ],
+    faq: [
+      {
+        pergunta: "Posso cobrar diferente para caminhonetes?",
+        resposta: "Sim. Você cria categorias de preço por tipo de veículo. SUVs, pickups e caminhonetes podem ter valores diferenciados."
+      },
+      {
+        pergunta: "O sistema atende frotas de fazendas?",
+        resposta: "Sim. Você cadastra frotas corporativas com condições especiais e controla cada veículo separadamente."
+      }
+    ]
+  },
+  "Norte": {
+    contexto: "No Norte, o desafio está em manter o fluxo constante de clientes. Nos dias parados, cada cliente faz diferença. O Lavify é simples de usar e ajuda a trazer clientes de volta com promoções por WhatsApp.",
+    diferenciais: [
+      "Interface simples e intuitiva",
+      "WhatsApp para promoções em dias parados",
+      "Sistema leve que funciona em qualquer conexão"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema é fácil de usar?",
+        resposta: "Muito. Interface intuitiva que você aprende em minutos. Feita para o dia a dia corrido do lava jato."
+      },
+      {
+        pergunta: "Ajuda em dias de pouco movimento?",
+        resposta: "Sim. Use o WhatsApp integrado para avisar clientes sobre promoções e preencher a agenda."
+      }
+    ]
+  }
+};
 
 export default async function CidadePage({ params }: PageProps) {
   const { cidade: cidadeSlug } = await params;
@@ -104,139 +159,32 @@ export default async function CidadePage({ params }: PageProps) {
     notFound();
   }
 
-  const conteudo = getConteudoCidade(cidadeSlug);
+  const conteudo = conteudoPorRegiao[cidade.regiao] || conteudoPorRegiao["Sudeste"];
   
-  if (!conteudo) {
-    notFound();
-  }
-
-  // Páginas de conteúdo relacionadas
-  const paginasRelacionadas = getPaginasDestaque(4);
-
-  // Cidades da mesma região para internal linking
+  // Cidades próximas para internal linking
   const cidadesProximas = cidadesBrasil
     .filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug)
-    .slice(0, 6);
+    .slice(0, 4);
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
-  // JSON-LD para SEO Local
+  // Schema simplificado
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Lavify",
     applicationCategory: "BusinessApplication",
-    operatingSystem: "Web, iOS, Android",
+    operatingSystem: "Web",
     description: `Sistema de gestão para lava rápido em ${cidade.nome}, ${cidade.estado}`,
     offers: {
-      "@type": "AggregateOffer",
-      lowPrice: "0",
-      highPrice: "199.90",
+      "@type": "Offer",
+      price: "0",
       priceCurrency: "BRL",
-      description: "Teste grátis por 7 dias"
+      description: "Teste grátis"
     },
     areaServed: {
       "@type": "City",
-      name: cidade.nome,
-      containedInPlace: {
-        "@type": "State",
-        name: cidade.estado
-      }
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      ratingCount: "1847",
-      bestRating: "5",
-      worstRating: "1"
-    }
-  };
-
-  // Breadcrumb Schema - Importante para navegação estruturada
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Início",
-        item: baseUrl
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Para Empresas",
-        item: `${baseUrl}/para-empresas`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: `Sistema para Lava Rápido em ${cidade.nome}`,
-        item: `${baseUrl}/sistema-lava-rapido/${cidade.slug}`
-      }
-    ]
-  };
-
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: conteudo.faq.map(item => ({
-      "@type": "Question",
-      name: item.pergunta,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.resposta
-      }
-    }))
-  };
-
-  // Service Schema - Serviços oferecidos pelo software
-  const serviceJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    serviceType: "Software as a Service (SaaS)",
-    name: `Sistema de Gestão para Lava Rápido em ${cidade.nome}`,
-    description: `Software completo para gestão de lava jato em ${cidade.nome}, ${cidade.uf}. Controle pátio, agendamentos, estoque e financeiro.`,
-    provider: {
-      "@type": "Organization",
-      name: "Lavify"
-    },
-    areaServed: {
-      "@type": "City",
-      name: cidade.nome,
-      containedInPlace: {
-        "@type": "State",
-        name: cidade.estado,
-        containedInPlace: {
-          "@type": "Country",
-          name: "Brasil"
-        }
-      }
-    },
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Planos Lavify",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Plano Grátis"
-          },
-          price: "0",
-          priceCurrency: "BRL"
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Plano Profissional"
-          },
-          price: "99.90",
-          priceCurrency: "BRL"
-        }
-      ]
+      name: cidade.nome
     }
   };
 
@@ -246,300 +194,142 @@ export default async function CidadePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
-      />
 
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-        {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-white">
+      <div className="min-h-screen bg-slate-900">
+        {/* Header Simples */}
+        <header className="border-b border-white/10 py-4">
+          <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
+            <Link href="/" className="text-xl font-bold text-white">
               Lavify
             </Link>
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/para-empresas" 
-                className="text-white/70 hover:text-white text-sm hidden md:block"
-              >
-                Funcionalidades
-              </Link>
-              <Link
-                href="/cadastro"
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity"
-              >
-                Testar Grátis
-              </Link>
-            </div>
+            <Link 
+              href="/para-empresas" 
+              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
+            >
+              Ver todas as funcionalidades
+              <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
         </header>
 
-        {/* Hero Section */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
+        {/* Conteúdo Principal */}
+        <main className="max-w-4xl mx-auto px-4 py-12">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-white/50 mb-8">
+            <Link href="/" className="hover:text-white/70">Início</Link>
+            <span>/</span>
+            <Link href="/para-empresas" className="hover:text-white/70">Para Empresas</Link>
+            <span>/</span>
+            <span className="text-white/70">{cidade.nome}</span>
+          </div>
+
+          {/* Tag de localização */}
+          <div className="mb-6">
+            <span className="inline-flex items-center gap-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
+              <MapPin className="w-3.5 h-3.5" />
+              {cidade.nome}, {cidade.uf} • {cidade.regiao}
+            </span>
+          </div>
+
+          {/* Título */}
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Sistema para Lava Rápido em {cidade.nome}
+          </h1>
           
-          <div className="max-w-6xl mx-auto px-4 relative">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-white/50 mb-8">
-              <Link href="/" className="hover:text-white/70">Início</Link>
-              <span>/</span>
-              <Link href="/para-empresas" className="hover:text-white/70">Para Empresas</Link>
-              <span>/</span>
-              <span className="text-cyan-400">{cidade.nome}</span>
-            </div>
+          {/* Contexto regional */}
+          <p className="text-lg text-white/70 mb-8 leading-relaxed">
+            {conteudo.contexto}
+          </p>
 
-            {/* Badge */}
-            <div className="flex items-center gap-2 mb-6">
-              <span className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-4 py-1.5 rounded-full text-sm font-medium">
-                <MapPin className="w-4 h-4" />
-                {cidade.nome}, {cidade.uf}
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              {conteudo.titulo}
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-white/70 mb-8 max-w-3xl">
-              {conteudo.subtitulo}
-            </p>
-
-            {/* Intro */}
-            <p 
-              className="text-lg text-white/60 mb-10 max-w-3xl leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: processarMarkdown(conteudo.introducao) }}
-            />
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Link
-                href="/cadastro"
-                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25"
+          {/* Diferenciais para esta região */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-10">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              O que o Lavify oferece para lava jatos em {cidade.nome}:
+            </h2>
+            <ul className="space-y-3">
+              {conteudo.diferenciais.map((item, index) => (
+                <li key={index} className="flex items-start gap-3 text-white/70">
+                  <span className="text-cyan-400 mt-1">•</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <Link 
+                href="/para-empresas" 
+                className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
               >
-                ⚡ Testar Grátis Agora
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link
-                href="/para-empresas#video"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all"
-              >
-                <Play className="w-5 h-5" />
-                Ver Como Funciona
+                Ver todas as funcionalidades do Lavify
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-
-            {/* Trust badges */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-white/50">
-              <span className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                100% grátis pra testar
-              </span>
-              <span className="flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-cyan-400" />
-                Funciona no celular
-              </span>
-              <span className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-400" />
-                Começa em 2 minutos
-              </span>
-            </div>
           </div>
-        </section>
 
-        {/* Stats Section */}
-        <section className="py-12 bg-white/5">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {estatisticas.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <p className="text-3xl md:text-4xl font-bold text-cyan-400 mb-1">
-                    {stat.valor}
-                  </p>
-                  <p className="text-white/60 text-sm">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Benefits Section */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Funcionalidades para seu Lava Jato
-            </h2>
-            <p className="text-white/60 text-center mb-12 max-w-2xl mx-auto">
-              Tudo que você precisa para profissionalizar e crescer seu lava rápido em {cidade.nome}
-            </p>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {conteudo.beneficios.map((beneficio, index) => {
-                const Icon = iconsBeneficios[index] || CheckCircle;
-                return (
-                  <div
-                    key={index}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors"
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">
-                      {beneficio}
-                    </h3>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Content Sections */}
-        <section className="py-16 bg-slate-800/50">
-          <div className="max-w-4xl mx-auto px-4">
-            {conteudo.secoes.map((secao, index) => (
-              <div key={index} className="mb-12 last:mb-0">
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                  {secao.titulo}
-                </h2>
-                <div 
-                  className="text-white/70 leading-relaxed space-y-4"
-                  dangerouslySetInnerHTML={{ __html: processarMarkdown(secao.conteudo) }}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Perguntas Frequentes
-            </h2>
-            <p className="text-white/60 text-center mb-12">
-              Dúvidas comuns sobre o Lavify para lava jatos em {cidade.nome}
-            </p>
-
-            <div className="space-y-4">
-              {conteudo.faq.map((item, index) => (
-                <details 
-                  key={index}
-                  className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
-                >
-                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                    <span className="font-medium text-white pr-4">{item.pergunta}</span>
-                    <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
-                  </summary>
-                  <div 
-                    className="px-6 pb-6 text-white/70"
-                    dangerouslySetInnerHTML={{ __html: processarMarkdown(item.resposta) }}
-                  />
-                </details>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Internal Linking - Guias Relacionados */}
-        <section className="py-16 bg-slate-800/50">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-4">
-              Guias para Lava Rápido
-            </h2>
-            <p className="text-white/60 text-center mb-10">
-              Conteúdo exclusivo para donos de lava jato
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {paginasRelacionadas.map((paginaRel) => (
-                <Link
-                  key={paginaRel.slug}
-                  href={`/${paginaRel.slug}`}
-                  className="group p-5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-cyan-500/30 transition-all"
-                >
-                  <span className="inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wide rounded bg-cyan-500/20 text-cyan-400 mb-3">
-                    {paginaRel.tipo}
-                  </span>
-                  <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
-                    {paginaRel.h1.split(":")[0]}
-                  </h3>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Internal Linking - Cidades Próximas */}
-        {cidadesProximas.length > 0 && (
-          <section className="py-12 bg-white/5">
-            <div className="max-w-6xl mx-auto px-4">
-              <h2 className="text-xl font-bold text-white text-center mb-6">
-                Sistema para Lava Rápido em Outras Cidades da Região {cidade.regiao}
+          {/* FAQ regional */}
+          {conteudo.faq.length > 0 && (
+            <div className="mb-10">
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Perguntas frequentes
               </h2>
-              <div className="flex flex-wrap justify-center gap-3">
-                {cidadesProximas.map((cidadeProx) => (
-                  <Link
-                    key={cidadeProx.slug}
-                    href={`/sistema-lava-rapido/${cidadeProx.slug}`}
-                    className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-white/70 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-all text-sm"
+              <div className="space-y-3">
+                {conteudo.faq.map((item, index) => (
+                  <details 
+                    key={index}
+                    className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden"
                   >
-                    {cidadeProx.nome}, {cidadeProx.uf}
+                    <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
+                      <span className="font-medium text-white pr-4 text-sm">{item.pergunta}</span>
+                      <ChevronDown className="w-4 h-4 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
+                    </summary>
+                    <div className="px-4 pb-4 text-white/60 text-sm">{item.resposta}</div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CTA simples */}
+          <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-6 text-center mb-10">
+            <p className="text-white/90 mb-4">
+              Quer conhecer o Lavify para seu lava jato em {cidade.nome}?
+            </p>
+            <Link
+              href="/para-empresas"
+              className="inline-flex items-center gap-2 bg-white text-cyan-600 px-6 py-2.5 rounded-lg font-semibold hover:bg-white/90"
+            >
+              Conheça o Lavify
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Links relacionados */}
+          {cidadesProximas.length > 0 && (
+            <div className="border-t border-white/10 pt-8">
+              <h3 className="text-sm font-medium text-white/50 mb-3">
+                Sistema para lava rápido em outras cidades do {cidade.regiao}:
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {cidadesProximas.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/sistema-lava-rapido/${c.slug}`}
+                    className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 hover:text-white hover:border-white/30 text-sm"
+                  >
+                    {c.nome}
                   </Link>
                 ))}
               </div>
             </div>
-          </section>
-        )}
+          )}
+        </main>
 
-        {/* CTA Section */}
-        <section className="py-16 md:py-24 bg-gradient-to-r from-cyan-600 to-blue-700">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Comece Hoje a Transformar seu Lava Jato
-            </h2>
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Junte-se aos lava rápidos em {cidade.nome} e em todo o Brasil que já usam o Lavify para crescer
-            </p>
-            <Link
-              href="/cadastro"
-              className="inline-flex items-center justify-center gap-2 bg-white text-cyan-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/90 transition-colors shadow-lg"
-            >
-              Criar Conta Grátis
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <p className="text-white/60 text-sm mt-4">
-              Sem cartão de crédito • Teste grátis por 7 dias
-            </p>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="bg-slate-900 border-t border-white/10 py-12">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-center md:text-left">
-                <Link href="/" className="text-2xl font-bold text-white">Lavify</Link>
-                <p className="text-white/50 text-sm mt-2">
-                  Sistema de gestão para lava rápidos
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/50">
-                <Link href="/para-empresas" className="hover:text-white">Para Empresas</Link>
-                <Link href="/encontrar" className="hover:text-white">Encontrar Lava Jato</Link>
-                <Link href="/login" className="hover:text-white">Entrar</Link>
-              </div>
-            </div>
-            <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/40 text-sm">
-              © {new Date().getFullYear()} Lavify. Todos os direitos reservados.
+        {/* Footer mínimo */}
+        <footer className="border-t border-white/10 py-6 mt-8">
+          <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
+            <span>© {new Date().getFullYear()} Lavify</span>
+            <div className="flex gap-4">
+              <Link href="/para-empresas" className="hover:text-white/60">Para Empresas</Link>
+              <Link href="/login" className="hover:text-white/60">Entrar</Link>
             </div>
           </div>
         </footer>
@@ -547,4 +337,3 @@ export default async function CidadePage({ params }: PageProps) {
     </>
   );
 }
-

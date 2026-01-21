@@ -2,21 +2,11 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { 
-  CheckCircle, 
   ArrowRight, 
-  Play, 
-  MessageCircle,
-  Calendar,
-  LayoutDashboard,
-  Package,
-  Users,
-  TrendingUp,
-  Clock,
   ChevronDown,
   MapPin,
-  Smartphone,
-  Star,
-  Sparkles
+  Sparkles,
+  ExternalLink
 } from "lucide-react";
 import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getServicoBySlug, servicosAutomotivos } from "@/lib/seo-services";
@@ -27,7 +17,6 @@ interface PageProps {
 
 // Parser do slug: servico-cidade
 function parseSlug(slug: string): { servicoSlug: string; cidadeSlug: string } | null {
-  // Tentar encontrar qual serviço corresponde ao início do slug
   for (const servico of servicosAutomotivos) {
     if (slug.startsWith(servico.slug + "-")) {
       const cidadeSlug = slug.substring(servico.slug.length + 1);
@@ -37,11 +26,9 @@ function parseSlug(slug: string): { servicoSlug: string; cidadeSlug: string } | 
   return null;
 }
 
-// Gerar páginas estáticas para todas as combinações
+// Gerar páginas estáticas
 export async function generateStaticParams() {
   const params: { slug: string }[] = [];
-  
-  // Top 30 cidades para cada serviço
   const cidadesTop = cidadesBrasil.slice(0, 30);
   
   for (const servico of servicosAutomotivos) {
@@ -90,35 +77,157 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// Dados de serviços oferecidos por tipo
-const servicosPorTipo: Record<string, { nome: string; descricao: string; preco: string }[]> = {
-  "estetica-automotiva": [
-    { nome: "Polimento Técnico", descricao: "Correção de pintura e remoção de riscos", preco: "R$ 300 - R$ 800" },
-    { nome: "Vitrificação", descricao: "Proteção duradoura da pintura", preco: "R$ 800 - R$ 2.500" },
-    { nome: "Higienização Completa", descricao: "Limpeza profunda do interior", preco: "R$ 150 - R$ 400" },
-    { nome: "Cristalização de Vidros", descricao: "Proteção e hidrofugação", preco: "R$ 100 - R$ 250" },
-  ],
-  "lavagem-a-seco": [
-    { nome: "Lavagem Ecológica Externa", descricao: "Lavagem sem uso de água", preco: "R$ 50 - R$ 100" },
-    { nome: "Lavagem Interna", descricao: "Aspiração e limpeza de painéis", preco: "R$ 60 - R$ 120" },
-    { nome: "Pacote Completo", descricao: "Interna + Externa", preco: "R$ 100 - R$ 200" },
-    { nome: "Revitalização de Plásticos", descricao: "Tratamento de superfícies", preco: "R$ 40 - R$ 80" },
-  ],
-  "martelinho-de-ouro": [
-    { nome: "Reparo Pequeno Amassado", descricao: "Até 3cm de diâmetro", preco: "R$ 80 - R$ 150" },
-    { nome: "Reparo Médio Amassado", descricao: "3cm a 8cm de diâmetro", preco: "R$ 150 - R$ 350" },
-    { nome: "Reparo Grande", descricao: "Acima de 8cm", preco: "R$ 350 - R$ 800" },
-    { nome: "Granizo", descricao: "Orçamento por veículo", preco: "A partir de R$ 500" },
-  ],
-  "vitrificacao": [
-    { nome: "Coating Cerâmico 9H", descricao: "Proteção premium 3-5 anos", preco: "R$ 1.500 - R$ 4.000" },
-    { nome: "Vitrificação Simples", descricao: "Proteção 1-2 anos", preco: "R$ 800 - R$ 1.500" },
-    { nome: "PPF (Película Protetora)", descricao: "Proteção física da pintura", preco: "R$ 2.000 - R$ 15.000" },
-    { nome: "Manutenção Coating", descricao: "Reativação anual", preco: "R$ 200 - R$ 500" },
-  ],
+// Conteúdo ÚNICO por tipo de serviço (não se repete entre cidades)
+const conteudoPorServico: Record<string, {
+  descricaoDetalhada: string;
+  diferenciais: string[];
+  faq: { pergunta: string; resposta: string }[];
+}> = {
+  "estetica-automotiva": {
+    descricaoDetalhada: "A estética automotiva exige controle de garantias, documentação fotográfica e acompanhamento de serviços de alto valor. O Lavify foi desenvolvido para centros de estética que precisam gerenciar polimentos, vitrificações e coatings com profissionalismo.",
+    diferenciais: [
+      "Controle de garantias com vencimento automático",
+      "Galeria de fotos antes/depois por serviço",
+      "Histórico técnico completo por veículo"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema controla garantia de vitrificação e coating?",
+        resposta: "Sim. Você cadastra a garantia de cada serviço e o sistema avisa automaticamente quando está próximo do vencimento."
+      },
+      {
+        pergunta: "Consigo anexar fotos antes/depois?",
+        resposta: "Sim. O Lavify permite anexar fotos em cada ordem de serviço, criando um portfólio automático."
+      }
+    ]
+  },
+  "lavagem-a-seco": {
+    descricaoDetalhada: "A lavagem a seco demanda controle de produtos ecológicos, gestão de equipes móveis e agendamentos com endereço. O Lavify organiza tudo isso para você focar no atendimento.",
+    diferenciais: [
+      "Gestão de equipe móvel com rotas",
+      "Controle de consumo de produtos",
+      "Agendamento com captura de endereço"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema ajuda a controlar os produtos ecológicos?",
+        resposta: "Sim. O controle de estoque avisa quando os produtos estão acabando e calcula o consumo médio por lavagem."
+      },
+      {
+        pergunta: "Funciona para equipes que atendem em domicílio?",
+        resposta: "Perfeito para isso. O agendamento online captura o endereço do cliente automaticamente."
+      }
+    ]
+  },
+  "martelinho-de-ouro": {
+    descricaoDetalhada: "O martelinho de ouro precisa de orçamentos detalhados, acompanhamento de reparos e gestão de fila de veículos. O Lavify ajuda você a organizar cada serviço com documentação completa.",
+    diferenciais: [
+      "Orçamentos com fotos e descrição detalhada",
+      "Acompanhamento de status por reparo",
+      "Controle de fila de veículos aguardando"
+    ],
+    faq: [
+      {
+        pergunta: "Como faço orçamentos de reparo pelo sistema?",
+        resposta: "Você cria ordens de serviço detalhadas com descrição de cada amassado, fotos e valor. O cliente recebe por WhatsApp."
+      },
+      {
+        pergunta: "O sistema ajuda a organizar a fila de veículos?",
+        resposta: "Sim. O Kanban visual mostra todos os veículos e o status de cada reparo."
+      }
+    ]
+  },
+  "vitrificacao": {
+    descricaoDetalhada: "Serviços de vitrificação e coating cerâmico exigem registro técnico detalhado, controle de garantias e agendamento de manutenções. O Lavify organiza todo o ciclo de vida do coating.",
+    diferenciais: [
+      "Registro de marca, camadas e tempo de cura",
+      "Controle de garantias com alerta de vencimento",
+      "Lembrete automático de manutenção"
+    ],
+    faq: [
+      {
+        pergunta: "Como registro os detalhes técnicos do coating?",
+        resposta: "Nas observações da ordem de serviço você registra marca, número de camadas, tempo de cura e outros detalhes."
+      },
+      {
+        pergunta: "O cliente recebe certificado de garantia?",
+        resposta: "Você pode enviar por WhatsApp um comprovante com todos os detalhes do serviço, data e período de garantia."
+      }
+    ]
+  },
+  "polimento": {
+    descricaoDetalhada: "O polimento automotivo requer documentação visual, registro de níveis de correção e controle de produtos utilizados. O Lavify ajuda você a profissionalizar cada serviço.",
+    diferenciais: [
+      "Registro do tipo de polimento realizado",
+      "Fotos comparativas antes/depois",
+      "Controle de produtos e boinas"
+    ],
+    faq: [
+      {
+        pergunta: "Consigo registrar o nível de correção alcançado?",
+        resposta: "Sim. Você pode detalhar na ordem de serviço o tipo de polimento, produtos usados e resultado obtido."
+      },
+      {
+        pergunta: "Como mostro o antes/depois pro cliente?",
+        resposta: "Anexe fotos na ordem de serviço e envie pelo WhatsApp integrado."
+      }
+    ]
+  },
+  "higienizacao-interna": {
+    descricaoDetalhada: "A higienização interna precisa diferenciar tipos de materiais, controlar produtos químicos e gerenciar tempos variados. O Lavify organiza cada detalhe do serviço.",
+    diferenciais: [
+      "Serviços separados para tecido e couro",
+      "Checklist de pontos higienizados",
+      "Controle de produtos químicos"
+    ],
+    faq: [
+      {
+        pergunta: "O sistema diferencia higienização de tecido e couro?",
+        resposta: "Sim. Você pode criar serviços separados com preços e tempos diferentes para cada tipo de material."
+      },
+      {
+        pergunta: "Posso ajustar o tempo para carros muito sujos?",
+        resposta: "Sim. No agendamento você adiciona observações e ajusta o tempo estimado."
+      }
+    ]
+  },
+  "lava-rapido": {
+    descricaoDetalhada: "O lava rápido precisa de controle de pátio em tempo real, gestão de fila e comunicação rápida com clientes. O Lavify foi feito para o ritmo acelerado da lavagem automotiva.",
+    diferenciais: [
+      "Kanban visual para controle do pátio",
+      "WhatsApp automático quando o carro fica pronto",
+      "Dashboard de faturamento em tempo real"
+    ],
+    faq: [
+      {
+        pergunta: "O Kanban funciona bem no celular?",
+        resposta: "Foi feito mobile-first. Seus funcionários arrastam os carros entre colunas direto pelo celular."
+      },
+      {
+        pergunta: "Consigo ver quantos carros lavei no dia?",
+        resposta: "Sim. O dashboard mostra serviços do dia, da semana e do mês, com faturamento em tempo real."
+      }
+    ]
+  },
+  "lava-jato": {
+    descricaoDetalhada: "O lava jato precisa organizar múltiplos boxes, controlar equipe e manter o cliente informado. O Lavify centraliza a gestão para você focar na qualidade do serviço.",
+    diferenciais: [
+      "Kanban visual para todos os boxes",
+      "Aviso automático de carro pronto",
+      "Controle financeiro integrado"
+    ],
+    faq: [
+      {
+        pergunta: "O cliente recebe aviso quando o carro fica pronto?",
+        resposta: "Sim. Com um clique você envia WhatsApp automático avisando que o veículo está pronto."
+      },
+      {
+        pergunta: "Funciona para lava jato com vários boxes?",
+        resposta: "Perfeito. O Kanban visual mostra todos os boxes e onde cada carro está no processo."
+      }
+    ]
+  }
 };
-
-const iconsBeneficios = [LayoutDashboard, Calendar, MessageCircle, Package, Users, TrendingUp];
 
 export default async function SolucaoPage({ params }: PageProps) {
   const { slug } = await params;
@@ -131,193 +240,32 @@ export default async function SolucaoPage({ params }: PageProps) {
   
   if (!servico || !cidade) notFound();
 
-  const servicosOferecidos = servicosPorTipo[servico.slug] || servicosPorTipo["estetica-automotiva"];
+  const conteudo = conteudoPorServico[servico.slug] || conteudoPorServico["lava-rapido"];
   
   // Cidades próximas para internal linking
   const cidadesProximas = cidadesBrasil
     .filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug)
-    .slice(0, 6);
-
-  // Benefícios específicos por tipo de serviço
-  const beneficiosPorServico: Record<string, string[]> = {
-    "estetica-automotiva": [
-      "Controle de garantias de coating e vitrificação",
-      "Fotos antes/depois em cada ordem de serviço",
-      "Agendamento de manutenções periódicas",
-      "Catálogo digital de serviços premium",
-      "Histórico completo por veículo",
-      "Programa de fidelidade para clientes recorrentes"
-    ],
-    "lavagem-a-seco": [
-      "Gestão de equipe móvel com rotas",
-      "Controle de produtos ecológicos",
-      "Agendamento com endereço do cliente",
-      "Relatório de consumo por lavagem",
-      "WhatsApp com localização para o cliente",
-      "Histórico de atendimentos por região"
-    ],
-    "martelinho-de-ouro": [
-      "Orçamentos detalhados com fotos",
-      "Acompanhamento de cada reparo",
-      "Previsão de tempo por serviço",
-      "Galeria de trabalhos realizados",
-      "Controle de fila de veículos",
-      "Relatório de serviços por tipo de dano"
-    ],
-    "vitrificacao": [
-      "Registro de marca e camadas aplicadas",
-      "Controle de garantias com vencimento",
-      "Agendamento de manutenções",
-      "Envio de certificado por WhatsApp",
-      "Lembrete automático de renovação",
-      "Histórico técnico por veículo"
-    ],
-    "polimento": [
-      "Registro do nível de correção",
-      "Fotos antes/depois com comparativo",
-      "Controle de produtos e boinas usadas",
-      "Tempo por etapa de polimento",
-      "Portfólio automático de trabalhos",
-      "Relatório de serviços realizados"
-    ],
-    "higienizacao-interna": [
-      "Diferenciação tecido vs couro",
-      "Tempo estimado por tipo de sujeira",
-      "Checklist de pontos higienizados",
-      "Controle de produtos químicos",
-      "Agendamento com observações",
-      "Histórico de limpezas por veículo"
-    ],
-    "lava-rapido": [
-      "Kanban visual para controle do pátio",
-      "WhatsApp automático quando pronto",
-      "Agendamento online 24 horas",
-      "Controle de lavagens por funcionário",
-      "Relatórios de faturamento diário",
-      "Programa de fidelidade com pontos"
-    ],
-    "lava-jato": [
-      "Kanban visual para todos os boxes",
-      "Aviso automático por WhatsApp",
-      "Agenda online para clientes",
-      "Controle financeiro em tempo real",
-      "Gestão de equipe e comissões",
-      "Fidelidade digital integrada"
-    ]
-  };
-  
-  const beneficios = beneficiosPorServico[servico.slug] || beneficiosPorServico["lava-rapido"];
-
-  // FAQs específicos por tipo de serviço (conteúdo único, não repetido)
-  const faqsPorServico: Record<string, { pergunta: string; resposta: string }[]> = {
-    "estetica-automotiva": [
-      {
-        pergunta: "O sistema controla garantia de vitrificação e coating?",
-        resposta: "Sim! Você cadastra a garantia de cada serviço e o sistema avisa automaticamente quando está próximo do vencimento, facilitando a renovação e fidelização."
-      },
-      {
-        pergunta: "Consigo fotografar o antes/depois dos serviços?",
-        resposta: "Com certeza. O Lavify permite anexar fotos em cada ordem de serviço, criando um portfólio automático que você pode compartilhar com o cliente."
-      }
-    ],
-    "lavagem-a-seco": [
-      {
-        pergunta: "O sistema ajuda a controlar os produtos ecológicos?",
-        resposta: "Sim! O controle de estoque do Lavify avisa quando os produtos estão acabando e calcula o consumo médio por lavagem."
-      },
-      {
-        pergunta: "Funciona para equipes que atendem em domicílio?",
-        resposta: "Perfeito para isso! O agendamento online já captura o endereço do cliente e a equipe recebe as informações pelo celular."
-      }
-    ],
-    "martelinho-de-ouro": [
-      {
-        pergunta: "Como faço orçamentos de reparo pelo sistema?",
-        resposta: "Você cria ordens de serviço detalhadas com descrição de cada amassado, fotos e valor. O cliente recebe tudo organizado por WhatsApp."
-      },
-      {
-        pergunta: "O sistema calcula o tempo de cada reparo?",
-        resposta: "Você pode definir tempo estimado por tipo de serviço e o Kanban ajuda a visualizar a fila de veículos aguardando."
-      }
-    ],
-    "vitrificacao": [
-      {
-        pergunta: "Como controlo as camadas aplicadas?",
-        resposta: "Nas observações da ordem de serviço você registra detalhes técnicos: marca do coating, número de camadas, tempo de cura."
-      },
-      {
-        pergunta: "O cliente recebe certificado de garantia?",
-        resposta: "Você pode enviar por WhatsApp um comprovante com todos os detalhes do serviço realizado, data e período de garantia."
-      }
-    ],
-    "polimento": [
-      {
-        pergunta: "Consigo registrar o nível de correção alcançado?",
-        resposta: "Sim! Você pode detalhar na ordem de serviço: tipo de polimento (corte, refino, lustro), produtos usados e resultado obtido."
-      },
-      {
-        pergunta: "Como mostro o antes/depois pro cliente?",
-        resposta: "Anexe fotos na ordem de serviço e envie pelo WhatsApp integrado. O cliente vê a transformação e compartilha com amigos."
-      }
-    ],
-    "higienizacao-interna": [
-      {
-        pergunta: "O sistema diferencia higienização de tecido e couro?",
-        resposta: "Você pode criar serviços separados com preços e tempos diferentes para cada tipo de material, facilitando a precificação."
-      },
-      {
-        pergunta: "Como aviso o cliente que demora mais em carros muito sujos?",
-        resposta: "No agendamento, você pode adicionar observações e ajustar o tempo estimado. O cliente é informado antes de confirmar."
-      }
-    ],
-    "lava-rapido": [
-      {
-        pergunta: "O Kanban funciona bem no celular?",
-        resposta: "Foi feito mobile-first! Seus funcionários arrastam os carros entre colunas (Aguardando, Lavando, Pronto) direto pelo celular."
-      },
-      {
-        pergunta: "Consigo ver quantos carros lavei no dia?",
-        resposta: "Sim! O dashboard mostra serviços do dia, da semana e do mês, com faturamento em tempo real."
-      }
-    ],
-    "lava-jato": [
-      {
-        pergunta: "O cliente recebe aviso quando o carro fica pronto?",
-        resposta: "Sim! Com um clique você envia WhatsApp automático avisando que o veículo está pronto para retirada."
-      },
-      {
-        pergunta: "Funciona para lava jato com vários boxes?",
-        resposta: "Perfeito! O Kanban visual mostra todos os boxes e você vê exatamente onde cada carro está no processo."
-      }
-    ]
-  };
-  
-  // Pega FAQs específicos do serviço (evita conteúdo duplicado)
-  const faqDoServico = faqsPorServico[servico.slug] || [];
+    .slice(0, 4);
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
-  // JSON-LD Schema
+  // Schema simplificado
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: `Lavify - ${servico.nomeCompleto}`,
     applicationCategory: "BusinessApplication",
-    operatingSystem: "Web, iOS, Android",
+    operatingSystem: "Web",
     description: `${servico.descricao} em ${cidade.nome}, ${cidade.estado}`,
     offers: {
-      "@type": "AggregateOffer",
-      lowPrice: "0",
-      highPrice: "199.90",
-      priceCurrency: "BRL"
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "BRL",
+      description: "Teste grátis"
     },
     areaServed: {
       "@type": "City",
-      name: cidade.nome,
-      containedInPlace: {
-        "@type": "State",
-        name: cidade.estado
-      }
+      name: cidade.nome
     }
   };
 
@@ -328,277 +276,169 @@ export default async function SolucaoPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-        {/* Header */}
-        <header className="bg-slate-900/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-white">
+      <div className="min-h-screen bg-slate-900">
+        {/* Header Simples */}
+        <header className="border-b border-white/10 py-4">
+          <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
+            <Link href="/" className="text-xl font-bold text-white">
               Lavify
             </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/para-empresas" className="text-white/70 hover:text-white text-sm hidden md:block">
-                Funcionalidades
-              </Link>
-              <Link
-                href="/cadastro"
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:opacity-90"
-              >
-                Testar Grátis
-              </Link>
-            </div>
+            <Link 
+              href="/para-empresas" 
+              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
+            >
+              Ver todas as funcionalidades
+              <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
         </header>
 
-        {/* Hero */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/20 via-transparent to-transparent" />
+        {/* Conteúdo Principal */}
+        <main className="max-w-4xl mx-auto px-4 py-12">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-white/50 mb-8">
+            <Link href="/" className="hover:text-white/70">Início</Link>
+            <span>/</span>
+            <Link href="/para-empresas" className="hover:text-white/70">Para Empresas</Link>
+            <span>/</span>
+            <span className="text-white/70">{servico.nome}</span>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="inline-flex items-center gap-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              {servico.emoji} {servico.nome}
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/60 px-3 py-1 rounded-full text-sm">
+              <MapPin className="w-3.5 h-3.5" />
+              {cidade.nome}, {cidade.uf}
+            </span>
+          </div>
+
+          {/* Título */}
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            {servico.nomeCompleto} em {cidade.nome}
+          </h1>
           
-          <div className="max-w-6xl mx-auto px-4 relative">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-white/50 mb-8">
-              <Link href="/" className="hover:text-white/70">Início</Link>
-              <span>/</span>
-              <Link href="/para-empresas" className="hover:text-white/70">Soluções</Link>
-              <span>/</span>
-              <span className="text-cyan-400">{servico.nome} em {cidade.nome}</span>
-            </div>
+          {/* Descrição do serviço */}
+          <p className="text-lg text-white/70 mb-8 leading-relaxed">
+            {conteudo.descricaoDetalhada}
+          </p>
 
-            {/* Badge */}
-            <div className="flex items-center gap-2 mb-6">
-              <span className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-4 py-1.5 rounded-full text-sm font-medium">
-                <Sparkles className="w-4 h-4" />
-                {servico.emoji} {servico.nome}
-              </span>
-              <span className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-white/60 px-4 py-1.5 rounded-full text-sm">
-                <MapPin className="w-4 h-4" />
-                {cidade.nome}, {cidade.uf}
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              {servico.nomeCompleto} em{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                {cidade.nome}
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-white/70 mb-8 max-w-3xl">
-              {servico.descricao}
-            </p>
-
-            <p className="text-lg text-white/60 mb-10 max-w-3xl leading-relaxed">
-              O mercado de {servico.nome.toLowerCase()} em {cidade.nome} está em crescimento. 
-              Com uma população de {(cidade.populacao / 1000000).toFixed(1)} milhões de habitantes 
-              e frota de veículos cada vez maior, a demanda por serviços de qualidade é alta. 
-              O Lavify ajuda você a se destacar da concorrência.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Link
-                href="/cadastro"
-                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 shadow-lg shadow-emerald-500/25"
-              >
-                ⚡ Testar Grátis Agora
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link
-                href="/para-empresas#video"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20"
-              >
-                <Play className="w-5 h-5" />
-                Ver Como Funciona
-              </Link>
-            </div>
-
-            {/* Trust */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-white/50">
-              <span className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
-                100% grátis pra testar
-              </span>
-              <span className="flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-cyan-400" />
-                Funciona no celular
-              </span>
-              <span className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-400" />
-                Começa em 2 minutos
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Tabela de Serviços */}
-        <section className="py-16 bg-white/5">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Serviços de {servico.nome} em {cidade.nome}
+          {/* Diferenciais do Lavify para este serviço */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-10">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              O que o Lavify oferece para {servico.nome.toLowerCase()}:
             </h2>
-            <p className="text-white/60 text-center mb-12 max-w-2xl mx-auto">
-              Preços de referência do mercado local. Gerencie todos esses serviços com o Lavify.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              {servicosOferecidos.map((srv, index) => (
-                <div
-                  key={index}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-lg font-semibold text-white">{srv.nome}</h3>
-                    <span className="text-cyan-400 font-bold">{srv.preco}</span>
-                  </div>
-                  <p className="text-white/60 text-sm">{srv.descricao}</p>
-                </div>
+            <ul className="space-y-3">
+              {conteudo.diferenciais.map((item, index) => (
+                <li key={index} className="flex items-start gap-3 text-white/70">
+                  <span className="text-cyan-400 mt-1">•</span>
+                  {item}
+                </li>
               ))}
+            </ul>
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <Link 
+                href="/para-empresas" 
+                className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
+              >
+                Ver todas as funcionalidades do Lavify
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
-        </section>
 
-        {/* Benefícios */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Por que usar o Lavify para {servico.nome}
-            </h2>
-            <p className="text-white/60 text-center mb-12 max-w-2xl mx-auto">
-              Funcionalidades que fazem a diferença no dia a dia do seu negócio
-            </p>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {beneficios.map((beneficio, index) => {
-                const Icon = iconsBeneficios[index] || CheckCircle;
-                return (
-                  <div
-                    key={index}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors"
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">{beneficio}</h3>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ - Só exibe se tiver perguntas específicas do serviço */}
-        {faqDoServico.length > 0 && (
-          <section className="py-16 bg-slate-800/50">
-            <div className="max-w-3xl mx-auto px-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-                Dúvidas sobre {servico.nome}
+          {/* FAQ específico do serviço */}
+          {conteudo.faq.length > 0 && (
+            <div className="mb-10">
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Perguntas sobre {servico.nome}
               </h2>
-              <p className="text-white/60 text-center mb-12">
-                Perguntas específicas sobre o sistema para {servico.nome.toLowerCase()}
-              </p>
-
-              <div className="space-y-4">
-                {faqDoServico.map((item, index) => (
+              <div className="space-y-3">
+                {conteudo.faq.map((item, index) => (
                   <details 
                     key={index}
-                    className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+                    className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden"
                   >
-                    <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                      <span className="font-medium text-white pr-4">{item.pergunta}</span>
-                      <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
+                    <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
+                      <span className="font-medium text-white pr-4 text-sm">{item.pergunta}</span>
+                      <ChevronDown className="w-4 h-4 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
                     </summary>
-                    <div className="px-6 pb-6 text-white/70">{item.resposta}</div>
+                    <div className="px-4 pb-4 text-white/60 text-sm">{item.resposta}</div>
                   </details>
                 ))}
               </div>
             </div>
-          </section>
-        )}
+          )}
 
-        {/* Internal Linking - Cidades */}
-        {cidadesProximas.length > 0 && (
-          <section className="py-12 bg-white/5">
-            <div className="max-w-6xl mx-auto px-4">
-              <h2 className="text-xl font-bold text-white text-center mb-6">
-                {servico.nome} em Outras Cidades do {cidade.regiao}
-              </h2>
-              <div className="flex flex-wrap justify-center gap-3">
-                {cidadesProximas.map((c) => (
-                  <Link
-                    key={c.slug}
-                    href={`/solucoes/${servico.slug}-${c.slug}`}
-                    className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-white/70 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-all text-sm"
-                  >
-                    {c.nome}, {c.uf}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Internal Linking - Outros Serviços */}
-        <section className="py-12">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-xl font-bold text-white text-center mb-6">
-              Outros Serviços em {cidade.nome}
-            </h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              {servicosAutomotivos
-                .filter(s => s.slug !== servico.slug)
-                .slice(0, 6)
-                .map((s) => (
-                  <Link
-                    key={s.slug}
-                    href={`/solucoes/${s.slug}-${cidade.slug}`}
-                    className="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-white/70 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-all text-sm"
-                  >
-                    {s.emoji} {s.nome}
-                  </Link>
-                ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Final */}
-        <section className="py-16 md:py-24 bg-gradient-to-r from-cyan-600 to-blue-700">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Comece Hoje a Profissionalizar seu Negócio
-            </h2>
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Junte-se aos empreendedores de {servico.nome.toLowerCase()} em {cidade.nome} 
-              que já usam o Lavify para crescer
+          {/* CTA simples */}
+          <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-6 text-center mb-10">
+            <p className="text-white/90 mb-4">
+              Quer saber mais sobre o Lavify para {servico.nome.toLowerCase()}?
             </p>
             <Link
-              href="/cadastro"
-              className="inline-flex items-center justify-center gap-2 bg-white text-cyan-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/90 shadow-lg"
+              href="/para-empresas"
+              className="inline-flex items-center gap-2 bg-white text-cyan-600 px-6 py-2.5 rounded-lg font-semibold hover:bg-white/90"
             >
-              Criar Conta Grátis
-              <ArrowRight className="w-5 h-5" />
+              Conheça o Lavify
+              <ArrowRight className="w-4 h-4" />
             </Link>
-            <p className="text-white/60 text-sm mt-4">
-              Sem cartão de crédito • Teste grátis
-            </p>
           </div>
-        </section>
 
-        {/* Footer */}
-        <footer className="bg-slate-900 border-t border-white/10 py-12">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-center md:text-left">
-                <Link href="/" className="text-2xl font-bold text-white">Lavify</Link>
-                <p className="text-white/50 text-sm mt-2">Sistema de gestão para estética automotiva</p>
+          {/* Links relacionados */}
+          <div className="border-t border-white/10 pt-8">
+            {/* Outras cidades */}
+            {cidadesProximas.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-white/50 mb-3">
+                  {servico.nome} em outras cidades:
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {cidadesProximas.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/solucoes/${servico.slug}-${c.slug}`}
+                      className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 hover:text-white hover:border-white/30 text-sm"
+                    >
+                      {c.nome}
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/50">
-                <Link href="/para-empresas" className="hover:text-white">Para Empresas</Link>
-                <Link href="/encontrar" className="hover:text-white">Encontrar Lava Jato</Link>
-                <Link href="/login" className="hover:text-white">Entrar</Link>
+            )}
+
+            {/* Outros serviços */}
+            <div>
+              <h3 className="text-sm font-medium text-white/50 mb-3">
+                Outros serviços em {cidade.nome}:
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {servicosAutomotivos
+                  .filter(s => s.slug !== servico.slug)
+                  .slice(0, 4)
+                  .map((s) => (
+                    <Link
+                      key={s.slug}
+                      href={`/solucoes/${s.slug}-${cidade.slug}`}
+                      className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 hover:text-white hover:border-white/30 text-sm"
+                    >
+                      {s.emoji} {s.nome}
+                    </Link>
+                  ))}
               </div>
             </div>
-            <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/40 text-sm">
-              © {new Date().getFullYear()} Lavify. Todos os direitos reservados.
+          </div>
+        </main>
+
+        {/* Footer mínimo */}
+        <footer className="border-t border-white/10 py-6 mt-8">
+          <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
+            <span>© {new Date().getFullYear()} Lavify</span>
+            <div className="flex gap-4">
+              <Link href="/para-empresas" className="hover:text-white/60">Para Empresas</Link>
+              <Link href="/login" className="hover:text-white/60">Entrar</Link>
             </div>
           </div>
         </footer>
@@ -606,4 +446,3 @@ export default async function SolucaoPage({ params }: PageProps) {
     </>
   );
 }
-
