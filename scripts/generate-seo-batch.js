@@ -534,14 +534,28 @@ async function main() {
         where: { cacheKey },
       });
       
+      // Busca conteúdo específico ou usa fallback
+      const conteudoEspecifico = conteudosEspecificos[guia.tema];
+      
       if (existe) {
+        // Se existe mas tem conteúdo específico melhor, atualiza
+        if (conteudoEspecifico && !existe.geradoPorIA) {
+          await prisma.sEOContentCache.update({
+            where: { cacheKey },
+            data: {
+              conteudo: JSON.stringify(conteudoEspecifico),
+              geradoPorIA: true,
+              expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            },
+          });
+          console.log(`🔄 Atualizado: ${guia.tema}`);
+          criados++;
+          continue;
+        }
         console.log(`⏭️  Já existe: ${guia.tema}`);
         existentes++;
         continue;
       }
-      
-      // Busca conteúdo específico ou usa fallback
-      const conteudoEspecifico = conteudosEspecificos[guia.tema];
       
       const conteudo = conteudoEspecifico || {
         respostaAEO: `Guia completo sobre ${guia.tema.replace(/-/g, ' ')} para lava jatos.`,
