@@ -68,6 +68,86 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// FAQ específico por página - evita duplicação de conteúdo
+// ⚠️ IMPORTANTE: Cada página deve ter seu próprio FAQ único
+interface FAQItem {
+  pergunta: string;
+  resposta: string;
+}
+
+function getFAQPorPagina(slug: string): FAQItem[] {
+  const faqsPorSlug: Record<string, FAQItem[]> = {
+    // Páginas de organização
+    "como-organizar-lava-rapido": [
+      { pergunta: "O que é um sistema de gestão para lava rápido?", resposta: "É um software que centraliza todas as operações do seu lava jato: controle de pátio, agendamentos, estoque, financeiro e equipe. Tudo acessível pelo celular." },
+      { pergunta: "Quanto tempo leva para organizar meu lava jato com o sistema?", resposta: "Em média, nossos clientes relatam que conseguem organizar a operação em 1-2 semanas. O Kanban visual ajuda a criar rotinas desde o primeiro dia." },
+      { pergunta: "Minha equipe vai conseguir usar?", resposta: "Sim! O sistema foi feito para ser simples. Arrastar um carro no Kanban é como mover um post-it. A maioria aprende em 10 minutos." },
+    ],
+    // Páginas de controle de pátio
+    "como-controlar-patio-lava-jato": [
+      { pergunta: "O que é o sistema Kanban para lava jato?", resposta: "É um quadro visual digital que mostra todos os carros em colunas: Aguardando, Lavando, Finalizando e Pronto. Você arrasta os cards para mudar o status." },
+      { pergunta: "Consigo ver o pátio pelo celular?", resposta: "Sim! O Kanban funciona perfeitamente no celular. Você pode acompanhar e gerenciar o pátio de qualquer lugar com internet." },
+      { pergunta: "Como aviso o cliente que o carro está pronto?", resposta: "Com um clique, o sistema envia WhatsApp automático para o cliente com mensagem personalizada informando que o carro está pronto para retirada." },
+    ],
+    // Páginas de WhatsApp
+    "como-enviar-whatsapp-automatico-lava-jato": [
+      { pergunta: "Preciso ter WhatsApp Business?", resposta: "Não necessariamente. O sistema abre o WhatsApp normal do celular com a mensagem pronta. Você só confirma e envia." },
+      { pergunta: "Posso personalizar a mensagem?", resposta: "Sim! Você define o texto padrão com o nome do seu lava jato. O sistema adiciona automaticamente o nome do cliente e a placa do veículo." },
+      { pergunta: "Funciona em todos os celulares?", resposta: "Sim! Funciona em Android e iPhone. Basta ter o WhatsApp instalado no celular." },
+    ],
+    // Páginas de agendamento
+    "como-fazer-agendamento-online-lava-rapido": [
+      { pergunta: "O cliente precisa baixar algum app?", resposta: "Não! O cliente acessa uma página web pelo navegador do celular. Escolhe o serviço, data e horário. Simples assim." },
+      { pergunta: "Recebo notificação dos agendamentos?", resposta: "Sim! Você recebe notificação instantânea no celular sempre que um cliente agenda. Pode confirmar ou sugerir outro horário." },
+      { pergunta: "Posso bloquear horários?", resposta: "Sim! Você define os dias e horários disponíveis para agendamento. Feriados, almoço, dias de folga - você controla tudo." },
+    ],
+    // Páginas de estoque
+    "como-controlar-estoque-lava-jato": [
+      { pergunta: "Como funciona o alerta de estoque?", resposta: "Você define a quantidade mínima de cada produto. Quando chegar nesse limite, o sistema avisa para você repor antes de acabar." },
+      { pergunta: "Consigo saber quanto produto uso por lavagem?", resposta: "Sim! Você cadastra quantos ml/g de cada produto usa em cada serviço. O sistema calcula automaticamente o consumo e o custo." },
+      { pergunta: "Posso controlar vários tipos de produto?", resposta: "Sim! Shampoo, cera, desengraxante, perfume, panos - você cadastra todos os produtos que usa na operação." },
+    ],
+    // Páginas de financeiro
+    "como-controlar-financeiro-lava-rapido": [
+      { pergunta: "Consigo ver o faturamento do dia?", resposta: "Sim! O dashboard mostra o faturamento do dia, semana e mês em tempo real. Você acompanha de qualquer lugar." },
+      { pergunta: "O sistema controla despesas também?", resposta: "Sim! Você registra despesas como aluguel, luz, água, salários. O sistema calcula seu lucro real." },
+      { pergunta: "Tem relatórios financeiros?", resposta: "Sim! Relatórios de faturamento, serviços mais vendidos, ticket médio e mais. Tudo para tomar decisões com base em dados." },
+    ],
+    // Páginas de equipe
+    "como-gerenciar-equipe-lava-jato": [
+      { pergunta: "Posso controlar o que cada funcionário acessa?", resposta: "Sim! Você define níveis de acesso: Gerente vê tudo, Atendente vê clientes e OS, Lavador só vê o Kanban." },
+      { pergunta: "Consigo ver a produtividade de cada um?", resposta: "Sim! O sistema registra quantas lavagens cada funcionário fez. Você identifica quem produz mais." },
+      { pergunta: "Funciona para calcular comissões?", resposta: "Sim! Você pode configurar comissão por serviço e o sistema calcula automaticamente quanto pagar a cada um." },
+    ],
+    // Páginas de fidelidade
+    "como-fidelizar-clientes-lava-rapido": [
+      { pergunta: "Que tipo de programa de fidelidade posso criar?", resposta: "Você escolhe: pontos que viram desconto, cashback em reais, ou cartão fidelidade (a cada X lavagens, 1 grátis)." },
+      { pergunta: "O cliente acompanha os pontos?", resposta: "Sim! O cliente pode ver quantos pontos tem e quanto falta para o próximo benefício pela página pública." },
+      { pergunta: "Posso criar promoções?", resposta: "Sim! Promoções por período, por serviço, para clientes específicos. Você define as regras." },
+    ],
+    // Páginas de Kanban
+    "sistema-kanban-lava-jato": [
+      { pergunta: "O que significa cada coluna do Kanban?", resposta: "Aguardando (carro chegou), Lavando (em serviço), Finalizando (últimos ajustes) e Pronto (aguardando retirada). Você pode personalizar." },
+      { pergunta: "Quantos carros cabem no Kanban?", resposta: "Não tem limite! O sistema suporta quantos carros seu pátio comportar. Tem lava jatos com 50+ carros simultâneos." },
+      { pergunta: "Funciona bem no celular?", resposta: "Sim! O Kanban foi feito mobile-first. Arrastar cards no celular é fácil e intuitivo." },
+    ],
+    // Páginas de app/software
+    "aplicativo-para-lava-jato": [
+      { pergunta: "Preciso baixar um aplicativo?", resposta: "Não! O Lavify funciona no navegador. Você pode adicionar um atalho na tela inicial do celular que funciona como app." },
+      { pergunta: "Funciona offline?", resposta: "O Lavify precisa de internet para funcionar, pois sincroniza dados em tempo real entre todos os dispositivos." },
+      { pergunta: "Posso usar no computador e celular?", resposta: "Sim! Acesse de qualquer dispositivo com navegador. Seus dados ficam sincronizados automaticamente." },
+    ],
+    "software-para-lava-rapido": [
+      { pergunta: "O software é difícil de usar?", resposta: "Não! O Lavify foi feito para donos de lava jato, não para técnicos de informática. Interface simples e intuitiva." },
+      { pergunta: "Precisa de treinamento?", resposta: "Não obrigatoriamente. A maioria começa a usar sozinho. Mas oferecemos tutoriais em vídeo e suporte se precisar." },
+      { pergunta: "Meus dados ficam seguros?", resposta: "Sim! Dados criptografados, servidores seguros com backup diário. Só você e quem autorizar tem acesso." },
+    ],
+  };
+
+  // Retorna FAQs específicos ou array vazio (sem FAQ duplicado genérico)
+  return faqsPorSlug[slug] || [];
+}
+
 // Conteúdo específico por tipo de página
 function getConteudoPorTipo(pagina: PaginaSEO) {
   const conteudos: Record<string, { secoes: { titulo: string; texto: string }[]; beneficios: string[] }> = {
@@ -598,53 +678,22 @@ export default async function PaginaSEO({ params }: PageProps) {
     }))
   } : null;
 
-  // FAQ Schema
-  const faqLd = {
+  // FAQ específico por página - evita conteúdo duplicado e Spammy Structured Data
+  // ⚠️ IMPORTANTE: O FAQ Schema DEVE corresponder EXATAMENTE ao FAQ visível na página
+  const faqPorPagina = getFAQPorPagina(pagina.slug);
+  
+  const faqLd = faqPorPagina.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "O sistema é realmente grátis para testar?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Sim! Você pode testar o Lavify por 7 dias gratuitamente, sem precisar de cartão de crédito. Todas as funcionalidades ficam liberadas durante o teste."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "Preciso instalar algum programa?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Não! O Lavify funciona 100% online. Você acessa pelo navegador do celular ou computador. Não precisa baixar nem instalar nada."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "Funciona em qualquer celular?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Sim! O Lavify funciona em qualquer celular com acesso à internet, seja Android ou iPhone. Basta abrir o navegador e acessar."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "Quanto custa o sistema para lava jato?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "O Lavify tem plano gratuito para sempre e planos pagos a partir de R$49,90/mês. Você pode testar grátis por 7 dias antes de escolher."
-        }
-      },
-      {
-        "@type": "Question",
-        name: "O sistema funciona para lava jato pequeno?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Sim! O Lavify foi pensado para atender desde lava rápidos com 1 funcionário até grandes operações com múltiplas unidades."
-        }
+    mainEntity: faqPorPagina.map(faq => ({
+      "@type": "Question",
+      name: faq.pergunta,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.resposta
       }
-    ]
-  };
+    }))
+  } : null;
 
   const estatisticas = [
     { valor: "-50%", label: "Tempo em gestão" },
@@ -672,10 +721,12 @@ export default async function PaginaSEO({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
-      />
+      {faqLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
@@ -876,52 +927,29 @@ export default async function PaginaSEO({ params }: PageProps) {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Perguntas Frequentes
-          </h2>
-          <div className="space-y-4">
-            <details className="group bg-white/5 border border-white/10 rounded-xl p-5">
-              <summary className="flex justify-between items-center font-semibold cursor-pointer list-none">
-                O sistema é realmente grátis para testar?
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
-              </summary>
-              <p className="text-white/70 mt-4">
-                Sim! Você pode testar o Lavify por 7 dias gratuitamente, sem precisar de cartão de crédito. Todas as funcionalidades ficam liberadas durante o teste.
-              </p>
-            </details>
-            <details className="group bg-white/5 border border-white/10 rounded-xl p-5">
-              <summary className="flex justify-between items-center font-semibold cursor-pointer list-none">
-                Preciso instalar algum programa?
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
-              </summary>
-              <p className="text-white/70 mt-4">
-                Não! O Lavify funciona 100% online. Você acessa pelo navegador do celular ou computador. Não precisa baixar nem instalar nada.
-              </p>
-            </details>
-            <details className="group bg-white/5 border border-white/10 rounded-xl p-5">
-              <summary className="flex justify-between items-center font-semibold cursor-pointer list-none">
-                Funciona em qualquer celular?
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
-              </summary>
-              <p className="text-white/70 mt-4">
-                Sim! O Lavify funciona em qualquer celular com acesso à internet, seja Android ou iPhone. Basta abrir o navegador e acessar.
-              </p>
-            </details>
-            <details className="group bg-white/5 border border-white/10 rounded-xl p-5">
-              <summary className="flex justify-between items-center font-semibold cursor-pointer list-none">
-                Quanto custa após o período de teste?
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
-              </summary>
-              <p className="text-white/70 mt-4">
-                Os planos começam em R$49,90/mês. Você escolhe o plano que melhor se adapta ao tamanho do seu lava jato. Tem plano desde o pequeno até o grande.
-              </p>
-            </details>
+      {/* FAQ - Só exibe se tiver perguntas específicas para esta página */}
+      {faqPorPagina.length > 0 && (
+        <section className="py-16 md:py-24">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+              Perguntas Frequentes sobre {pagina.h1.split(":")[0]}
+            </h2>
+            <div className="space-y-4">
+              {faqPorPagina.map((faq, index) => (
+                <details key={index} className="group bg-white/5 border border-white/10 rounded-xl p-5">
+                  <summary className="flex justify-between items-center font-semibold cursor-pointer list-none">
+                    {faq.pergunta}
+                    <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
+                  </summary>
+                  <p className="text-white/70 mt-4">
+                    {faq.resposta}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Box do Autor - E-E-A-T */}
       <section className="py-12">
