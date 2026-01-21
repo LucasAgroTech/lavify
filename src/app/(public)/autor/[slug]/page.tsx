@@ -12,7 +12,7 @@ import {
   getAllAuthorSlugs,
   generateAuthorPersonSchema,
 } from "@/lib/authors";
-import { todasPaginasSEO, paginasGuias } from "@/lib/seo-keywords";
+import { todasPaginasSEO } from "@/lib/seo-keywords";
 import { problemasLavaJato } from "@/lib/seo-problems";
 import { AuthorBoxFeatured } from "@/components/AuthorBox";
 

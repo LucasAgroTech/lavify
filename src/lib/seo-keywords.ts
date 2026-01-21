@@ -184,36 +184,8 @@ export const paginasComparativos: PaginaSEO[] = [
   },
 ];
 
-// Páginas de GUIAS e conteúdo educativo
-export const paginasGuias: PaginaSEO[] = [
-  {
-    slug: "como-abrir-lava-rapido",
-    titulo: "Como Abrir um Lava Rápido em 2026 | Guia Completo",
-    h1: "Como Abrir um Lava Rápido: Guia Completo 2026",
-    descricaoMeta: "Guia completo para abrir um lava rápido. Investimento, equipamentos, documentação e dicas de gestão. Tudo que você precisa saber!",
-    keywords: ["como abrir lava rapido", "abrir lava jato", "montar lava rapido"],
-    tipo: "guia",
-    prioridade: 4
-  },
-  {
-    slug: "como-aumentar-faturamento-lava-jato",
-    titulo: "Como Aumentar o Faturamento do Lava Jato | Dicas",
-    h1: "Como Aumentar o Faturamento do Seu Lava Jato",
-    descricaoMeta: "Dicas práticas para aumentar o faturamento do lava jato. Agendamento online, fidelização e organização. Comece a aplicar hoje!",
-    keywords: ["aumentar faturamento lava jato", "lucrar mais lava rapido", "crescer lava jato"],
-    tipo: "guia",
-    prioridade: 4
-  },
-  {
-    slug: "erros-comuns-lava-rapido",
-    titulo: "7 Erros Comuns de Donos de Lava Rápido | Evite!",
-    h1: "7 Erros Comuns que Donos de Lava Rápido Cometem",
-    descricaoMeta: "Descubra os erros mais comuns de donos de lava rápido e como evitá-los. Melhore sua gestão e aumente seus lucros!",
-    keywords: ["erros lava rapido", "problemas lava jato", "dificuldades lava rapido"],
-    tipo: "guia",
-    prioridade: 3
-  },
-];
+// Páginas de GUIAS removidas - agora estão em /guias/[slug] com conteúdo enriquecido
+// Ver src/lib/seo-problems.ts para os guias completos
 
 // Páginas NICHO - Frotas, Jurídico e Sustentável
 export const paginasNicho: PaginaSEO[] = [
@@ -259,43 +231,8 @@ export const paginasNicho: PaginaSEO[] = [
   
   // ═══════════════════════════════════════════════════════════════════
   // CONFORMIDADE E JURÍDICO
+  // (Guias de licenciamento, efluentes e contratos removidos - agora em /guias/)
   // ═══════════════════════════════════════════════════════════════════
-  {
-    slug: "licenciamento-ambiental-lava-rapido",
-    titulo: "Licenciamento Ambiental para Lava Rápido | Guia Completo 2026",
-    h1: "Licenciamento Ambiental para Lava Rápido: Como Regularizar",
-    descricaoMeta: "Guia completo sobre licenciamento ambiental para lava jato. Documentação necessária, órgãos responsáveis, caixa separadora e tratamento de efluentes.",
-    keywords: ["licenciamento ambiental lava rapido", "licença ambiental lava jato", "regularizar lava jato", "documentação lava rapido"],
-    tipo: "guia",
-    prioridade: 5
-  },
-  {
-    slug: "tratamento-efluentes-lava-jato",
-    titulo: "Tratamento de Efluentes para Lava Jato | Normas Ambientais",
-    h1: "Tratamento de Efluentes para Lava Jato: Guia de Conformidade",
-    descricaoMeta: "Como instalar sistema de tratamento de efluentes no lava jato. Caixa separadora de água e óleo, reuso de água e conformidade com normas ambientais.",
-    keywords: ["tratamento efluentes lava jato", "caixa separadora lava rapido", "reuso água lava jato", "normas ambientais lava jato"],
-    tipo: "guia",
-    prioridade: 5
-  },
-  {
-    slug: "contrato-estetica-automotiva",
-    titulo: "Modelo de Contrato para Estética Automotiva | Responsabilidade",
-    h1: "Contrato para Estética Automotiva: Proteja seu Negócio",
-    descricaoMeta: "Modelo de contrato de prestação de serviços para estética automotiva. Cláusulas de responsabilidade civil, checklist de entrada e proteção jurídica.",
-    keywords: ["contrato estética automotiva", "responsabilidade civil lava jato", "termo responsabilidade lava rapido", "contrato lava jato"],
-    tipo: "guia",
-    prioridade: 4
-  },
-  {
-    slug: "checklist-entrada-veiculo-lava-jato",
-    titulo: "Checklist de Entrada de Veículo | Proteção Jurídica Lava Jato",
-    h1: "Checklist de Entrada de Veículo: Proteja seu Lava Jato",
-    descricaoMeta: "Sistema de checklist digital para entrada de veículos. Registre arranhões, amassados e pertences. Proteção jurídica contra reclamações indevidas.",
-    keywords: ["checklist entrada veículo", "vistoria lava jato", "registro danos veículo", "proteção lava rapido"],
-    tipo: "funcionalidade",
-    prioridade: 4
-  },
   
   // ═══════════════════════════════════════════════════════════════════
   // ESTÉTICA AUTOMOTIVA SUSTENTÁVEL
@@ -474,12 +411,11 @@ export const paginasLongTail: PaginaSEO[] = [
   },
 ];
 
-// Todas as páginas combinadas
+// Todas as páginas combinadas (guias removidos - agora estão em /guias/[slug])
 export const todasPaginasSEO: PaginaSEO[] = [
   ...paginasProblemas,
   ...paginasFuncionalidades,
   ...paginasComparativos,
-  ...paginasGuias,
   ...paginasNicho,
   ...paginasLongTail,
 ].sort((a, b) => b.prioridade - a.prioridade);
