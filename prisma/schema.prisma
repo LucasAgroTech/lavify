@@ -450,6 +450,47 @@ model Financeiro {
 }
 
 // ============================================
+// SEO CONTENT CACHE - Conteúdo enriquecido por IA
+// ============================================
+
+model SEOContentCache {
+  id              String      @id @default(uuid())
+  
+  // Identificador único da página
+  cacheKey        String      @unique  // tema-tipo-cidade-uf
+  
+  // Contexto da geração
+  tema            String
+  tipoConteudo    String      // guia, tabela, checklist, servico, cidade
+  cidadeNome      String?
+  cidadeUf        String?
+  cidadeRegiao    String?
+  
+  // Conteúdo enriquecido (JSON)
+  conteudo        String      @db.Text
+  
+  // Metadados de geração
+  geradoPorIA     Boolean     @default(false)
+  modeloIA        String?
+  tokensUsados    Int?
+  tempoGeracao    Int?        // ms
+  
+  // Controle de qualidade
+  qualityScore    Float?      // 0-100
+  revisado        Boolean     @default(false)
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  expiresAt       DateTime?   // Para invalidação automática
+  
+  @@index([tema])
+  @@index([tipoConteudo])
+  @@index([cidadeUf])
+  @@index([createdAt])
+}
+
+// ============================================
 // BLOG - Posts gerados por IA e publicados
 // ============================================
 

@@ -10,7 +10,10 @@ import {
   Calculator,
   ClipboardList,
   Table,
-  MapPin
+  MapPin,
+  TrendingUp,
+  Quote,
+  Lightbulb
 } from "lucide-react";
 import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getProblemaBySlug, problemasLavaJato, ProblemaSEO } from "@/lib/seo-problems";
@@ -21,6 +24,13 @@ import {
 } from "@/lib/authors";
 import { AuthorByline } from "@/components/AuthorByline";
 import { AuthorBox } from "@/components/AuthorBox";
+import { 
+  getConteudoEnriquecidoPorTema,
+} from "@/lib/seo-content-helper";
+import { 
+  gerarFAQSchema,
+  getRespostaParaFeaturedSnippet 
+} from "@/lib/seo-content-helper";
 
 // Função para converter markdown simples em HTML
 function processarMarkdown(texto: string): string {
@@ -151,8 +161,23 @@ export default async function GuiaPage({ params }: PageProps) {
   const cidade = cidadeData || null;
   const localidade = cidade ? ` em ${cidade.nome}` : "";
   
+  // Conteúdo base (fallback)
   const conteudo = getConteudoFallback(problema, cidade);
   const Icon = iconesPorTipo[problema.tipo] || BookOpen;
+  
+  // Busca conteúdo enriquecido do cache (se disponível)
+  const conteudoEnriquecido = await getConteudoEnriquecidoPorTema(
+    problema.slug,
+    problema.tipo as "guia" | "tabela" | "checklist",
+    cidade ? {
+      nome: cidade.nome,
+      uf: cidade.uf,
+      regiao: cidade.regiao,
+      populacao: cidade.populacao,
+    } : undefined,
+    problema.keywords,
+    problema.descricao
+  );
   
   // Guias relacionados
   const guiasRelacionados = problemasLavaJato
@@ -172,20 +197,34 @@ export default async function GuiaPage({ params }: PageProps) {
   // JSON-LD com Autor (E-E-A-T)
   const jsonLd = generateArticleWithAuthorSchema(
     {
-      titulo: conteudo.titulo,
-      descricao: conteudo.introducao,
+      titulo: conteudoEnriquecido.metaTitleOtimizado || conteudo.titulo,
+      descricao: conteudoEnriquecido.introducaoEnriquecida || conteudo.introducao,
       slug: `guias/${slug}`,
       dataPublicacao,
     },
     author,
     baseUrl
   );
+  
+  // Schema FAQ separado para rich snippets
+  const faqSchema = gerarFAQSchema(
+    conteudoEnriquecido.faqEnriquecido,
+    baseUrl,
+    `/guias/${slug}`
+  );
+  
+  // Resposta AEO para featured snippet
+  const respostaAEO = getRespostaParaFeaturedSnippet(conteudoEnriquecido);
 
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <div className="min-h-screen bg-white">
@@ -237,8 +276,15 @@ export default async function GuiaPage({ params }: PageProps) {
 
             {/* Título */}
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              {problema.emoji} {conteudo.titulo}
+              {problema.emoji} {conteudoEnriquecido.metaTitleOtimizado?.replace(" | Lavify", "") || conteudo.titulo}
             </h1>
+            
+            {/* AEO First - Resposta Direta (Featured Snippet) */}
+            <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl p-4 mb-6">
+              <p className="text-lg md:text-xl text-white font-medium">
+                {respostaAEO}
+              </p>
+            </div>
             
             <p className="text-xl text-white/70 mb-8">
               {conteudo.subtitulo}
@@ -248,7 +294,7 @@ export default async function GuiaPage({ params }: PageProps) {
             <div className="flex flex-wrap items-center gap-6 text-sm text-white/50 mb-8">
               <span className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
-                {conteudo.secoes?.length || 3} seções
+                {conteudoEnriquecido.secoesUnicas?.length || conteudo.secoes?.length || 3} seções
               </span>
               <span className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-400" />
@@ -268,11 +314,58 @@ export default async function GuiaPage({ params }: PageProps) {
         {/* Conteúdo */}
         <article className="py-12 md:py-16">
           <div className="max-w-4xl mx-auto px-4">
-            {/* Introdução */}
+            {/* Introdução Enriquecida */}
             <p 
-              className="text-lg text-slate-600 leading-relaxed mb-12"
-              dangerouslySetInnerHTML={{ __html: processarMarkdown(conteudo.introducao) }}
+              className="text-lg text-slate-600 leading-relaxed mb-8"
+              dangerouslySetInnerHTML={{ __html: processarMarkdown(conteudoEnriquecido.introducaoEnriquecida || conteudo.introducao) }}
             />
+            
+            {/* Information Gain - Dado Estatístico */}
+            {conteudoEnriquecido.dadoEstatistico && (
+              <div className="bg-gradient-to-r from-emerald-50 to-cyan-50 border-l-4 border-emerald-500 rounded-r-xl p-6 mb-10">
+                <div className="flex items-start gap-3">
+                  <TrendingUp className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="text-lg font-semibold text-slate-900 mb-1">
+                      {conteudoEnriquecido.dadoEstatistico.valor}
+                    </p>
+                    <p className="text-slate-600 text-sm mb-2">
+                      {conteudoEnriquecido.dadoEstatistico.contexto}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Fonte: {conteudoEnriquecido.dadoEstatistico.fonte}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Visão do Especialista - E-E-A-T */}
+            {conteudoEnriquecido.visaoEspecialista && (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-10">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center flex-shrink-0">
+                    <Lightbulb className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-cyan-600 mb-2 block">
+                      Visão do Especialista
+                    </span>
+                    <p className="text-slate-800 font-medium mb-2">
+                      {conteudoEnriquecido.visaoEspecialista.insight}
+                    </p>
+                    <p className="text-sm text-slate-500 italic">
+                      {conteudoEnriquecido.visaoEspecialista.experiencia}
+                    </p>
+                    {conteudoEnriquecido.visaoEspecialista.metodologia && (
+                      <p className="text-xs text-slate-400 mt-2">
+                        📊 {conteudoEnriquecido.visaoEspecialista.metodologia}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Tabela (se houver) */}
             {conteudo.tabela && (
@@ -326,7 +419,40 @@ export default async function GuiaPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Seções */}
+            {/* Seções Enriquecidas (quando disponíveis) */}
+            {conteudoEnriquecido.secoesUnicas && conteudoEnriquecido.secoesUnicas.length > 0 && (
+              <>
+                {conteudoEnriquecido.secoesUnicas.map((secao, index) => (
+                  <div key={`enriched-${index}`} className="mb-10">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-4">{secao.titulo}</h2>
+                    <div 
+                      className="text-slate-600 leading-relaxed mb-4"
+                      dangerouslySetInnerHTML={{ __html: processarMarkdown(secao.conteudo) }}
+                    />
+                    {secao.destaque && (
+                      <blockquote className="border-l-4 border-cyan-500 pl-4 my-4 bg-cyan-50/50 py-3 rounded-r">
+                        <p className="text-slate-800 font-medium italic flex items-center gap-2">
+                          <Quote className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+                          {secao.destaque}
+                        </p>
+                      </blockquote>
+                    )}
+                    {secao.lista && secao.lista.length > 0 && (
+                      <ul className="list-none space-y-2">
+                        {secao.lista.map((item, i) => (
+                          <li key={i} className="flex items-center gap-3 text-slate-600">
+                            <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                            <span dangerouslySetInnerHTML={{ __html: processarMarkdown(item) }} />
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
+            
+            {/* Seções Base (fallback ou complemento) */}
             {conteudo.secoes?.map((secao, index) => {
               const secaoComLista = secao as { titulo: string; conteudo: string; lista?: string[] };
               return (
@@ -350,8 +476,38 @@ export default async function GuiaPage({ params }: PageProps) {
               );
             })}
 
-            {/* FAQ */}
-            {conteudo.faq && conteudo.faq.length > 0 && (
+            {/* FAQ Enriquecido (com respostas curtas para featured snippets) */}
+            {conteudoEnriquecido.faqEnriquecido && conteudoEnriquecido.faqEnriquecido.length > 0 && (
+              <div className="mt-12 pt-12 border-t border-slate-200">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">Perguntas Frequentes</h2>
+                <div className="space-y-4">
+                  {conteudoEnriquecido.faqEnriquecido.map((item, index) => (
+                    <details 
+                      key={`enriched-faq-${index}`}
+                      className="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden"
+                      open={index === 0} // Primeiro FAQ aberto para melhor UX e SEO
+                    >
+                      <summary className="flex items-center justify-between p-5 cursor-pointer list-none">
+                        <span className="font-medium text-slate-900 pr-4">{item.pergunta}</span>
+                        <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" />
+                      </summary>
+                      <div className="px-5 pb-5">
+                        {/* Resposta curta em destaque (para featured snippet) */}
+                        <p className="text-slate-800 font-medium mb-2">{item.respostaCurta}</p>
+                        {/* Resposta completa */}
+                        <p 
+                          className="text-slate-600"
+                          dangerouslySetInnerHTML={{ __html: processarMarkdown(item.resposta) }}
+                        />
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* FAQ Base (fallback quando não há enriquecido) */}
+            {(!conteudoEnriquecido.faqEnriquecido || conteudoEnriquecido.faqEnriquecido.length === 0) && conteudo.faq && conteudo.faq.length > 0 && (
               <div className="mt-12 pt-12 border-t border-slate-200">
                 <h2 className="text-2xl font-bold text-slate-900 mb-6">Perguntas Frequentes</h2>
                 <div className="space-y-4">
