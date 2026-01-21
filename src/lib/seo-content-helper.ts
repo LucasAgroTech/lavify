@@ -308,11 +308,10 @@ function gerarFallbackCidade(cidadeSlug: string): ConteudoCidade {
       experiencia: "Lava jatos organizados faturam até 40% mais.",
     },
     introducaoEnriquecida: `${cidadeNome} apresenta um mercado aquecido para lava jatos. Com ${dados.frota}, a demanda por serviços de qualidade é constante. O Lavify ajuda seu negócio a se destacar com gestão profissional.`,
-    secoesUnicas: [
-      {
-        titulo: `O mercado em ${cidadeNome}`,
-        conteudo: `Com crescimento de ${dados.crescimento} ao ano na frota de veículos, ${cidadeNome} oferece oportunidades para lava jatos bem gerenciados.`,
-      }
+    destaquesLocais: [
+      `Mercado com ${dados.frota}`,
+      `Crescimento de ${dados.crescimento} ao ano`,
+      `Alta demanda por serviços de qualidade`,
     ],
     faqEnriquecido: [
       {
@@ -390,11 +389,11 @@ function gerarFallbackSolucao(servicoSlug: string): ConteudoSolucao {
       experiencia: "Negócios organizados têm margem até 30% maior.",
     },
     introducaoEnriquecida: `O mercado de ${servicoCapitalizado.toLowerCase()} em ${cidadeNome} está em expansão. Com o Lavify, você gerencia agendamentos, estoque de produtos e financeiro em um só lugar.`,
-    secoesUnicas: [
-      {
-        titulo: `Por que usar sistema para ${servicoCapitalizado}?`,
-        conteudo: `Controle profissional de agendamentos, estoque de produtos especializados e histórico de clientes. Tudo que você precisa para crescer.`,
-      }
+    beneficiosUnicos: [
+      `Agendamento online 24h para ${servicoCapitalizado.toLowerCase()}`,
+      `Controle de estoque de produtos especializados`,
+      `Histórico completo de clientes e serviços`,
+      `Gestão financeira com relatórios detalhados`,
     ],
     faqEnriquecido: [
       {
