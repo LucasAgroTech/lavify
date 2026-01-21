@@ -262,39 +262,33 @@ export function generateFAQSchema(faqs: FAQItem[]) {
   };
 }
 
-// FAQ padrão da landing page
+// FAQ da landing page /para-empresas
+// ⚠️ IMPORTANTE: Este conteúdo DEVE ser IDÊNTICO ao FAQ visível na página
+// para evitar "Spammy Structured Data" e penalização do Google
 export const landingPageFAQs: FAQItem[] = [
   {
-    pergunta: "O Lavify funciona para lava jatos pequenos?",
-    resposta: "Sim! O Lavify foi pensado para atender desde lava rápidos com um funcionário até grandes operações com múltiplas equipes. Temos planos que começam gratuitamente e cabem no bolso de qualquer empreendedor.",
+    pergunta: "Preciso instalar algo no computador?",
+    resposta: "Não! Funciona 100% no navegador. Acesse www.lavify.com.br, faça login e pronto. Nada de instalação.",
   },
   {
-    pergunta: "Preciso instalar algum programa no computador?",
-    resposta: "Não! O Lavify funciona 100% online, direto no navegador ou no celular. Você só precisa de internet para acessar de qualquer lugar, a qualquer hora.",
+    pergunta: "Funciona no celular?",
+    resposta: "Sim! Interface feita mobile-first. Seu lavador pode arrastar carros no Kanban pelo celular, você acompanha o caixa de qualquer lugar.",
   },
   {
-    pergunta: "Como funciona o período de teste gratuito?",
-    resposta: "Você pode testar todas as funcionalidades do Lavify por 7 dias gratuitamente, sem precisar cadastrar cartão de crédito. É só criar sua conta e começar a usar imediatamente.",
+    pergunta: "E se meu lavador não souber usar?",
+    resposta: "O Kanban é visual: arrastar carro de 'Lavando' para 'Pronto' é tão simples quanto mover um post-it. Em 10 minutos qualquer um aprende.",
   },
   {
-    pergunta: "O Lavify envia mensagens automáticas no WhatsApp?",
-    resposta: "Sim! O sistema envia notificações automáticas para seus clientes quando o carro fica pronto, quando há uma promoção, ou para lembrar de agendamentos. Tudo configurável.",
+    pergunta: "Como configuro os níveis de equipe?",
+    resposta: "Na aba Equipe, você cadastra cada funcionário e escolhe o nível: Gerente, Atendente, Lavador Sênior ou Lavador. O sistema já aplica as permissões automaticamente.",
   },
   {
-    pergunta: "Posso controlar meu lava jato pelo celular?",
-    resposta: "Absolutamente! O Lavify foi desenvolvido para funcionar perfeitamente em smartphones. Você pode acompanhar o pátio, ver relatórios, aprovar ordens de serviço e muito mais, de qualquer lugar.",
+    pergunta: "Posso criar meu próprio programa de fidelidade?",
+    resposta: "Sim! Você escolhe entre pontos, cashback ou plano mensal. Define as regras (quantos pontos por real, % de cashback) e o sistema faz tudo automaticamente.",
   },
   {
-    pergunta: "O Lavify funciona offline?",
-    resposta: "O Lavify precisa de conexão com a internet para funcionar, pois os dados são sincronizados em tempo real na nuvem. Isso garante que você sempre tenha as informações atualizadas em qualquer dispositivo.",
-  },
-  {
-    pergunta: "Quanto custa o Lavify?",
-    resposta: "Temos planos a partir de R$ 0 (plano Starter gratuito). O plano Pro custa R$ 97/mês e o Premium R$ 199,90/mês. Todos incluem suporte e atualizações constantes.",
-  },
-  {
-    pergunta: "Como é o suporte do Lavify?",
-    resposta: "Oferecemos suporte humanizado em português, por chat e email. Nossa equipe entende as particularidades do mercado de estética automotiva e está pronta para ajudar.",
+    pergunta: "Meus dados ficam seguros?",
+    resposta: "Dados criptografados, servidores seguros, backup diário automático. Só você e quem autorizar tem acesso.",
   },
 ];
 
