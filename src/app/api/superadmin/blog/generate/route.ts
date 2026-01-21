@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import OpenAI from "openai";
+import { getOpenAIClient, hasOpenAIKey } from "@/lib/openai";
 
 // Força runtime Node.js
 export const runtime = "nodejs";
@@ -140,15 +140,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se a API key está configurada
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
+    if (!hasOpenAIKey()) {
       return NextResponse.json(
         { error: "API Key do OpenAI não configurada" },
         { status: 500 }
       );
     }
 
-    const openai = new OpenAI({ apiKey });
+    // Usa cliente singleton para evitar memory leaks
+    const openai = getOpenAIClient();
 
     // Determinar o modo de operação
     const modoOperacao = modo || (tipoPost === "melhoria" || tipoPost === "sugestao" ? "sugestao" : "completo");

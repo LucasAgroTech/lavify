@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCidadeBySlug, CidadeSEO } from "@/lib/seo-cities";
 import { getProblemaBySlug, ProblemaSEO } from "@/lib/seo-problems";
-
-// Inicialização dinâmica do OpenAI
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-  const OpenAI = require("openai").default;
-  return new OpenAI({ apiKey });
-}
+import { getOpenAIClient, hasOpenAIKey } from "@/lib/openai";
 
 export interface ConteudoGuiaSEO {
   titulo: string;
@@ -63,11 +54,10 @@ export async function POST(request: NextRequest) {
 }
 
 async function gerarConteudoGuia(problema: ProblemaSEO, cidade: CidadeSEO | null): Promise<ConteudoGuiaSEO> {
-  const openai = getOpenAIClient();
-  
-  if (!openai) {
+  if (!hasOpenAIKey()) {
     return gerarConteudoFallback(problema, cidade);
   }
+  const openai = getOpenAIClient();
 
   const cidadeInfo = cidade 
     ? `CIDADE: ${cidade.nome}, ${cidade.estado} (${cidade.uf})\nREGIÃO: ${cidade.regiao}\nPOPULAÇÃO: ~${(cidade.populacao / 1000000).toFixed(1)} milhões`

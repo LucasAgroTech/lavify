@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cidadesBrasil, CidadeSEO } from "@/lib/seo-cities";
+import { getOpenAIClient, hasOpenAIKey } from "@/lib/openai";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -20,17 +21,9 @@ interface ConteudoSEO {
   ctaTexto: string;
 }
 
-// Inicialização dinâmica do OpenAI
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
-  const OpenAI = require("openai").default;
-  return new OpenAI({ apiKey });
-}
-
 async function gerarConteudo(cidade: CidadeSEO): Promise<ConteudoSEO> {
+  if (!hasOpenAIKey()) throw new Error("OpenAI não configurado");
   const openai = getOpenAIClient();
-  if (!openai) throw new Error("OpenAI não configurado");
 
   const prompt = `Gere conteúdo SEO em JSON para landing page do Lavify (Sistema para Lava Rápido) na cidade: ${cidade.nome}, ${cidade.uf}.
 

@@ -3,6 +3,7 @@
  * - Limita tentativas por IP
  * - Bloqueio temporário após exceder limite
  * - Proteção contra força bruta
+ * - Limite máximo de entradas para evitar memory leaks
  */
 
 interface RateLimitEntry {
@@ -13,6 +14,9 @@ interface RateLimitEntry {
 
 // Armazenamento em memória (em produção, usar Redis para múltiplas instâncias)
 const rateLimitStore = new Map<string, RateLimitEntry>();
+
+// Limite máximo de entradas no Map para evitar memory leak
+const MAX_ENTRIES = 10000;
 
 // Configurações
 const RATE_LIMIT_CONFIG = {
@@ -40,9 +44,12 @@ type RateLimitType = keyof typeof RATE_LIMIT_CONFIG;
 
 /**
  * Limpa entradas expiradas do store
+ * Também remove entradas antigas se o Map estiver muito grande
  */
 function cleanupExpired() {
   const now = Date.now();
+  let removedCount = 0;
+
   for (const [key, entry] of rateLimitStore.entries()) {
     const config = key.split(":")[0] as RateLimitType;
     const settings = RATE_LIMIT_CONFIG[config] || RATE_LIMIT_CONFIG.api;
@@ -53,12 +60,31 @@ function cleanupExpired() {
       (!entry.blockedUntil || now > entry.blockedUntil)
     ) {
       rateLimitStore.delete(key);
+      removedCount++;
     }
+  }
+
+  // Se ainda estiver muito grande, remove as entradas mais antigas
+  if (rateLimitStore.size > MAX_ENTRIES) {
+    const entries = Array.from(rateLimitStore.entries())
+      .sort((a, b) => a[1].firstAttempt - b[1].firstAttempt);
+    
+    const toRemove = rateLimitStore.size - MAX_ENTRIES + 1000; // Remove 1000 extras
+    for (let i = 0; i < toRemove && i < entries.length; i++) {
+      rateLimitStore.delete(entries[i][0]);
+    }
+  }
+
+  // Log apenas se houver limpeza significativa (debug em produção)
+  if (removedCount > 100 || rateLimitStore.size > MAX_ENTRIES * 0.8) {
+    console.log(`[RateLimit] Cleanup: ${removedCount} removidos, ${rateLimitStore.size} restantes`);
   }
 }
 
-// Limpa a cada 5 minutos
-setInterval(cleanupExpired, 5 * 60 * 1000);
+// Limpa a cada 2 minutos (mais frequente para manter memória controlada)
+if (typeof setInterval !== "undefined") {
+  setInterval(cleanupExpired, 2 * 60 * 1000);
+}
 
 /**
  * Extrai IP do request

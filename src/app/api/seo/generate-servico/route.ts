@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCidadeBySlug, CidadeSEO } from "@/lib/seo-cities";
 import { getServicoBySlug, ServicoSEO } from "@/lib/seo-services";
-
-// Inicialização dinâmica do OpenAI
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-  const OpenAI = require("openai").default;
-  return new OpenAI({ apiKey });
-}
+import { getOpenAIClient, hasOpenAIKey } from "@/lib/openai";
 
 export interface ConteudoServicoSEO {
   titulo: string;
@@ -64,11 +55,10 @@ export async function POST(request: NextRequest) {
 }
 
 async function gerarConteudoServico(servico: ServicoSEO, cidade: CidadeSEO): Promise<ConteudoServicoSEO> {
-  const openai = getOpenAIClient();
-  
-  if (!openai) {
+  if (!hasOpenAIKey()) {
     return gerarConteudoFallback(servico, cidade);
   }
+  const openai = getOpenAIClient();
 
   const prompt = `Você é um especialista em SEO e no mercado de estética automotiva brasileiro. Gere conteúdo REAL e VERIFICÁVEL para uma landing page.
 

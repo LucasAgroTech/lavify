@@ -1,16 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCidadeBySlug, CidadeSEO } from "@/lib/seo-cities";
-
-// Inicialização dinâmica do OpenAI
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-  // Dynamic import para evitar erro no build
-  const OpenAI = require("openai").default;
-  return new OpenAI({ apiKey });
-}
+import { getOpenAIClient as getOpenAI, hasOpenAIKey } from "@/lib/openai";
 
 interface ConteudoSEO {
   titulo: string;
@@ -48,12 +38,13 @@ export async function POST(request: NextRequest) {
 }
 
 async function gerarConteudoSEO(cidade: CidadeSEO): Promise<ConteudoSEO> {
-  const openai = getOpenAIClient();
-  
   // Se não tiver API key, usa fallback
-  if (!openai) {
+  if (!hasOpenAIKey()) {
     return gerarConteudoFallback(cidade);
   }
+
+  // Usa cliente singleton para evitar memory leaks
+  const openai = getOpenAI();
 
   const prompt = `Você é um especialista em SEO e copywriting para SaaS brasileiro. Gere conteúdo otimizado para SEO para uma landing page do Lavify - Sistema de Gestão para Lava Rápidos/Lava Jatos.
 
