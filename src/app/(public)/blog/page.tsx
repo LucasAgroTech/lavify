@@ -22,6 +22,7 @@ import {
   paginasLongTail,
 } from "@/lib/seo-keywords";
 import { cidadesBrasil } from "@/lib/seo-cities";
+import { problemasLavaJato } from "@/lib/seo-problems";
 import { getAuthorForContent } from "@/lib/authors";
 import { AuthorBylineCompact } from "@/components/AuthorByline";
 import { prisma } from "@/lib/prisma";
@@ -385,6 +386,57 @@ export default async function BlogPage() {
           </div>
         </section>
       ))}
+
+      {/* Guias Práticos (páginas /guias/[slug]) */}
+      <section className="py-12 bg-gradient-to-b from-emerald-900/20 to-transparent border-t border-emerald-500/20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">Guias Práticos para Lava Jato</h2>
+              <p className="text-white/50 text-sm">
+                {problemasLavaJato.length} guias completos e atualizados
+              </p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {problemasLavaJato.slice(0, 12).map((guia) => (
+              <Link
+                key={guia.slug}
+                href={`/guias/${guia.slug}`}
+                className="group p-4 bg-slate-800 border border-emerald-500/20 rounded-xl hover:bg-slate-800/80 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all"
+              >
+                <span className="text-2xl mb-2 block">{guia.emoji}</span>
+                <h3 className="font-medium text-white group-hover:text-emerald-400 transition-colors text-sm mb-1">
+                  {guia.titulo}
+                </h3>
+                <p className="text-white/40 text-xs line-clamp-2">
+                  {guia.descricao.slice(0, 80)}...
+                </p>
+                <div className="flex items-center gap-1 mt-3 text-emerald-400 text-xs font-medium">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20">{guia.tipo}</span>
+                  <ChevronRight className="w-3 h-3 ml-auto" />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {problemasLavaJato.length > 12 && (
+            <div className="mt-6 text-center">
+              <Link
+                href="/guias/como-abrir-lava-jato"
+                className="inline-flex items-center gap-1 text-emerald-400 text-sm font-medium hover:text-emerald-300"
+              >
+                Ver todos os {problemasLavaJato.length} guias
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Páginas por Cidade */}
       <section className="py-12 bg-slate-800/50 border-t border-white/5">

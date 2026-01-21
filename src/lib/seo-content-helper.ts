@@ -319,3 +319,68 @@ export async function getConteudoSolucao(
   return null;
 }
 
+/**
+ * Interface para conteúdo de guia
+ */
+export interface ConteudoGuia {
+  respostaAEO: string;
+  dadoEstatistico: {
+    valor: string;
+    fonte: string;
+    contexto: string;
+  };
+  visaoEspecialista: {
+    insight: string;
+    experiencia: string;
+    metodologia?: string;
+  };
+  introducaoEnriquecida: string;
+  secoesUnicas?: Array<{
+    titulo: string;
+    conteudo: string;
+    destaque?: string;
+    lista?: string[];
+  }>;
+  tabelaEnriquecida?: {
+    titulo: string;
+    colunas: string[];
+    linhas: string[][];
+    notaRodape?: string;
+  };
+  faqEnriquecido: Array<{
+    pergunta: string;
+    resposta: string;
+    respostaCurta?: string;
+  }>;
+  entidadesSemanticas: string[];
+  metaTitleOtimizado: string;
+  metaDescriptionOtimizada: string;
+}
+
+/**
+ * Busca conteúdo enriquecido para página de guia
+ */
+export async function getConteudoGuia(
+  guiaSlug: string,
+  tipoConteudo: "guia" | "tabela" | "checklist" = "guia"
+): Promise<ConteudoGuia | null> {
+  const cacheKey = `${guiaSlug}-${tipoConteudo}-brasil-`;
+
+  try {
+    const cached = await prisma.sEOContentCache.findUnique({
+      where: { cacheKey },
+    });
+
+    if (cached && cached.conteudo) {
+      const agora = new Date();
+      if (!cached.expiresAt || cached.expiresAt > agora) {
+        return JSON.parse(cached.conteudo) as ConteudoGuia;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao buscar cache guia:", error);
+  }
+
+  return null;
+}
+
