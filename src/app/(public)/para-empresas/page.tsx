@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import SchemaMarkup from "@/components/SchemaMarkup";
+import { landingPageFAQSchema, generateBreadcrumbSchema } from "@/lib/schema-markup";
 import {
   LayoutDashboard,
   Kanban,
@@ -293,8 +295,17 @@ export default function LandingPageEmpresas() {
     },
   ];
 
+  // Schema Markup para Rich Snippets
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Início", url: "/" },
+    { name: "Para Empresas" },
+  ]);
+
   return (
     <div className="bg-slate-50 min-h-screen">
+      {/* Schema Markup - FAQ para perguntas expandíveis no Google */}
+      <SchemaMarkup schema={[landingPageFAQSchema, breadcrumbSchema]} />
+
       {/* ═══════════════════════════════════════════════════════════════════════
           HERO SECTION - Gestão de Lava-Rápido
       ═══════════════════════════════════════════════════════════════════════ */}

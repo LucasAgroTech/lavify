@@ -15,6 +15,13 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+import {
+  softwareApplicationSchema,
+  organizationSchema,
+  websiteSchema,
+  productOffersSchema,
+} from "@/lib/schema-markup";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
 export const viewport: Viewport = {
@@ -97,86 +104,7 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-// JSON-LD Structured Data - Software Application
-const softwareJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Lavify",
-  description:
-    "Sistema de gestão completo para lava rápido e lava jato. Controle pátio, agendamentos, estoque, equipe e financeiro pelo celular.",
-  url: siteUrl,
-  applicationCategory: "BusinessApplication",
-  applicationSubCategory: "Gestão Empresarial",
-  operatingSystem: "Web, iOS, Android",
-  softwareVersion: "2.0",
-  offers: {
-    "@type": "AggregateOffer",
-    lowPrice: "0",
-    highPrice: "199.90",
-    priceCurrency: "BRL",
-    offerCount: "4",
-  },
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    ratingCount: "1847",
-    bestRating: "5",
-    worstRating: "1",
-  },
-  featureList: [
-    "Kanban visual do pátio",
-    "Agendamento online 24h",
-    "WhatsApp automático",
-    "Controle de estoque",
-    "Gestão financeira",
-    "Controle de equipe",
-    "Programas de fidelidade",
-  ],
-};
-
-// JSON-LD Organization Schema - Autoridade da Marca
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Lavify",
-  alternateName: "Lavify - Sistema para Lava Rápido",
-  url: siteUrl,
-  logo: `${siteUrl}/lavify.png`,
-  description: "Empresa brasileira especializada em software de gestão para lava rápidos e lava jatos.",
-  foundingDate: "2024",
-  sameAs: [
-    "https://www.instagram.com/lavifyapp",
-    "https://www.facebook.com/lavifyapp",
-    "https://www.linkedin.com/company/lavify",
-  ],
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer service",
-    availableLanguage: ["Portuguese"],
-    areaServed: "BR",
-  },
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: "BR",
-  },
-};
-
-// JSON-LD WebSite Schema - Busca no Site
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Lavify",
-  url: siteUrl,
-  description: "Sistema de gestão para lava rápido e lava jato",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${siteUrl}/encontrar?q={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
-};
+// Schemas são importados de @/lib/schema-markup para centralização e manutenção
 
 export default function RootLayout({
   children,
@@ -189,23 +117,29 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        {/* Software Application Schema */}
+        {/* Software Application Schema - Gera estrelinhas e preço no Google */}
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema) }}
         />
-        {/* Organization Schema - Autoridade da Marca */}
+        {/* Organization Schema - Autoridade da Marca (E-E-A-T) */}
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        {/* WebSite Schema - Search Action */}
+        {/* WebSite Schema - Sitelinks Searchbox */}
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        {/* Product/Offers Schema - Planos e Preços */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productOffersSchema) }}
         />
       </head>
       <body
