@@ -6,10 +6,13 @@ import {
   ChevronDown,
   MapPin,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  TrendingUp,
+  Lightbulb
 } from "lucide-react";
 import { getCidadeBySlug, cidadesBrasil } from "@/lib/seo-cities";
 import { getServicoBySlug, servicosAutomotivos } from "@/lib/seo-services";
+import { getConteudoSolucao } from "@/lib/seo-content-helper";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -242,6 +245,9 @@ export default async function SolucaoPage({ params }: PageProps) {
 
   const conteudo = conteudoPorServico[servico.slug] || conteudoPorServico["lava-rapido"];
   
+  // Busca conteúdo enriquecido do banco de dados
+  const conteudoEnriquecido = await getConteudoSolucao(servico.slug);
+  
   // Cidades próximas para internal linking
   const cidadesProximas = cidadesBrasil
     .filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug)
@@ -321,18 +327,75 @@ export default async function SolucaoPage({ params }: PageProps) {
             {servico.nomeCompleto} em {cidade.nome}
           </h1>
           
+          {/* Resposta AEO - Featured Snippet */}
+          {conteudoEnriquecido?.respostaAEO && (
+            <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl p-5 mb-8">
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                <p className="text-white font-medium leading-relaxed">
+                  {conteudoEnriquecido.respostaAEO}
+                </p>
+              </div>
+            </div>
+          )}
+          
           {/* Descrição do serviço */}
           <p className="text-lg text-white/70 mb-8 leading-relaxed">
-            {conteudo.descricaoDetalhada}
+            {conteudoEnriquecido?.introducaoEnriquecida || conteudo.descricaoDetalhada}
           </p>
+          
+          {/* Information Gain: Dado Estatístico */}
+          {conteudoEnriquecido?.dadoEstatistico && (
+            <div className="bg-slate-800/50 border border-white/10 rounded-xl p-5 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="p-2 bg-cyan-500/20 rounded-lg">
+                  <TrendingUp className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-white font-semibold mb-1">
+                    {conteudoEnriquecido.dadoEstatistico.valor}
+                  </p>
+                  <p className="text-white/60 text-sm">
+                    {conteudoEnriquecido.dadoEstatistico.contexto}
+                  </p>
+                  <p className="text-white/40 text-xs mt-2">
+                    Fonte: {conteudoEnriquecido.dadoEstatistico.fonte}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Visão do Especialista (E-E-A-T) */}
+          {conteudoEnriquecido?.visaoEspecialista && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="p-2 bg-amber-500/20 rounded-lg">
+                  <Lightbulb className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-white/50 text-xs uppercase tracking-wide mb-2">Visão do Especialista</p>
+                  <p className="text-white font-medium mb-2">
+                    {conteudoEnriquecido.visaoEspecialista.insight}
+                  </p>
+                  <p className="text-white/60 text-sm italic">
+                    {conteudoEnriquecido.visaoEspecialista.experiencia}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* Diferenciais do Lavify para este serviço */}
+          {/* Benefícios Únicos (enriquecido) ou Diferenciais (fallback) */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-10">
             <h2 className="text-lg font-semibold text-white mb-4">
-              O que o Lavify oferece para {servico.nome.toLowerCase()}:
+              {conteudoEnriquecido?.beneficiosUnicos ? 
+                `Por que usar Lavify para ${servico.nome.toLowerCase()}:` :
+                `O que o Lavify oferece para ${servico.nome.toLowerCase()}:`
+              }
             </h2>
             <ul className="space-y-3">
-              {conteudo.diferenciais.map((item, index) => (
+              {(conteudoEnriquecido?.beneficiosUnicos || conteudo.diferenciais).map((item, index) => (
                 <li key={index} className="flex items-start gap-3 text-white/70">
                   <span className="text-cyan-400 mt-1">•</span>
                   {item}
@@ -350,16 +413,37 @@ export default async function SolucaoPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* FAQ específico do serviço */}
-          {conteudo.faq.length > 0 && (
+          {/* FAQ enriquecido ou padrão */}
+          {((conteudoEnriquecido?.faqEnriquecido && conteudoEnriquecido.faqEnriquecido.length > 0) || conteudo.faq.length > 0) && (
             <div className="mb-10">
               <h2 className="text-xl font-semibold text-white mb-6">
-                Perguntas sobre {servico.nome}
+                Perguntas frequentes sobre {servico.nome}
               </h2>
               <div className="space-y-3">
-                {conteudo.faq.map((item, index) => (
+                {/* FAQ Enriquecido (prioridade) */}
+                {conteudoEnriquecido?.faqEnriquecido?.map((item, index) => (
                   <details 
-                    key={index}
+                    key={`enriched-${index}`}
+                    className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden"
+                  >
+                    <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
+                      <span className="font-medium text-white pr-4 text-sm">{item.pergunta}</span>
+                      <ChevronDown className="w-4 h-4 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
+                    </summary>
+                    <div className="px-4 pb-4">
+                      {item.respostaCurta && (
+                        <p className="text-cyan-400 text-sm font-medium mb-2">
+                          → {item.respostaCurta}
+                        </p>
+                      )}
+                      <p className="text-white/60 text-sm">{item.resposta}</p>
+                    </div>
+                  </details>
+                ))}
+                {/* FAQ Padrão (fallback) */}
+                {!conteudoEnriquecido?.faqEnriquecido && conteudo.faq.map((item, index) => (
+                  <details 
+                    key={`default-${index}`}
                     className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden"
                   >
                     <summary className="flex items-center justify-between p-4 cursor-pointer list-none">
