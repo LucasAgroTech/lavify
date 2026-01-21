@@ -6,6 +6,21 @@ import Image from "next/image";
 import { Calendar, Clock } from "lucide-react";
 import type { Author } from "@/lib/authors";
 
+// Nomes dos meses em português (evita hydration mismatch com toLocaleDateString)
+const mesesPT = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+];
+
+// Função para formatar data de forma consistente (evita hydration mismatch)
+function formatarDataExtenso(dataStr: string): string {
+  const data = new Date(dataStr + "T00:00:00Z");
+  const dia = data.getUTCDate();
+  const mes = mesesPT[data.getUTCMonth()];
+  const ano = data.getUTCFullYear();
+  return `${dia} de ${mes} de ${ano}`;
+}
+
 interface AuthorBylineProps {
   author: Author;
   dataPublicacao?: string;
@@ -20,11 +35,7 @@ export function AuthorByline({
   className = "",
 }: AuthorBylineProps) {
   const dataFormatada = dataPublicacao
-    ? new Date(dataPublicacao).toLocaleDateString("pt-BR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+    ? formatarDataExtenso(dataPublicacao)
     : null;
 
   return (

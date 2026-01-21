@@ -26,6 +26,16 @@ import { getAuthorForContent } from "@/lib/authors";
 import { AuthorBylineCompact } from "@/components/AuthorByline";
 import { prisma } from "@/lib/prisma";
 
+// Função para formatar data de forma consistente (evita hydration mismatch)
+function formatarData(data: Date | null | undefined): string {
+  if (!data) return "Recente";
+  const d = new Date(data);
+  const dia = String(d.getUTCDate()).padStart(2, "0");
+  const mes = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const ano = d.getUTCFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
 // Sempre buscar dados frescos do banco
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -286,9 +296,7 @@ export default async function BlogPage() {
                   <div className="flex items-center justify-between text-xs text-white/40">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {post.publicadoEm
-                        ? new Date(post.publicadoEm).toLocaleDateString("pt-BR")
-                        : "Recente"}
+                      {formatarData(post.publicadoEm)}
                     </div>
                     <div className="flex items-center gap-1 text-cyan-400 font-medium">
                       Ler
