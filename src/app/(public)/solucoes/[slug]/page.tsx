@@ -138,33 +138,162 @@ export default async function SolucaoPage({ params }: PageProps) {
     .filter(c => c.regiao === cidade.regiao && c.slug !== cidade.slug)
     .slice(0, 6);
 
-  const beneficios = [
-    `Agenda online 24h para ${servico.nome.toLowerCase()}`,
-    "WhatsApp automático para clientes",
-    "Controle de serviços em andamento",
-    "Relatórios financeiros detalhados",
-    "Programa de fidelidade digital",
-    "Cadastro de clientes e veículos"
-  ];
+  // Benefícios específicos por tipo de serviço
+  const beneficiosPorServico: Record<string, string[]> = {
+    "estetica-automotiva": [
+      "Controle de garantias de coating e vitrificação",
+      "Fotos antes/depois em cada ordem de serviço",
+      "Agendamento de manutenções periódicas",
+      "Catálogo digital de serviços premium",
+      "Histórico completo por veículo",
+      "Programa de fidelidade para clientes recorrentes"
+    ],
+    "lavagem-a-seco": [
+      "Gestão de equipe móvel com rotas",
+      "Controle de produtos ecológicos",
+      "Agendamento com endereço do cliente",
+      "Relatório de consumo por lavagem",
+      "WhatsApp com localização para o cliente",
+      "Histórico de atendimentos por região"
+    ],
+    "martelinho-de-ouro": [
+      "Orçamentos detalhados com fotos",
+      "Acompanhamento de cada reparo",
+      "Previsão de tempo por serviço",
+      "Galeria de trabalhos realizados",
+      "Controle de fila de veículos",
+      "Relatório de serviços por tipo de dano"
+    ],
+    "vitrificacao": [
+      "Registro de marca e camadas aplicadas",
+      "Controle de garantias com vencimento",
+      "Agendamento de manutenções",
+      "Envio de certificado por WhatsApp",
+      "Lembrete automático de renovação",
+      "Histórico técnico por veículo"
+    ],
+    "polimento": [
+      "Registro do nível de correção",
+      "Fotos antes/depois com comparativo",
+      "Controle de produtos e boinas usadas",
+      "Tempo por etapa de polimento",
+      "Portfólio automático de trabalhos",
+      "Relatório de serviços realizados"
+    ],
+    "higienizacao-interna": [
+      "Diferenciação tecido vs couro",
+      "Tempo estimado por tipo de sujeira",
+      "Checklist de pontos higienizados",
+      "Controle de produtos químicos",
+      "Agendamento com observações",
+      "Histórico de limpezas por veículo"
+    ],
+    "lava-rapido": [
+      "Kanban visual para controle do pátio",
+      "WhatsApp automático quando pronto",
+      "Agendamento online 24 horas",
+      "Controle de lavagens por funcionário",
+      "Relatórios de faturamento diário",
+      "Programa de fidelidade com pontos"
+    ],
+    "lava-jato": [
+      "Kanban visual para todos os boxes",
+      "Aviso automático por WhatsApp",
+      "Agenda online para clientes",
+      "Controle financeiro em tempo real",
+      "Gestão de equipe e comissões",
+      "Fidelidade digital integrada"
+    ]
+  };
+  
+  const beneficios = beneficiosPorServico[servico.slug] || beneficiosPorServico["lava-rapido"];
 
-  const faq = [
-    {
-      pergunta: `O Lavify funciona para ${servico.nome.toLowerCase()} em ${cidade.nome}?`,
-      resposta: `Sim! O Lavify é perfeito para negócios de ${servico.nome.toLowerCase()} em ${cidade.nome} e região. O sistema foi desenvolvido para atender as necessidades específicas do mercado brasileiro.`
-    },
-    {
-      pergunta: "Preciso de computador para usar o sistema?",
-      resposta: "Não! O Lavify funciona 100% pelo celular. Você pode gerenciar todo o seu negócio de qualquer lugar, a qualquer momento."
-    },
-    {
-      pergunta: `Quanto custa o sistema para ${servico.nome.toLowerCase()}?`,
-      resposta: "Oferecemos planos a partir de R$ 0,00! Você pode testar todas as funcionalidades gratuitamente antes de escolher um plano pago."
-    },
-    {
-      pergunta: "Como funciona o agendamento online?",
-      resposta: "Você ganha uma página exclusiva onde seus clientes podem agendar serviços 24 horas. O sistema organiza automaticamente e envia confirmações por WhatsApp."
-    }
-  ];
+  // FAQs específicos por tipo de serviço (conteúdo único, não repetido)
+  const faqsPorServico: Record<string, { pergunta: string; resposta: string }[]> = {
+    "estetica-automotiva": [
+      {
+        pergunta: "O sistema controla garantia de vitrificação e coating?",
+        resposta: "Sim! Você cadastra a garantia de cada serviço e o sistema avisa automaticamente quando está próximo do vencimento, facilitando a renovação e fidelização."
+      },
+      {
+        pergunta: "Consigo fotografar o antes/depois dos serviços?",
+        resposta: "Com certeza. O Lavify permite anexar fotos em cada ordem de serviço, criando um portfólio automático que você pode compartilhar com o cliente."
+      }
+    ],
+    "lavagem-a-seco": [
+      {
+        pergunta: "O sistema ajuda a controlar os produtos ecológicos?",
+        resposta: "Sim! O controle de estoque do Lavify avisa quando os produtos estão acabando e calcula o consumo médio por lavagem."
+      },
+      {
+        pergunta: "Funciona para equipes que atendem em domicílio?",
+        resposta: "Perfeito para isso! O agendamento online já captura o endereço do cliente e a equipe recebe as informações pelo celular."
+      }
+    ],
+    "martelinho-de-ouro": [
+      {
+        pergunta: "Como faço orçamentos de reparo pelo sistema?",
+        resposta: "Você cria ordens de serviço detalhadas com descrição de cada amassado, fotos e valor. O cliente recebe tudo organizado por WhatsApp."
+      },
+      {
+        pergunta: "O sistema calcula o tempo de cada reparo?",
+        resposta: "Você pode definir tempo estimado por tipo de serviço e o Kanban ajuda a visualizar a fila de veículos aguardando."
+      }
+    ],
+    "vitrificacao": [
+      {
+        pergunta: "Como controlo as camadas aplicadas?",
+        resposta: "Nas observações da ordem de serviço você registra detalhes técnicos: marca do coating, número de camadas, tempo de cura."
+      },
+      {
+        pergunta: "O cliente recebe certificado de garantia?",
+        resposta: "Você pode enviar por WhatsApp um comprovante com todos os detalhes do serviço realizado, data e período de garantia."
+      }
+    ],
+    "polimento": [
+      {
+        pergunta: "Consigo registrar o nível de correção alcançado?",
+        resposta: "Sim! Você pode detalhar na ordem de serviço: tipo de polimento (corte, refino, lustro), produtos usados e resultado obtido."
+      },
+      {
+        pergunta: "Como mostro o antes/depois pro cliente?",
+        resposta: "Anexe fotos na ordem de serviço e envie pelo WhatsApp integrado. O cliente vê a transformação e compartilha com amigos."
+      }
+    ],
+    "higienizacao-interna": [
+      {
+        pergunta: "O sistema diferencia higienização de tecido e couro?",
+        resposta: "Você pode criar serviços separados com preços e tempos diferentes para cada tipo de material, facilitando a precificação."
+      },
+      {
+        pergunta: "Como aviso o cliente que demora mais em carros muito sujos?",
+        resposta: "No agendamento, você pode adicionar observações e ajustar o tempo estimado. O cliente é informado antes de confirmar."
+      }
+    ],
+    "lava-rapido": [
+      {
+        pergunta: "O Kanban funciona bem no celular?",
+        resposta: "Foi feito mobile-first! Seus funcionários arrastam os carros entre colunas (Aguardando, Lavando, Pronto) direto pelo celular."
+      },
+      {
+        pergunta: "Consigo ver quantos carros lavei no dia?",
+        resposta: "Sim! O dashboard mostra serviços do dia, da semana e do mês, com faturamento em tempo real."
+      }
+    ],
+    "lava-jato": [
+      {
+        pergunta: "O cliente recebe aviso quando o carro fica pronto?",
+        resposta: "Sim! Com um clique você envia WhatsApp automático avisando que o veículo está pronto para retirada."
+      },
+      {
+        pergunta: "Funciona para lava jato com vários boxes?",
+        resposta: "Perfeito! O Kanban visual mostra todos os boxes e você vê exatamente onde cada carro está no processo."
+      }
+    ]
+  };
+  
+  // Pega FAQs específicos do serviço (evita conteúdo duplicado)
+  const faqDoServico = faqsPorServico[servico.slug] || [];
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.lavify.com.br";
 
@@ -357,32 +486,34 @@ export default async function SolucaoPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="py-16 bg-slate-800/50">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Perguntas Frequentes
-            </h2>
-            <p className="text-white/60 text-center mb-12">
-              Dúvidas sobre o Lavify para {servico.nome.toLowerCase()} em {cidade.nome}
-            </p>
+        {/* FAQ - Só exibe se tiver perguntas específicas do serviço */}
+        {faqDoServico.length > 0 && (
+          <section className="py-16 bg-slate-800/50">
+            <div className="max-w-3xl mx-auto px-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+                Dúvidas sobre {servico.nome}
+              </h2>
+              <p className="text-white/60 text-center mb-12">
+                Perguntas específicas sobre o sistema para {servico.nome.toLowerCase()}
+              </p>
 
-            <div className="space-y-4">
-              {faq.map((item, index) => (
-                <details 
-                  key={index}
-                  className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
-                >
-                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                    <span className="font-medium text-white pr-4">{item.pergunta}</span>
-                    <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
-                  </summary>
-                  <div className="px-6 pb-6 text-white/70">{item.resposta}</div>
-                </details>
-              ))}
+              <div className="space-y-4">
+                {faqDoServico.map((item, index) => (
+                  <details 
+                    key={index}
+                    className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+                  >
+                    <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                      <span className="font-medium text-white pr-4">{item.pergunta}</span>
+                      <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform flex-shrink-0" />
+                    </summary>
+                    <div className="px-6 pb-6 text-white/70">{item.resposta}</div>
+                  </details>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Internal Linking - Cidades */}
         {cidadesProximas.length > 0 && (
