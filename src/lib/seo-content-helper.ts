@@ -215,3 +215,107 @@ export function gerarMetaTags(
   };
 }
 
+/**
+ * Interface para conteúdo de cidade
+ */
+export interface ConteudoCidade {
+  respostaAEO: string;
+  dadoEstatistico: {
+    valor: string;
+    fonte: string;
+    contexto: string;
+  };
+  visaoEspecialista: {
+    insight: string;
+    experiencia: string;
+  };
+  introducaoEnriquecida: string;
+  destaquesLocais: string[];
+  faqEnriquecido: Array<{
+    pergunta: string;
+    resposta: string;
+    respostaCurta: string;
+  }>;
+  entidadesSemanticas: string[];
+  metaTitleOtimizado: string;
+  metaDescriptionOtimizada: string;
+}
+
+/**
+ * Interface para conteúdo de solução/serviço
+ */
+export interface ConteudoSolucao {
+  respostaAEO: string;
+  dadoEstatistico: {
+    valor: string;
+    fonte: string;
+    contexto: string;
+  };
+  visaoEspecialista: {
+    insight: string;
+    experiencia: string;
+  };
+  introducaoEnriquecida: string;
+  beneficiosUnicos: string[];
+  faqEnriquecido: Array<{
+    pergunta: string;
+    resposta: string;
+    respostaCurta: string;
+  }>;
+  entidadesSemanticas: string[];
+  metaTitleOtimizado: string;
+  metaDescriptionOtimizada: string;
+}
+
+/**
+ * Busca conteúdo enriquecido para página de cidade
+ */
+export async function getConteudoCidade(
+  cidadeSlug: string
+): Promise<ConteudoCidade | null> {
+  const cacheKey = `${cidadeSlug}-cidade-${cidadeSlug}-`;
+
+  try {
+    const cached = await prisma.sEOContentCache.findUnique({
+      where: { cacheKey },
+    });
+
+    if (cached && cached.conteudo) {
+      const agora = new Date();
+      if (!cached.expiresAt || cached.expiresAt > agora) {
+        return JSON.parse(cached.conteudo) as ConteudoCidade;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao buscar cache cidade:", error);
+  }
+
+  return null;
+}
+
+/**
+ * Busca conteúdo enriquecido para página de solução/serviço
+ */
+export async function getConteudoSolucao(
+  servicoSlug: string
+): Promise<ConteudoSolucao | null> {
+  const cacheKey = `${servicoSlug}-servico-brasil-`;
+
+  try {
+    const cached = await prisma.sEOContentCache.findUnique({
+      where: { cacheKey },
+    });
+
+    if (cached && cached.conteudo) {
+      const agora = new Date();
+      if (!cached.expiresAt || cached.expiresAt > agora) {
+        return JSON.parse(cached.conteudo) as ConteudoSolucao;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao buscar cache solução:", error);
+  }
+
+  return null;
+}
+
